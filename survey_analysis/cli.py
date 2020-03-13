@@ -89,7 +89,12 @@ def version():
 @cli.command()
 @click.argument("file_name", type=click.File(mode="r"))
 def analyze(file_name):
-    """Read the given data file into a global data object"""
+    """
+    Read the given data file into a global data object.
+
+    If the file can not be parsed by Pandas, an error will be printed and
+    the program will abort.
+    """
 
     # Log the used file only at INFO or above
     logging.log(level=logging.INFO,
@@ -102,3 +107,4 @@ def analyze(file_name):
         initialize_global_data(frame)
     except IOError:
         click.echo("Could not parse the given file as CSV")
+        # TODO exit gracefully

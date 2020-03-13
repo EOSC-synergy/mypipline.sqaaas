@@ -33,6 +33,7 @@ class DataContainer(object):
     def get_raw_data(self) -> DataFrame:
         """
         Provide a deep copy of the whole raw data frame.
+
         It is recommended to cache this copy as long as it is used.
         returns: A copy of the complete Pandas raw data frame.
         """
