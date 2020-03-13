@@ -23,7 +23,6 @@ import logging
 
 import click
 import pandas
-from pandas import DataFrame
 
 from .__init__ import __version__
 from .data import initialize_global_data
@@ -96,7 +95,7 @@ def analyze(file_name):
     logging.log(level=logging.INFO,
                 msg="Analyzing file {name}".format(name=file_name.name))
     try:
-        frame: DataFrame = pandas.read_csv(file_name)
+        frame: pandas.DataFrame = pandas.read_csv(file_name)
         click.echo(frame)
 
         # Put the Data Frame into the global container
