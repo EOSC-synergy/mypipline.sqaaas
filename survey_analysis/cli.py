@@ -41,7 +41,7 @@ class Info(object):
 
     def __init__(self):  # Note: This object must have an empty constructor.
         """Create a new instance."""
-        self.verbose: int = 0
+        self.verbosity: int = 0
 
 
 # pass_info is a decorator for functions that pass 'Info' objects.
@@ -52,17 +52,23 @@ pass_info = click.make_pass_decorator(Info, ensure=True)
 # Change the options to below to suit the actual options for your task (or
 # tasks).
 @click.group()
-@click.option("--verbose", "-v", count=True, help="Enable verbose output.")
+@click.option("--verbose", "-v",
+              count=True,
+              help="Enable verbose output. "
+                   "Repeat up to 4 times for increased effect")
 @pass_info
 def cli(info: Info, verbose: int):
-    """Run survey_analysis."""
-    # Use the verbosity count to determine the logging level...
-    if verbose > 0:
-        logging.basicConfig(
-            level=LOGGING_LEVELS[verbose]
-            if verbose in LOGGING_LEVELS
-            else logging.DEBUG
-            )
+    """
+    Set the output verbosity.
+    """
+    assert (verbose >= 0), "Verbosity option parsed into an invalid value"
+    info.verbosity = verbose
+
+    # Use the verbosity count to determine the logging level
+    new_level = LOGGING_LEVELS.get(verbose, logging.DEBUG)
+    logging.basicConfig(level=new_level)
+
+    if verbose:
         click.echo(
             click.style(
                 f"Verbose logging is enabled. "
@@ -70,7 +76,6 @@ def cli(info: Info, verbose: int):
                 fg="yellow",
                 )
             )
-    info.verbose = verbose
 
 
 @cli.command()
@@ -95,16 +100,16 @@ def analyze(file_name):
     If the file can not be parsed by Pandas, an error will be printed and
     the program will abort.
     """
-
-    # Log the used file only at INFO or above
     logging.log(level=logging.INFO,
                 msg="Analyzing file {name}".format(name=file_name.name))
     try:
         frame: pandas.DataFrame = pandas.read_csv(file_name)
-        click.echo(frame)
+        logging.log(level=logging.DEBUG,
+                    msg=str(frame))
 
         # Put the Data Frame into the global container
         initialize_global_data(frame)
     except IOError:
-        click.echo("Could not parse the given file as CSV")
-        # TODO exit gracefully
+        logging.log(level=logging.ERROR,
+                    msg="Could not parse the given file as CSV")
+        exit(1)
