@@ -37,8 +37,8 @@ Therefore, use below extended installation options.
   $ pipenv run survey_analysis --help
   ```
 
-This installa some packages that are required for performing quality checks.
-Usually, they are also performed via GitLab CI but can also be executed locally.
+This install some packages that are required for performing quality checks.
+Usually they are also performed via GitLab CI, but can also be executed locally.
 
 It is common practice to run some checks locally before pushing them online.
 Therefore, execute below commands:
