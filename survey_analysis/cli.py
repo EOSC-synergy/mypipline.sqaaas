@@ -21,6 +21,8 @@ It can be used as a handy facility for running the task from a command line.
 """
 import logging
 import click
+import pandas
+
 from .__init__ import __version__
 
 LOGGING_LEVELS = {
@@ -82,10 +84,12 @@ def version():
     click.echo(click.style(f"{__version__}", bold=True))
 
 
-@click.command()
+@cli.command()
 @click.argument("data_file", type=click.File(mode="r"))
-def read_data_file(data_file):
+def analyze(data_file):
     """Read the given data file into a data object"""
 
     # TODO log the used file only at INFO or above
-    click.echo(click.format_filename(data_file))
+    click.echo(data_file)
+    frame = pandas.read_csv(data_file)
+    click.echo(frame)
