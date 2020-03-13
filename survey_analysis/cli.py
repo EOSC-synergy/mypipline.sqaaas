@@ -4,13 +4,14 @@
 """
 This is the entry point for the command-line interface (CLI) application.
 
-Itcan be used as a handy facility for running the task from a command line.
+It can be used as a handy facility for running the task from a command line.
 
 .. note::
 
     To learn more about Click visit the
-    `project website <http://click.pocoo.org/5/>`_.  There is also a very
-    helpful `tutorial video <https://www.youtube.com/watch?v=kNke39OZ2k0>`_.
+    `project website <http://click.pocoo.org/5/>`_.
+    There is also a very helpful `tutorial video
+    <https://www.youtube.com/watch?v=kNke39OZ2k0>`_.
 
     To learn more about running Luigi, visit the Luigi project's
     `Read-The-Docs <http://luigi.readthedocs.io/en/stable/>`_ page.
@@ -79,3 +80,12 @@ def hello(_: Info):
 def version():
     """Get the library version."""
     click.echo(click.style(f"{__version__}", bold=True))
+
+
+@click.command()
+@click.argument("data_file", type=click.File(mode="r"))
+def read_data_file(data_file):
+    """Read the given data file into a data object"""
+
+    # TODO log the used file only at INFO or above
+    click.echo(click.format_filename(data_file))
