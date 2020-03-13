@@ -1,0 +1,3 @@
+name: survey_analysis
+dependencies:
+  - python=3.8
