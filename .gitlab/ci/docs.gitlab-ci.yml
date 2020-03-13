@@ -1,0 +1,19 @@
+docs:
+  stage: build
+  script:
+    - pipenv run make docs
+  after_script:
+    - mkdir public
+    - mv docs/build/html/* public/
+  artifacts:
+    paths:
+      - public
+
+pages:
+  stage: deploy
+  script:
+    - echo "Skip script section."
+  only:
+    - master
+  dependencies:
+    - docs
