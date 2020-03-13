@@ -49,7 +49,10 @@ setup(
     version=version,
     install_requires=[
         # Include dependencies here
-        'click>=7.0,<8'
+        'click>=7.0,<8',
+        'matplotlib>=3.2.0',
+        'numpy>=1.18.1',
+        'pandas>=1.0.1',
     ],
     entry_points="""
     [console_scripts]
