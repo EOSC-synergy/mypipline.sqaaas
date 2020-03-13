@@ -1,0 +1,5 @@
+lint:
+  stage: test
+  script:
+    - pipenv run make lint
+  dependencies: []
