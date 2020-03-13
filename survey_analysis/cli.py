@@ -20,10 +20,13 @@ It can be used as a handy facility for running the task from a command line.
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import logging
+
 import click
 import pandas
+from pandas import DataFrame
 
 from .__init__ import __version__
+from .data import initialize_global_data
 
 LOGGING_LEVELS = {
     0: logging.NOTSET,
@@ -31,7 +34,7 @@ LOGGING_LEVELS = {
     2: logging.WARN,
     3: logging.INFO,
     4: logging.DEBUG,
-}  #: a mapping of `verbose` option counts to logging levels
+    }  #: a mapping of `verbose` option counts to logging levels
 
 
 class Info(object):
@@ -60,14 +63,14 @@ def cli(info: Info, verbose: int):
             level=LOGGING_LEVELS[verbose]
             if verbose in LOGGING_LEVELS
             else logging.DEBUG
-        )
+            )
         click.echo(
             click.style(
                 f"Verbose logging is enabled. "
                 f"(LEVEL={logging.getLogger().getEffectiveLevel()})",
                 fg="yellow",
+                )
             )
-        )
     info.verbose = verbose
 
 
@@ -85,11 +88,18 @@ def version():
 
 
 @cli.command()
-@click.argument("data_file", type=click.File(mode="r"))
-def analyze(data_file):
-    """Read the given data file into a data object"""
+@click.argument("file_name", type=click.File(mode="r"))
+def analyze(file_name):
+    """Read the given data file into a global data object"""
 
-    # TODO log the used file only at INFO or above
-    click.echo(data_file)
-    frame = pandas.read_csv(data_file)
-    click.echo(frame)
+    # Log the used file only at INFO or above
+    logging.log(level=logging.INFO,
+                msg="Analyzing file {name}".format(name=file_name.name))
+    try:
+        frame: DataFrame = pandas.read_csv(file_name)
+        click.echo(frame)
+
+        # Put the Data Frame into the global container
+        initialize_global_data(frame)
+    except IOError:
+        click.echo("Could not parse the given file as CSV")

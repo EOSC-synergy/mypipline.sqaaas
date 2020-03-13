@@ -1,5 +1,6 @@
-from pandas import DataFrame
 from typing import Optional
+
+from pandas import DataFrame
 
 
 class DataContainer(object):
@@ -10,7 +11,7 @@ class DataContainer(object):
     """
 
     def __init__(self, pandas_frame: DataFrame):
-        self._raw_data : DataFrame = pandas_frame
+        self._raw_data: DataFrame = pandas_frame
 
     @property
     def get_raw_data(self) -> DataFrame:
@@ -20,3 +21,15 @@ class DataContainer(object):
         returns: A copy of the complete Pandas raw data frame.
         """
         return self._raw_data.copy(deep=True)
+
+
+# --- Define the global data container ---
+globalContainer: Optional[DataContainer] = None
+
+
+def initialize_global_data(data_frame: DataFrame):
+    global globalContainer
+    if globalContainer is None:
+        globalContainer = DataContainer(data_frame)
+    else:
+        raise RuntimeError("Do not re-assign the global data frame")
