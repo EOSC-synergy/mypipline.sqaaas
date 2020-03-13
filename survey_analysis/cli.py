@@ -60,6 +60,8 @@ pass_info = click.make_pass_decorator(Info, ensure=True)
 def cli(info: Info, verbose: int):
     """
     Set the output verbosity.
+
+    If an invalid value is passed, it will default to the maximum verbosity.
     """
     assert (verbose >= 0), "Verbosity option parsed into an invalid value"
     info.verbosity = verbose
