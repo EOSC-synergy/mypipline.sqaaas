@@ -36,6 +36,12 @@ Therefore, use below extended installation options.
   $ pipenv install --dev
   $ pipenv run survey_analysis --help
   ```
+- Using Pip:
+  ```console
+  $ python3 -m venv .venv # Only required if not already done before.
+  $ source .venv/bin/activate
+  $ pip install -e .[dev]
+  ```
 
 This install some packages that are required for performing quality checks.
 Usually they are also performed via GitLab CI, but can also be executed locally.
