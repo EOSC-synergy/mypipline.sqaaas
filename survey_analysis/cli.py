@@ -24,8 +24,9 @@ import logging
 import click
 import pandas
 
+from survey_analysis import globals
+
 from .__init__ import __version__
-from .data import initialize_global_data
 
 LOGGING_LEVELS = {
     0: logging.NOTSET,
@@ -110,7 +111,7 @@ def analyze(file_name):
                     msg=str(frame))
 
         # Put the Data Frame into the global container
-        initialize_global_data(frame)
+        globals.dataContainer.set_raw_data(frame)
     except IOError:
         logging.log(level=logging.ERROR,
                     msg="Could not parse the given file as CSV")

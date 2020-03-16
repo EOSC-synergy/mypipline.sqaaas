@@ -16,23 +16,45 @@ class DataContainer(object):
     The data container holds the data read from the command line.
 
     It can hand out copies of the data frame so the using function can
-    manipulate it in any desired way without interfering with other users
+    manipulate it in any desired way without interfering with other users.
+    The initial data frame used is empty.
     """
 
-    def __init__(self, pandas_frame: DataFrame = DataFrame()):
+    def __init__(self):
         """
         Populate the data container with a Pandas data frame.
 
         parameter: pandas_frame is a data frame containing all data available
         """
-        self._raw_data: DataFrame = pandas_frame
+        self._raw_data: DataFrame = DataFrame()
 
     @property
     def empty(self) -> bool:
         return self._raw_data.empty
 
+    def set_raw_data(self, data_frame : DataFrame):
+        """
+        Try to set the current raw data frame.
+
+        The data frame stored in the container will only be changed if:
+        * The currently stored raw data frame is empty and
+        * The provided data frame is not empty
+        Otherwise, nothing will be done.
+        Attempting to override an already set data frame will result in a
+        RuntimeError.
+
+        parameter: data_frame is the new frame to be stored in the container.
+        """
+        if data_frame.empty:
+            return
+
+        if self.empty:
+            self._raw_data = data_frame
+        else:
+            raise RuntimeError("Do not re-assign the global data frame")
+
     @property
-    def get_raw_data(self) -> DataFrame:
+    def raw_data(self) -> DataFrame:
         """
         Provide a deep copy of the whole raw data frame.
 
