@@ -33,7 +33,7 @@ LOGGING_LEVELS = {
     2: logging.WARN,
     3: logging.INFO,
     4: logging.DEBUG,
-    }  #: a mapping of `verbose` option counts to logging levels
+}  #: a mapping of `verbose` option counts to logging levels
 
 
 class Info(object):
