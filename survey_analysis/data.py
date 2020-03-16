@@ -46,7 +46,7 @@ globalContainer: Optional[DataContainer] = None
 
 def initialize_global_data(data_frame: DataFrame):
     """
-    Set up the global container with a data frame if ther is not one already.
+    Set up the global container with a data frame if there is not one already.
 
     If the container is already set up, a RuntimeError will be thrown to avoid
     changing the data mid-analysis.
