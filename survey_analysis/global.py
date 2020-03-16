@@ -1,13 +1,16 @@
-#
-# This file contains all global definitions for the project.
-#
+"""
+This module provides the global definitions for the project.
 
-from typing import Optional
+.. currentmodule:: survey_analysis.data
+.. moduleauthor:: HIFIS Software <software@hifis.net>
+"""
+
 from pandas import DataFrame
+
 from survey_analysis.data import DataContainer
 
 # --- Define the global data container ---
-globalContainer: Optional[DataContainer] = None
+globalContainer: DataContainer = DataContainer()
 
 
 def initialize_global_data(data_frame: DataFrame):
@@ -18,7 +21,7 @@ def initialize_global_data(data_frame: DataFrame):
     changing the data mid-analysis.
     """
     global globalContainer
-    if globalContainer is None:
+    if globalContainer.empty:
         globalContainer = DataContainer(data_frame)
     else:
         raise RuntimeError("Do not re-assign the global data frame")
