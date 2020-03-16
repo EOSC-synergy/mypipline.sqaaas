@@ -31,7 +31,7 @@ class DataContainer(object):
     @property
     def empty(self) -> bool:
         """
-        Checks if the container holds any data.
+        Check if the container holds any data.
 
         This is considered to be the case if the stored data frame is empty.
         returns: True, if the container is considered empty, False otherwise
