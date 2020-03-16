@@ -103,7 +103,7 @@ def analyze(file_name):
     the program will abort.
     """
     logging.log(level=logging.INFO,
-                msg="Analyzing file {name}".format(name=file_name.name))
+                msg=f"Analyzing file {file_name.name}")
     try:
         frame: pandas.DataFrame = pandas.read_csv(file_name)
         logging.log(level=logging.DEBUG,
