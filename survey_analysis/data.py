@@ -30,9 +30,15 @@ class DataContainer(object):
 
     @property
     def empty(self) -> bool:
+        """
+        Checks if the container holds any data.
+
+        This is considered to be the case if the stored data frame is empty.
+        returns: True, if the container is considered empty, False otherwise
+        """
         return self._raw_data.empty
 
-    def set_raw_data(self, data_frame : DataFrame):
+    def set_raw_data(self, data_frame: DataFrame):
         """
         Try to set the current raw data frame.
 
