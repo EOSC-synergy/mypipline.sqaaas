@@ -29,71 +29,28 @@ from survey_analysis import dispatch
 from survey_analysis import globals
 from .__init__ import __version__
 
-LOGGING_LEVELS = {
-    0: logging.NOTSET,
-    1: logging.ERROR,
-    2: logging.WARN,
-    3: logging.INFO,
-    4: logging.DEBUG,
-}  #: a mapping of `verbose` option counts to logging levels
-
-
-class Settings(object):
-    """An information object to pass data between CLI functions."""
-
-    def __init__(self):  # Note: This object must have an empty constructor.
-        """Create a new instance."""
-        self.verbosity: int = 0
-        self.script_folder: str = "scripts"
-
-
-# pass_settings is a decorator for functions that pass 'Settings' objects.
-#: pylint: disable=invalid-name
-pass_settings = click.make_pass_decorator(Settings, ensure=True)
-
 
 @click.group()
 @click.option("--verbose", "-v",
               count=True,
+              default=0,
               help="Enable verbose output. "
-                   "Repeat up to 4 times for increased effect")
+                   "Repeat up to 3 times for increased effect")
 @click.option("--scripts", "-s",
               default="scripts.",
               help="Select the folder containing analysis scripts")
-@pass_settings
-def cli(settings: Settings, verbose: int, scripts: str):
+def cli(verbose: int, scripts: str):
     """
     Analyze a given CSV file with a set of independent python scripts.
     """
     # NOTE that click takes above documentation for generating help text
     # Thus the documentation refers to the application per se and not the
     # function (as it should)
-
-    # Clamp verbosity to accepted values
-    if verbose < 0:
-        verbose = 0
-    elif verbose > 4:
-        verbose = 4
-
-    settings.verbosity = verbose
-
-    # Use the verbosity count to determine the logging level
-    new_level = LOGGING_LEVELS.get(verbose, logging.DEBUG)
-    logging.basicConfig(level=new_level)
-
-    if verbose:
-        click.echo(
-            click.style(
-                f"Verbose logging is enabled. "
-                f"(LEVEL={logging.getLogger().getEffectiveLevel()})",
-                fg="yellow",
-                )
-            )
+    set_verbosity(verbose)
 
     # TODO check if the script folder exists
-    logging.log(level=logging.INFO,
-                msg=f"Selected script folder {scripts}")
-    settings.script_folder = scripts
+    logging.info(f"Selected script folder {scripts}")
+    globals.settings.script_folder = scripts
     sys.path.insert(0, scripts)
 
 
@@ -105,27 +62,61 @@ def version():
 
 @cli.command()
 @click.argument("file_name", type=click.File(mode="r"))
-@pass_settings
-def analyze(settings: Settings, file_name):
+def analyze(file_name):
     """
     Read the given data file into a global data object.
 
     If the file can not be parsed by Pandas, an error will be printed and
     the program will abort.
     """
-    logging.log(level=logging.INFO,
-                msg=f"Analyzing file {file_name.name}")
+    logging.info(f"Analyzing file {file_name.name}")
     try:
         frame: pandas.DataFrame = pandas.read_csv(file_name)
-        logging.log(level=logging.DEBUG,
-                    msg=str(frame))
+        logging.debug(str(frame))
 
         # Put the Data Frame into the global container
         globals.dataContainer.set_raw_data(frame)
     except IOError:
-        logging.log(level=logging.ERROR,
-                    msg="Could not parse the given file as CSV")
+        logging.error("Could not parse the given file as CSV")
         exit(1)
 
-    dispatcher = dispatch.Dispatcher(settings.script_folder)
+    dispatcher = dispatch.Dispatcher(globals.settings.script_folder)
     dispatcher.load_module("dummy")
+
+
+def set_verbosity(verbose_count: int):
+    """
+    Interpret the verbosity option count and set the log levels accordingly
+    The used log level is also stored in the settings.
+
+    Args:
+        verbose_count: the amount of verbose option triggers
+    """
+
+    verbosity_options = [
+        logging.ERROR,
+        logging.WARNING,
+        logging.INFO,
+        logging.DEBUG
+        ]
+
+    max_index = len(verbosity_options) - 1
+
+    # Clamp verbose_count to accepted values
+    # Note that it shall not be possible to unset the verbosity.
+    option_index = 0 if verbose_count < 0 \
+        else max_index if verbose_count > max_index \
+        else verbose_count
+
+    new_level: int = [option_index]
+    logging.basicConfig(level=new_level)
+    globals.settings.verbosity = new_level
+
+    if not new_level == logging.ERROR:
+        click.echo(
+            click.style(
+                f"Verbose logging is enabled. "
+                f"(LEVEL={logging.getLogger().getEffectiveLevel()})",
+                fg="yellow",
+                )
+            )
