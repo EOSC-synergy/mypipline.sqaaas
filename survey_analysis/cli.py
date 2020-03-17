@@ -20,10 +20,12 @@ It can be used as a handy facility for running the task from a command line.
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import logging
+import sys
 
 import click
 import pandas
 
+from survey_analysis import dispatch
 from survey_analysis import globals
 from .__init__ import __version__
 
@@ -45,9 +47,9 @@ class Settings(object):
         self.script_folder: str = "scripts"
 
 
-# pass_info is a decorator for functions that pass 'Info' objects.
+# pass_settings is a decorator for functions that pass 'Settings' objects.
 #: pylint: disable=invalid-name
-pass_info = click.make_pass_decorator(Settings, ensure=True)
+pass_settings = click.make_pass_decorator(Settings, ensure=True)
 
 
 @click.group()
@@ -56,9 +58,9 @@ pass_info = click.make_pass_decorator(Settings, ensure=True)
               help="Enable verbose output. "
                    "Repeat up to 4 times for increased effect")
 @click.option("--scripts", "-s",
-              default="scripts/",
+              default="scripts.",
               help="Select the folder containing analysis scripts")
-@pass_info
+@pass_settings
 def cli(settings: Settings, verbose: int, scripts: str):
     """
     Analyze a given CSV file with a set of independent python scripts.
@@ -92,6 +94,7 @@ def cli(settings: Settings, verbose: int, scripts: str):
     logging.log(level=logging.INFO,
                 msg=f"Selected script folder {scripts}")
     settings.script_folder = scripts
+    sys.path.insert(0, scripts)
 
 
 @cli.command()
@@ -102,7 +105,8 @@ def version():
 
 @cli.command()
 @click.argument("file_name", type=click.File(mode="r"))
-def analyze(file_name):
+@pass_settings
+def analyze(settings: Settings, file_name):
     """
     Read the given data file into a global data object.
 
@@ -122,3 +126,6 @@ def analyze(file_name):
         logging.log(level=logging.ERROR,
                     msg="Could not parse the given file as CSV")
         exit(1)
+
+    dispatcher = dispatch.Dispatcher(settings.script_folder)
+    dispatcher.load_module("dummy")
