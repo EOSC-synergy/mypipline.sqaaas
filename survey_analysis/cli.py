@@ -66,7 +66,13 @@ def cli(info: Info, verbose: int, scripts: str):
     # NOTE that click takes above documentation for generating help text
     # Thus the documentation refers to the application per se and not the
     # function (as it should)
-    assert (verbose >= 0), "Verbosity option parsed into an invalid value"
+
+    # Clamp verbosity to accepted values
+    if verbose < 0:
+        verbose = 0
+    elif verbose > 4:
+        verbose = 4
+
     info.verbosity = verbose
 
     # Use the verbosity count to determine the logging level

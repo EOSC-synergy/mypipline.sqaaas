@@ -1,7 +1,7 @@
 """
 This module provides the global definitions for the project.
 
-.. currentmodule:: survey_analysis.data
+.. currentmodule:: survey_analysis.globals
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 
