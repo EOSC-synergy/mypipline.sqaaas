@@ -25,7 +25,6 @@ import click
 import pandas
 
 from survey_analysis import globals
-
 from .__init__ import __version__
 
 LOGGING_LEVELS = {
@@ -43,6 +42,7 @@ class Info(object):
     def __init__(self):  # Note: This object must have an empty constructor.
         """Create a new instance."""
         self.verbosity: int = 0
+        self.script_folder: str = "scripts"
 
 
 # pass_info is a decorator for functions that pass 'Info' objects.
@@ -50,20 +50,22 @@ class Info(object):
 pass_info = click.make_pass_decorator(Info, ensure=True)
 
 
-# Change the options to below to suit the actual options for your task (or
-# tasks).
 @click.group()
 @click.option("--verbose", "-v",
               count=True,
               help="Enable verbose output. "
                    "Repeat up to 4 times for increased effect")
+@click.option("--scripts", "-s",
+              default="scripts/",
+              help="Select the folder containing analysis scripts")
 @pass_info
-def cli(info: Info, verbose: int):
+def cli(info: Info, verbose: int, scripts: str):
     """
-    Set the output verbosity.
-
-    If an invalid value is passed, it will default to the maximum verbosity.
+    Analyze a given CSV file with a set of independent python scripts.
     """
+    # NOTE that click takes above documentation for generating help text
+    # Thus the documentation refers to the application per se and not the
+    # function (as it should)
     assert (verbose >= 0), "Verbosity option parsed into an invalid value"
     info.verbosity = verbose
 
@@ -79,6 +81,11 @@ def cli(info: Info, verbose: int):
                 fg="yellow",
                 )
             )
+
+    # TODO check if the script folder exists
+    logging.log(level=logging.INFO,
+                msg=f"Selected script folder {scripts}")
+    info.script_folder = scripts
 
 
 @cli.command()
