@@ -36,7 +36,7 @@ LOGGING_LEVELS = {
 }  #: a mapping of `verbose` option counts to logging levels
 
 
-class Info(object):
+class Settings(object):
     """An information object to pass data between CLI functions."""
 
     def __init__(self):  # Note: This object must have an empty constructor.
@@ -47,7 +47,7 @@ class Info(object):
 
 # pass_info is a decorator for functions that pass 'Info' objects.
 #: pylint: disable=invalid-name
-pass_info = click.make_pass_decorator(Info, ensure=True)
+pass_info = click.make_pass_decorator(Settings, ensure=True)
 
 
 @click.group()
@@ -59,7 +59,7 @@ pass_info = click.make_pass_decorator(Info, ensure=True)
               default="scripts/",
               help="Select the folder containing analysis scripts")
 @pass_info
-def cli(info: Info, verbose: int, scripts: str):
+def cli(settings: Settings, verbose: int, scripts: str):
     """
     Analyze a given CSV file with a set of independent python scripts.
     """
@@ -73,7 +73,7 @@ def cli(info: Info, verbose: int, scripts: str):
     elif verbose > 4:
         verbose = 4
 
-    info.verbosity = verbose
+    settings.verbosity = verbose
 
     # Use the verbosity count to determine the logging level
     new_level = LOGGING_LEVELS.get(verbose, logging.DEBUG)
@@ -91,14 +91,7 @@ def cli(info: Info, verbose: int, scripts: str):
     # TODO check if the script folder exists
     logging.log(level=logging.INFO,
                 msg=f"Selected script folder {scripts}")
-    info.script_folder = scripts
-
-
-@cli.command()
-@pass_info
-def hello(_: Info):
-    """Say 'hello' to the nice people."""
-    click.echo(f"survey_analysis says 'hello'")
+    settings.script_folder = scripts
 
 
 @cli.command()
