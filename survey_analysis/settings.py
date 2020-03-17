@@ -6,6 +6,7 @@ This module provides the definitions for a settings container.
 """
 
 import logging
+from pathlib import Path
 
 
 class Settings(object):
@@ -14,4 +15,4 @@ class Settings(object):
     def __init__(self):  # Note: This object must have an empty constructor.
         """Create a new instance."""
         self.verbosity: int = logging.NOTSET
-        self.script_folder: str = "scripts"
+        self.script_folder: Path = Path("scripts")

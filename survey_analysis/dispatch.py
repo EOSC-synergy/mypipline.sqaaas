@@ -5,24 +5,25 @@ functions.
 .. currentmodule:: survey_analysis.dispatch
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
+import logging
+from pathlib import Path
 from types import ModuleType
 
 
 class Dispatcher(object):
 
-    def __init__(self, module_folder):
-        self.module_folder = module_folder
+    def __init__(self, module_folder: Path):
+        self.module_folder: Path = module_folder
 
     def load_module(self, module_name: str):
-        # TODO if the module_name has a -py ending, remove it beforehand
+        # TODO if the module_name has a .py ending, remove it beforehand
 
-        full_path: str = self.module_folder + module_name
-        full_path.replace('/', '.')
-        module: ModuleType = __import__(full_path, fromlist=[''])
+        module_path: Path = self.module_folder / module_name
+        module_dot_path: str = str(module_path).replace('/', '.')
+        logging.info(f"Processing Module {module_dot_path}")
+
+        module: ModuleType = __import__(module_dot_path, fromlist=[''])
         # TODO check if module was loaded properly
 
-        self.dispatch(module)
-
-    def dispatch(self, module: ModuleType):
         # TODO check if the module has the required function
         module.run()

@@ -21,6 +21,7 @@ It can be used as a handy facility for running the task from a command line.
 """
 import logging
 import sys
+from pathlib import Path
 
 import click
 import pandas
@@ -37,7 +38,7 @@ from .__init__ import __version__
               help="Enable verbose output. "
                    "Repeat up to 3 times for increased effect")
 @click.option("--scripts", "-s",
-              default="scripts.",
+              default="scripts",
               help="Select the folder containing analysis scripts")
 def cli(verbose: int, scripts: str):
     """
@@ -50,7 +51,7 @@ def cli(verbose: int, scripts: str):
 
     # TODO check if the script folder exists
     logging.info(f"Selected script folder {scripts}")
-    globals.settings.script_folder = scripts
+    globals.settings.script_folder = Path(scripts)
     sys.path.insert(0, scripts)
 
 
@@ -81,6 +82,7 @@ def analyze(file_name):
         exit(1)
 
     dispatcher = dispatch.Dispatcher(globals.settings.script_folder)
+
     dispatcher.load_module("dummy")
 
 
@@ -108,7 +110,7 @@ def set_verbosity(verbose_count: int):
         else max_index if verbose_count > max_index \
         else verbose_count
 
-    new_level: int = [option_index]
+    new_level: int = verbosity_options[option_index]
     logging.basicConfig(level=new_level)
     globals.settings.verbosity = new_level
 
