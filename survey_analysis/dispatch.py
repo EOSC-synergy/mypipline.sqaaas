@@ -5,9 +5,9 @@ functions.
 .. currentmodule:: survey_analysis.dispatch
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
+import importlib
 import logging
 from pathlib import Path
-from types import ModuleType
 
 
 class Dispatcher(object):
@@ -22,8 +22,10 @@ class Dispatcher(object):
         module_dot_path: str = str(module_path).replace('/', '.')
         logging.info(f"Processing Module {module_dot_path}")
 
-        module: ModuleType = __import__(module_dot_path, fromlist=[''])
-        # TODO check if module was loaded properly
+        try:
+            module = importlib.import_module(module_dot_path)
 
-        # TODO check if the module has the required function
-        module.run()
+            # TODO check if the module has the required function
+            module.run()
+        except ImportError:
+            logging.error(f"Failed to load module {module_dot_path}")
