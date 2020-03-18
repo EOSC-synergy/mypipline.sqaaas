@@ -24,8 +24,8 @@ class Dispatcher(object):
 
         try:
             module = importlib.import_module(module_dot_path)
-
-            # TODO check if the module has the required function
             module.run()
         except ImportError:
             logging.error(f"Failed to load module {module_dot_path}")
+        except AttributeError:
+            logging.error(f"Module {module_dot_path} has no run() - method")

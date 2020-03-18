@@ -83,7 +83,12 @@ def analyze(file_name):
 
     dispatcher = dispatch.Dispatcher(globals.settings.script_folder)
 
-    dispatcher.load_module("dummy")
+    for entry in globals.settings.script_folder.iterdir():
+        if entry.is_file() \
+                and entry.suffix == ".py" \
+                and not entry.stem == "__init__":
+            logging.info(f"Discovered module {entry.stem}")
+            dispatcher.load_module(entry.stem)
 
 
 def set_verbosity(verbose_count: int):
