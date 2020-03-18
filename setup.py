@@ -10,10 +10,11 @@ This file is used to create the package we'll publish to PyPI.
 
 import importlib.util
 import os
-from pathlib import Path
-from setuptools import setup, find_packages
 from codecs import open  # Use a consistent encoding.
 from os import path
+from pathlib import Path
+
+from setuptools import find_packages, setup
 
 here = path.abspath(path.dirname(__file__))
 
@@ -58,6 +59,7 @@ setup(
         'dev': [
             'flake8>=3.7.9,<4',
             'flake8-docstrings>=1.5.0,<2',
+            'isort>=4.3.21,<5',
             'pytest>=3.4.0,<4',
             'pytest-cov>=2.5.1,<3',
             'pytest-pythonpath>=0.7.2,<1',

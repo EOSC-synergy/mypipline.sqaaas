@@ -49,6 +49,8 @@ Usually they are also performed via GitLab CI, but can also be executed locally.
 It is common practice to run some checks locally before pushing them online.
 Therefore, execute below commands:
 ```console
+$ # Order your imports
+$ isort -rc .
 $ make lint
 ```
 

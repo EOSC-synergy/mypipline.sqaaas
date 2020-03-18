@@ -22,6 +22,8 @@ freeze:
 	pip freeze > requirements.txt
 
 lint:
+        # Sort the python import statements
+	isort -rc -c -df **/*.py
 	$(LINTER) $(PROJ_SLUG)
 
 test: lint

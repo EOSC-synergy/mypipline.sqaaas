@@ -1,5 +1,5 @@
 docs:
-  stage: build
+  stage: docs
   script:
     - pipenv run make docs
   after_script:
@@ -17,3 +17,6 @@ pages:
     - master
   dependencies:
     - docs
+  artifacts:
+    paths:
+      - public

@@ -8,4 +8,4 @@ This project is used to develop analysis scripts for the HIFIS Software survey.
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 
-from .version import __version__, __release__  # noqa
+from .version import __release__, __version__  # noqa

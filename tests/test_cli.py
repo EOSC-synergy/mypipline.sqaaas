@@ -8,12 +8,12 @@
 This is the test module for the project's command-line interface (CLI)
 module.
 """
-# fmt: off
-import survey_analysis.cli as cli
-from survey_analysis import __version__
 # fmt: on
 from click.testing import CliRunner, Result
 
+# fmt: off
+import survey_analysis.cli as cli
+from survey_analysis import __version__
 
 # To learn more about testing Click applications, visit the link below.
 # http://click.pocoo.org/5/testing/
