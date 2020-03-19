@@ -10,6 +10,13 @@ module.
 """
 # fmt: on
 from click.testing import CliRunner, Result
+<<<<<<< HEAD
+=======
+
+# fmt: off
+import survey_analysis.cli as cli
+from survey_analysis import __version__
+>>>>>>> Remove Test for no Longer Supported Operation
 
 # fmt: off
 import survey_analysis.cli as cli
@@ -41,16 +48,3 @@ def test_verbose_output():
     assert (
         "Verbose" in result.output.strip()
     ), "Verbose logging should be indicated in output."
-
-
-def test_hello_displays_expected_message():
-    """
-    Arrange/Act: Run the `version` subcommand.
-    Assert:  The output matches the library version.
-    """
-    runner: CliRunner = CliRunner()
-    result: Result = runner.invoke(cli.cli, ["hello"])
-    # fmt: off
-    assert 'survey_analysis' in result.output.strip(), \
-        "'Hello' messages should contain the CLI name."
-    # fmt: on
