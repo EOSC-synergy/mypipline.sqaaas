@@ -53,7 +53,7 @@ def cli(verbose: int, scripts: str) -> None:
 
 
 @cli.command()
-def version():
+def version() -> None:
     """Get the library version."""
     click.echo(click.style(f"{__version__}", bold=True))
 
