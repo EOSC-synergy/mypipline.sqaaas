@@ -22,6 +22,7 @@ It can be used as a handy facility for running the task from a command line.
 import logging
 import sys
 from pathlib import Path
+from typing import List
 
 import click
 import pandas
@@ -93,7 +94,7 @@ def set_verbosity(verbose_count: int) -> None:
     Args:
         verbose_count: the amount of verbose option triggers
     """
-    verbosity_options: list = [
+    verbosity_options: List[int] = [
         logging.ERROR,
         logging.WARNING,
         logging.INFO,
