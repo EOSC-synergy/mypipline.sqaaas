@@ -63,7 +63,7 @@ class Dispatcher(object):
         for module_name in self._discovered_modules:
             self.load_module(module_name)
 
-    def load_module(self, module_name: str):
+    def load_module(self, module_name: str) -> None:
         """
         Attempt to load a module given by name.
 
