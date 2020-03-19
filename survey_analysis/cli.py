@@ -83,7 +83,7 @@ def analyze(file_name):
     dispatcher.load_all_modules()
 
 
-def set_verbosity(verbose_count: int):
+def set_verbosity(verbose_count: int) -> None:
     """
     Interpret the verbosity option count.
 
