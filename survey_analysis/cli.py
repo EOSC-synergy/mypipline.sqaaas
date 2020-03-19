@@ -93,7 +93,7 @@ def set_verbosity(verbose_count: int) -> None:
     Args:
         verbose_count: the amount of verbose option triggers
     """
-    verbosity_options = [
+    verbosity_options: list = [
         logging.ERROR,
         logging.WARNING,
         logging.INFO,
