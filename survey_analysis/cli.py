@@ -60,7 +60,7 @@ def version() -> None:
 
 @cli.command()
 @click.argument("file_name", type=click.File(mode="r"))
-def analyze(file_name):
+def analyze(file_name) -> None:
     """
     Read the given data file into a global data object.
 
