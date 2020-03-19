@@ -40,7 +40,7 @@ from .__init__ import __version__
 @click.option("--scripts", "-s",
               default="scripts",
               help="Select the folder containing analysis scripts")
-def cli(verbose: int, scripts: str):
+def cli(verbose: int, scripts: str) -> None:
     """Analyze a given CSV file with a set of independent python scripts."""
     # NOTE that click takes above documentation for generating help text
     # Thus the documentation refers to the application per se and not the
