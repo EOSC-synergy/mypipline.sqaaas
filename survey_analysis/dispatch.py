@@ -32,7 +32,7 @@ class Dispatcher(object):
         self.module_folder: Path = module_folder
         self._discovered_modules: List[str] = list()
 
-    def discover(self):
+    def discover(self) -> None:
         """
         Discover all potential modules in the module folder.
 
