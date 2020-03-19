@@ -41,15 +41,12 @@ from .__init__ import __version__
               default="scripts",
               help="Select the folder containing analysis scripts")
 def cli(verbose: int, scripts: str):
-    """
-    Analyze a given CSV file with a set of independent python scripts.
-    """
+    """Analyze a given CSV file with a set of independent python scripts."""
     # NOTE that click takes above documentation for generating help text
     # Thus the documentation refers to the application per se and not the
     # function (as it should)
     set_verbosity(verbose)
 
-    # TODO check if the script folder exists
     logging.info(f"Selected script folder {scripts}")
     globals.settings.script_folder = Path(scripts)
     sys.path.insert(0, scripts)
@@ -82,24 +79,20 @@ def analyze(file_name):
         exit(1)
 
     dispatcher = dispatch.Dispatcher(globals.settings.script_folder)
-
-    for entry in globals.settings.script_folder.iterdir():
-        if entry.is_file() \
-                and entry.suffix == ".py" \
-                and not entry.stem == "__init__":
-            logging.info(f"Discovered module {entry.stem}")
-            dispatcher.load_module(entry.stem)
+    dispatcher.discover()
+    dispatcher.load_all_modules()
 
 
 def set_verbosity(verbose_count: int):
     """
-    Interpret the verbosity option count and set the log levels accordingly
+    Interpret the verbosity option count.
+
+    Set the log levels accordingly.
     The used log level is also stored in the settings.
 
     Args:
         verbose_count: the amount of verbose option triggers
     """
-
     verbosity_options = [
         logging.ERROR,
         logging.WARNING,
