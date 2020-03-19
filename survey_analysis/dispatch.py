@@ -47,7 +47,7 @@ class Dispatcher(object):
                 logging.info(f"Discovered module {entry.stem}")
                 self._discovered_modules.append(entry.stem)
 
-    def load_all_modules(self):
+    def load_all_modules(self) -> None:
         """
         Try to load and run all discovered modules.
 
