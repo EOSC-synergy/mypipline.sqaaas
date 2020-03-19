@@ -104,7 +104,7 @@ def set_verbosity(verbose_count: int) -> None:
 
     # Clamp verbose_count to accepted values
     # Note that it shall not be possible to unset the verbosity.
-    option_index = 0 if verbose_count < 0 \
+    option_index: int = 0 if verbose_count < 0 \
         else max_index if verbose_count > max_index \
         else verbose_count
 
