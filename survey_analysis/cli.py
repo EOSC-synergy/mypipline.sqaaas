@@ -100,7 +100,7 @@ def set_verbosity(verbose_count: int) -> None:
         logging.DEBUG
         ]
 
-    max_index = len(verbosity_options) - 1
+    max_index: int = len(verbosity_options) - 1
 
     # Clamp verbose_count to accepted values
     # Note that it shall not be possible to unset the verbosity.
