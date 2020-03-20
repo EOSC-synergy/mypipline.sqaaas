@@ -30,7 +30,7 @@ class Dispatcher(object):
             raise ValueError("Module folder should be a directory")
 
         self.module_folder: Path = module_folder
-        self._discovered_modules: List[str] = list()
+        self._discovered_modules: List[str] = []
 
     def discover(self) -> None:
         """
