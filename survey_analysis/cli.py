@@ -27,8 +27,7 @@ from typing import List
 import click
 import pandas
 
-from survey_analysis import dispatch
-from survey_analysis import globals
+from survey_analysis import dispatch, globals
 from .__init__ import __version__
 
 
