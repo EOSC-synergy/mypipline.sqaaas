@@ -10,13 +10,6 @@ module.
 """
 # fmt: on
 from click.testing import CliRunner, Result
-<<<<<<< HEAD
-=======
-
-# fmt: off
-import survey_analysis.cli as cli
-from survey_analysis import __version__
->>>>>>> Remove Test for no Longer Supported Operation
 
 # fmt: off
 import survey_analysis.cli as cli
