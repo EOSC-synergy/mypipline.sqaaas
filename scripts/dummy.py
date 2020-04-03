@@ -5,6 +5,8 @@ A dummy script for testing the function dispatch
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 
+import logging
+
 from survey_analysis import globals
 
 
@@ -13,6 +15,6 @@ def run():
     data_frame = globals.dataContainer.raw_data
 
     if data_frame.empty:
-        print("Data frame was empty")
+        logging.warning("Data frame was empty")
     else:
-        print("Data frame was not empty")
+        logging.info("Data frame was not empty")

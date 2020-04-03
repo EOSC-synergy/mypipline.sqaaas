@@ -71,7 +71,7 @@ def analyze(file_name) -> None:
     logging.info(f"Analyzing file {file_name.name}")
     try:
         frame: pandas.DataFrame = pandas.read_csv(file_name)
-        logging.debug(str(frame))
+        logging.debug('\n' + str(frame))
 
         # Put the Data Frame into the global container
         globals.dataContainer.set_raw_data(frame)
@@ -110,7 +110,13 @@ def set_verbosity(verbose_count: int) -> None:
         else verbose_count
 
     new_level: int = verbosity_options[option_index]
-    logging.basicConfig(level=new_level)
+    logging.basicConfig(
+        level=new_level,
+        format="%(asctime)s "
+        "[%(levelname)-8s] "
+        "%(module)s.%(funcName)s(): "
+        "%(message)s"
+    )
     globals.settings.verbosity = new_level
 
     if not new_level == logging.ERROR:
