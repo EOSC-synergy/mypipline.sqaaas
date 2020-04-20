@@ -28,6 +28,8 @@ import click
 import pandas
 
 from survey_analysis import dispatch, globals
+from survey_analysis.metadata import (construct_questions_from_metadata,
+                                      fetch_participant_answers)
 
 from .__init__ import __version__
 
@@ -61,11 +63,16 @@ def version() -> None:
 
 @cli.command()
 @click.argument("file_name", type=click.File(mode="r"))
-def analyze(file_name) -> None:
+@click.option("--metadata", "-m",
+              default="data/HIFIS_Software_Survey_2020_Questions.yml",
+              help="Give file name which contains survey metadata")
+def analyze(file_name, metadata: str) -> None:
     """
-    Read the given data file into a global data object.
+    Read the given files into global data and metadata objects.
 
-    If the file can not be parsed by Pandas, an error will be printed and
+    If the data file can not be parsed by Pandas, an error will be printed and
+    the program will abort.
+    If the metadata file can not be parsed, an error will be printed and
     the program will abort.
     """
     logging.info(f"Analyzing file {file_name.name}")
@@ -77,6 +84,23 @@ def analyze(file_name) -> None:
         globals.dataContainer.set_raw_data(frame)
     except IOError:
         logging.error("Could not parse the given file as CSV")
+        exit(1)
+
+    logging.info(f"Attempt to load metadata from {metadata}")
+
+    # Load survey metadata from given YAML file.
+    try:
+        construct_questions_from_metadata(Path(metadata))
+
+        # When debugging, print all parsed Questions
+        if globals.settings.verbosity == logging.DEBUG:
+            logging.debug("Parsed Questions:")
+            for question in globals.survey_questions.values():
+                logging.debug(question)
+
+        fetch_participant_answers()
+    except IOError:
+        logging.error("Could not parse the metadata file as YAML.")
         exit(1)
 
     dispatcher = dispatch.Dispatcher(globals.settings.script_folder)

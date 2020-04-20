@@ -8,6 +8,8 @@ functions.
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 
+from typing import Dict
+
 from pandas import DataFrame
 
 
@@ -20,11 +22,13 @@ class DataContainer(object):
     The initial data frame used is empty.
     """
 
+    ID_COLUMN_NAME: str = "id"
+
     def __init__(self):
         """
-        Populate the data container with a Pandas data frame.
+        Populate the data container with an empty Pandas data frame.
 
-        parameter: pandas_frame is a data frame containing all data available
+        The frame is supposed to be filled via set_raw_data().
         """
         self._raw_data: DataFrame = DataFrame()
 
@@ -49,6 +53,8 @@ class DataContainer(object):
         Attempting to override an already set data frame will result in a
         RuntimeError.
 
+        The ID column will be set as index column for the data frame.
+
         parameter: data_frame is the new frame to be stored in the container.
         """
         if data_frame.empty:
@@ -56,6 +62,8 @@ class DataContainer(object):
 
         if self.empty:
             self._raw_data = data_frame
+            self._raw_data.set_index(DataContainer.ID_COLUMN_NAME,
+                                     inplace=True)
         else:
             raise RuntimeError("Do not re-assign the global data frame")
 
@@ -68,3 +76,26 @@ class DataContainer(object):
         returns: A copy of the complete Pandas raw data frame.
         """
         return self._raw_data.copy(deep=True)
+
+    def data_for_question(self, question_id: str) -> Dict[str, str]:
+        """
+        Obtain the data for each participant for a given question.
+
+        Args:
+            question_id: The string used to identify the question.
+
+        Returns:
+            An association from participant's ID to the answer the participant
+            gave.
+            The result may still contain "N/A" or "nan".
+        """
+        if (question_id == DataContainer.ID_COLUMN_NAME
+                or question_id not in self._raw_data):
+            raise ValueError(f"{question_id} is not a valid question ID")
+
+        per_participant_data: Dict[str, str] = {}
+        column = self._raw_data[question_id]
+        for participant in self._raw_data.index:
+            per_participant_data[participant] = column[participant]
+
+        return per_participant_data

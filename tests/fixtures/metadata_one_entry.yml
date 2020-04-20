@@ -1,0 +1,10 @@
+G1234:
+  question: My question is ... ?
+  sub-items:
+    SQ001:
+      text: This is the topic of the sub-item ...
+      answers:
+        A1: Answer1
+        A2: Answer2
+      type: Single-Choice
+  type: Multiple-Choice

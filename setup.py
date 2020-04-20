@@ -54,6 +54,7 @@ setup(
         'matplotlib>=3.2.0',
         'numpy>=1.18.1',
         'pandas>=1.0.1',
+        'pyyaml>=5.3.1',
     ],
     extras_require={
         'dev': [
