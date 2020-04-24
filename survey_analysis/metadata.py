@@ -35,6 +35,15 @@ KEYWORD_SHORT: str = "short-text"
 
 
 def parse_answer(content: YamlDict) -> Answer:
+    """
+    Parse an Answer object from YAML.
+
+    Args:
+        content:        The YAML representation as a dictionary
+
+    Returns:
+        A newly constructed Answer object.
+    """
     assert KEYWORD_ID in content
     assert KEYWORD_TEXT in content
 

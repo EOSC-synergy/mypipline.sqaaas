@@ -58,7 +58,8 @@ class Answer(object):
 
     @property
     def short_text(self) -> str:
-        """Obtain a short text representation for the answer.
+        """
+        Obtain a short text representation for the answer.
 
             If none is defined, the full text will be used instead.
 
