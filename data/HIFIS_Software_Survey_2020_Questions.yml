@@ -4,40 +4,82 @@
 - id: G1002
   text: In which research field is your research work?
   answers:
-    A1: Energy
-    A2: Earth and Environment
-    A3: Health
-    A4: Aeronautics, Space and Transport
-    A5: Matter
-    A6: Key Technologies
+    - id: A1
+      text: Energy
+    - id: A2
+      text: Earth and Environment
+    - id: A3
+      text: Health
+    - id: A4
+      text: Aeronautics, Space and Transport
+    - id: A5
+      text: Matter
+    - id: A6
+      text: Key Technologies
 
 - id: G1003
   text: In which Helmholtz research center are you working?
   answers:
-    A1: Alfred-Wegener-Institut, Helmholtz-Zentrum für Polar- und Meeresforschung
-      (AWI)
-    A10: Helmholtz-Zentrum Dresden-Rossendorf (HZDR)
-    A11: Helmholtz-Zentrum für Infektionsforschung (HZI)
-    A12: Helmholtz-Zentrum für Informationssicherheit – CISPA
-    A13: Helmholtz-Zentrum für Umweltforschung - UFZ
-    A14: Helmholtz-Zentrum Geesthacht Zentrum für Material- und Küstenforschung
-      (HZG)
-    A15: Helmholtz Zentrum München - Deutsches Forschungszentrum für Gesundheit
-      und Umwelt (HMGU)
-    A16: Helmholtz-Zentrum Potsdam - Deutsches GeoForschungsZentrum (GFZ)
-    A17: Karlsruher Institut für Technologie (KIT)
-    A18: Max-Delbrück-Centrum für Molekulare Medizin in der Helmholtz-Gemeinschaft
-      (MDC)
-    A19: Max-Planck-Institut für Plasmaphysik (IPP) (Assoziiertes Mitglied)
-    A2: Deutsches Elektronen-Synchrotron (DESY)
-    A20: I am not working in a Helmhholtz research center.
-    A3: Deutsches Zentrum für Luft- und Raumfahrt (DLR)
-    A4: Deutsches Krebsforschungszentrum (DKFZ)
-    A5: Deutsches Zentrum für Neurodegenerative Erkrankungen (DZNE)
-    A6: Forschungszentrum Jülich
-    A7: GEOMAR Helmholtz-Zentrum für Ozeanforschung Kiel
-    A8: GSI Helmholtzzentrum für Schwerionenforschung
-    A9: Helmholtz-Zentrum Berlin für Materialien und Energie (HZB)
+    - id: A1
+      text: Alfred-Wegener-Institut, Helmholtz-Zentrum für Polar- und Meeresforschung (AWI)
+      short-text: AWI
+    - id: A10
+      text: Helmholtz-Zentrum Dresden-Rossendorf (HZDR)
+      short-text: HZDR
+    - id: A11
+      text: Helmholtz-Zentrum für Infektionsforschung (HZI)
+      short-text: HZI
+    - id: A12
+      text: Helmholtz-Zentrum für Informationssicherheit – CISPA
+      short-text: CISPA
+    - id: A13
+      text: Helmholtz-Zentrum für Umweltforschung - UFZ
+      short-text: UFZ
+    - id: A14
+      text: Helmholtz-Zentrum Geesthacht Zentrum für Material- und Küstenforschung (HZG)
+      short-text: HZG
+    - id: A15
+      text: Helmholtz Zentrum München - Deutsches Forschungszentrum für Gesundheit und Umwelt (HMGU)
+      short-text: HMGU
+    - id: A16
+      text: Helmholtz-Zentrum Potsdam - Deutsches GeoForschungsZentrum (GFZ)
+      short-text: GFZ
+    - id: A17
+      text: Karlsruher Institut für Technologie (KIT)
+      short-text: KIT
+    - id: A18
+      text: Max-Delbrück-Centrum für Molekulare Medizin in der Helmholtz-Gemeinschaft (MDC)
+      short-text: MDC
+    - id: A19
+      text: Max-Planck-Institut für Plasmaphysik (IPP) (Assoziiertes Mitglied)
+      short-text: IPP
+    - id: A2
+      text: Deutsches Elektronen-Synchrotron (DESY)
+      short-text: DESY
+    - id: A20
+      text: I am not working in a Helmhholtz research center.
+      short-text: (Extern)
+    - id: A3
+      text: Deutsches Zentrum für Luft- und Raumfahrt (DLR)
+      short-text: DLR
+    - id: A4
+      text: Deutsches Krebsforschungszentrum (DKFZ)
+      short-text: DKFZ
+    - id: A5
+      text: Deutsches Zentrum für Neurodegenerative Erkrankungen (DZNE)
+      short-text: DZNE
+    - id: A6
+      text: Forschungszentrum Jülich
+      short-text: FZJ
+    - id: A7
+      text: GEOMAR Helmholtz-Zentrum für Ozeanforschung Kiel
+      short-text: GEOMAR
+    - id: A8
+      text: GSI Helmholtzzentrum für Schwerionenforschung
+      short-text: GSI
+    - id: A9
+      text: Helmholtz-Zentrum Berlin für Materialien und Energie (HZB)
+      short-text: HZB
 
 - id: G2001
   text: How many years of software development experience do you have?
@@ -49,34 +91,46 @@
     - id: SQ001
       text: It was a core part of my education.
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ002
       text: I took some courses during my education.
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ003
       text: I took some courses offered at my research organization.
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ004
       text: I visited a Software / Data / Library Carpentry workshop.
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ005
       text: Colleagues at my research organization (informally) introduced / helped
         me.
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ006
       text: I learned it by myself.
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
 
 - id: G2003
   text: Which percentage of your working time is spent on software development?
@@ -87,19 +141,28 @@
 - id: G2004
   text: With how many other developers do you typically develop software together?
   answers:
-    A1: 0 (it is only me)
-    A2: '1'
-    A3: 2 - 5
-    A4: 6 - 10
-    A5: '> 10'
+    - id: A1
+      text: 0 (it is only me)
+    - id: A2
+      text: '1'
+    - id: A3
+      text: 2 - 5
+    - id: A4
+      text: 6 - 10
+    - id: A5
+      text: '> 10'
 
 - id: G2005
   text: How many users (including you) typically use your code / software?
   answers:
-    A1: 1 (myself)
-    A2: 2 - 10
-    A3: '> 10'
-    A4: I do not know.
+    - id: A1
+      text: 1 (myself)
+    - id: A2
+      text: 2 - 10
+    - id: A3
+      text: '> 10'
+    - id: A4
+      text: I do not know.
 
 - id: G2006
   text: With whom do you share your code / software?
@@ -107,27 +170,39 @@
     - id: SQ001
       text: Within my research group.
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
     - id: SQ002
       text: Within my research organization.
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
     - id: SQ003
       text: Within my (public) research field.
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
     - id: SQ004
       text: General Public
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
 
 - id: G3001
   text: What programming language(s) do you use at work?
@@ -137,158 +212,220 @@
     - id: SQ001
       text: Assembly language
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ002
       text: C
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ003
       text: C++
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ004
       text: C#
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ005
       text: COBOL
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ006
       text: Delphi
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ007
       text: F#
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ008
       text: Fortran
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ009
       text: Go
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ010
       text: Haskell
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ011
       text: Java
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ012
       text: JavaScript
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ013
       text: Julia
       aanswers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ014
       text: Lisp
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ015
       text: MATLAB
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ016
       text: Mathematica
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ017
       text: Object Pascal
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ018
       text: Octave
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ019
       text: Perl
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ020
       text: PHP
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ021
       text: Prolog
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ022
       text: Python
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ023
       text: R
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ024
       text: Rust
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ025
       text: Sage
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ026
       text: SAS
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ027
       text: SQL
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ028
       text: System-C
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ029
       text: Verilog
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ030
       text: VHDL
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ031
       text: Visual Basic .NET
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
 - id: G3002
   text: Which version control systems (VCS) do you use for software development?
   questions:
@@ -297,34 +434,46 @@
     - id: SQ001
       text: Subversion
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ002
       text: Git
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ003
       text: Other centralized VCS (e.g., DARCS, SourceSafe)
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ004
       text: Other Dezentralized VCS (e.g. Bazaar, BitKeeper, GNU arch, Mercurial,
         Monotone)
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ005
       text: CVS
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ006
       text: None
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
 
 - id: G3003
   text: Which web-based software development platform do you use?
@@ -334,58 +483,80 @@
     - id: SQ001
       text: GitHub.com
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ002
       text: Self-hosted GitHub instance
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ003
       text: GitLab.com
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ004
       text: Self-hosted GitLab instance
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ005
       text: Redmine
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ006
       text: Bitbucket (+ other Atlassian tools)
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ007
       text: Azure DevOps
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ008
       text: Gitea
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ009
       text: Gogs
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ010
       text: Phabricator
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ011
       text: None
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
 
 - id: G3004
   text: Which Continuous Integration service do you use to automate building and
@@ -396,38 +567,52 @@
     - id: SQ001
       text: Travis CI
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ002
       text: Jenkins
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ003
       text: GitLab CI
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ004
       text: Circle CI
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ005
       text: Atlassian Bamboo
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ006
       text: Jetbrains TeamCity
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ007
       text: None
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
 
 - id: G3005
   text: Which tools do you use to review your code?
@@ -437,33 +622,45 @@
     - id: SQ001
       text: GitHub
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ002
       text: GitLab
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ003
       text: Atlassian Crucible
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ004
       text: Jetbrains Upsource
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ005
       text: Review Board
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ006
       text: None
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
 
 - id: G3006
   text: Which other tools do you typically use during software development?
@@ -474,122 +671,190 @@
     - id: SQ001
       text: Prototyping
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ002
       text: Software modeling (e.g. UML, SysML, BPMN, DSLs)
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ003
       text: Domain driven design
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ004
       text: Applying design- and architecture patterns
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ005
       text: Clean code
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ006
       text: Test-driven development
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ007
       text: Refactoring
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ008
       text: Applying a common coding style
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ009
       text: Pair programming
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ010
       text: Code reviews
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ011
       text: Collective code ownership
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ012
       text: Continuous integration
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ013
       text: Continuous deployment
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ014
       text: Iterative development / Sprints
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ015
       text: Documentation as code
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ016
       text: Test management
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ017
       text: Infrastructure as code
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
 
 - id: G4002
   text: What kind of testing practices do you use?
@@ -597,87 +862,135 @@
     - id: SQ001
       text: Unit testing
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ002
       text: Integration testing
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ003
       text: System testing
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ004
       text: Behavior driven testing
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ005
       text: Regression testing
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ006
       text: Acceptance testing
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ007
       text: Exploratory testing
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ008
       text: Usability testing
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ009
       text: Performance testing
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ010
       text: Test automation
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ011
       text: Static code analysis
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ012
       text: Code coverage analysis
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
 
 - id: G4003
   text: What kind of documentation do you write?
@@ -685,66 +998,102 @@
     - id: SQ001
       text: README
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ002
       text: Installation instructions
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ003
       text: Release notes
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ004
       text: User manual
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ005
       text: Technical Documentation
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ006
       text: Guide for new contributors
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ007
       text: Code comments
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ008
       text: Developer guide
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ009
       text: Requirement specification
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
 
 - id: G4004
   text: Which software development methodologies do you typically use?
@@ -752,38 +1101,58 @@
     - id: SQ001
       text: Scrum
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ002
       text: Kanban
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ003
       text: Extreme Programming
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ005
       text: Waterfall Model
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ006
       text: V-Model
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
 
 - id: G5001
   text: Where do you publish your software?
@@ -791,38 +1160,57 @@
     - id: SQ001
       text: On a public code sharing platform (e.g. GitHub).
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ002
       text: On a public research repository such as (e.g. Zenodo).
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ003
       text: On a public software package index (e.g. PyPI, Maven Central).
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
     - id: SQ004
       text: On a platform within my research organization.
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
-        A4: I do not know what this is.
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
+        - id: A4
+          text: I do not know what this is.
 
 - id: G5002
   text: Do you test your software - at least manually - before you publish it?
   answers:
-    A1: Never
-    A2: Sometimes
-    A3: Regularly
+    - id: A1
+      text: Never
+    - id: A2
+      text: Sometimes
+    - id: A3
+      text: Regularly
 
 - id: G5003
   text: Under which software license do you typically publish your software?
@@ -830,33 +1218,48 @@
     - id: SQ001
       text: Strong copyleft license (e.g., GPL)
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
     - id: SQ002
       text: Weak copyleft license (e.g., LGPL)
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
     - id: SQ003
       text: Non-copyleft license (e.g., BSD, MIT, Apache License)
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
     - id: SQ004
       text: Proprietary license
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
     - id: SQ005
       text: None
       answers:
-        A1: Never
-        A2: Sometimes
-        A3: Regularly
+        - id: A1
+          text: Never
+        - id: A2
+          text: Sometimes
+        - id: A3
+          text: Regularly
 
 - id: G5004
   text: What are you doing to make it easier to cite your software in a research
@@ -868,18 +1271,24 @@
     - id: SQ001
       text: Add a citation hint in my README file.
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ002
       text: Use a separate citation file (e.g. CFF, codemeta.json)
       aanswers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ003
       text: Nothing
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
 
 - id: G5005
   text: How do you reference software in a research publication?
@@ -889,32 +1298,45 @@
     - id: SQ001
       text: Name
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ002
       text: Link
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ003
       text: DOI
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ004
       text: Never
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
 
 - id: G6001
   text: Do you already get any support or training in your research organization?
   answers:
-    A1: Yes, by colleagues of my team.
-    A2: Yes, by a dedicated support team in my organization.
-    A3: Yes, but I need more support.
-    A4: No, but I need more support.
-    A5: No, there is no need for me to get additional support.
+    - id: A1
+      text: Yes, by colleagues of my team.
+    - id: A2
+      text: Yes, by a dedicated support team in my organization.
+    - id: A3
+      text: Yes, but I need more support.
+    - id: A4
+      text: No, but I need more support.
+    - id: A5
+      text: No, there is no need for me to get additional support.
 
 - id: G6002
   text: In which support activities are you mostly interested?
@@ -922,48 +1344,66 @@
     - id: SQ001
       text: Access to central software development tools and infrastructure
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ002
       text: Training courses
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ003
       text: Provision of tutorials and other learning material
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ004
       text: On-site support of an experienced software developer for a specific time
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ005
       text: Consultation on improvement of software development practices
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ006
       text: Consultation on technology related topics
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ007
       text: Consultation on technology related toConsultation on software publication
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ008
       text: Consultation on software licensing
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ009
       text: Consultation on creation of internal communities
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
 
 - id: G6003
   text: Which kind of learning do you prefer?
@@ -974,27 +1414,34 @@
     - id: SQ001
       text: Participation in training courses or workshops
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ002
       text: Participation in an online training
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ003
       text: Reading tutorial and trying it on your own
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
     - id: SQ004
       text: Following video tutorials
       answers:
-        'No': 'No'
-        'Yes': 'Yes'
+        - id: A1
+          text: 'No'
+        - id: A2
+          text: 'Yes'
 
 - id: G6004
-  text: What are your wishes and suggestions for a good software development support
-    at your organization?
+  text: What are your wishes and suggestions for a good software development support at your organization?
 
 - id: G7001
   text: Is there something else you want to let us know?

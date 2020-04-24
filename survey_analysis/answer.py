@@ -20,19 +20,27 @@ class Answer(object):
 
     def __init__(self,
                  answer_id: str,
-                 answer_text: Optional[str] = None):
+                 answer_text: Optional[str] = None,
+                 answer_short_text: Optional[str] = None):
         """
         Initialize an Answer from the data or metadata.
 
         Args:
-            answer_id:  A unique string identifying the answer
-            answer_text:    If the answer is predefined, it is the text the
-                            form suggested. Otherwise it is the text the user
-                            entered. For pre-defining a free-text answer the
-                            text may be empty.
+            answer_id:
+                A unique string identifying the answer
+
+            answer_text:
+                If the answer is predefined, it is the text the form suggested.
+                Otherwise it is the text the user entered. For pre-defining a
+                free-text answer the text may be empty.
+
+            answer_short_text:
+                An optional string to be used for the string
+                representation instead of the full text.
         """
         self._id: str = answer_id
         self._text: str = str(answer_text) if answer_text else ""
+        self._short_text: Optional[str] = answer_short_text
 
     def __str__(self) -> str:
         """Generate a string representation of the answer."""
@@ -45,5 +53,17 @@ class Answer(object):
 
     @property
     def text(self) -> str:
-        """Obtain the text that was associated with this answer."""
+        """Obtain the full text that was associated with this answer."""
         return self._text
+
+    @property
+    def short_text(self) -> str:
+        """Obtain a short text representation for the answer.
+
+            If none is defined, the full text will be used instead.
+
+            Returns:
+                the short text representation, if available,
+                otherwise the full text
+        """
+        return self._short_text if self._short_text else self._text

@@ -31,6 +31,19 @@ KEYWORD_QUESTIONS: str = "questions"
 KEYWORD_ANSWERS: str = "answers"
 KEYWORD_ID: str = "id"
 KEYWORD_TEXT: str = "text"
+KEYWORD_SHORT: str = "short-text"
+
+
+def parse_answer(content: YamlDict) -> Answer:
+    assert KEYWORD_ID in content
+    assert KEYWORD_TEXT in content
+
+    answer_id: str = content[KEYWORD_ID]
+    answer_text: str = \
+        content[KEYWORD_TEXT] if KEYWORD_TEXT in content else None
+    answer_short_text: Optional[str] = \
+        content[KEYWORD_SHORT] if KEYWORD_SHORT in content else None
+    return Answer(answer_id, answer_text, answer_short_text)
 
 
 def parse_question(content: YamlDict,
@@ -62,11 +75,9 @@ def parse_question(content: YamlDict,
 
     # Check for predefined answers
     if KEYWORD_ANSWERS in content and content[KEYWORD_ANSWERS]:
-        answers_yaml: Dict[str, str] = content[KEYWORD_ANSWERS]
-        answer_id: str
-        for answer_id in answers_yaml:
-            answer_text: Optional[str] = answers_yaml[answer_id]
-            new_answer: Answer = Answer(answer_id, answer_text)
+        answer_yaml: YamlDict = content[KEYWORD_ANSWERS]
+        for answer_yaml in content[KEYWORD_ANSWERS]:
+            new_answer: Answer = parse_answer(answer_yaml)
             predefined_answers.append(new_answer)
 
     new_question: Question = Question(question_id, question_text,
