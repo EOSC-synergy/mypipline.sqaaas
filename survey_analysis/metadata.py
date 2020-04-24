@@ -84,7 +84,7 @@ def parse_question(content: YamlDict,
 
     # Check for predefined answers
     if KEYWORD_ANSWERS in content and content[KEYWORD_ANSWERS]:
-        answer_yaml: YamlDict = content[KEYWORD_ANSWERS]
+        answer_yaml: YamlDict
         for answer_yaml in content[KEYWORD_ANSWERS]:
             new_answer: Answer = parse_answer(answer_yaml)
             predefined_answers.append(new_answer)
