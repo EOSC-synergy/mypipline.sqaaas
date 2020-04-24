@@ -6,6 +6,7 @@ This module allows discovery and dispatch of analysis functions.
 """
 import importlib
 import logging
+import traceback
 from pathlib import Path
 from typing import List
 
@@ -82,8 +83,13 @@ class Dispatcher(object):
 
         try:
             module = importlib.import_module(module_dot_path)
-            module.run()
         except ImportError:
             logging.error(f"Failed to load module {module_dot_path}")
-        except AttributeError:
-            logging.error(f"Module {module_dot_path} has no run() - method")
+
+        try:
+            module.run()
+        except AttributeError as error:
+            traceback.print_exc()
+            logging.error(f"Module {module_dot_path}: "
+                          f"Error when calling run() - method: "
+                          f"{error}")

@@ -31,8 +31,8 @@ class Answer(object):
                             entered. For pre-defining a free-text answer the
                             text may be empty.
         """
-        self._id = answer_id
-        self._text = answer_text if answer_text else ""
+        self._id: str = answer_id
+        self._text: str = str(answer_text) if answer_text else ""
 
     def __str__(self) -> str:
         """Generate a string representation of the answer."""

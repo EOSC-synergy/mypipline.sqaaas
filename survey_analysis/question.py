@@ -206,13 +206,13 @@ class Question(AbstractQuestion):
                     continue  # will not be selected, skip to next answer
 
                 # Filter for content
-                if (
-                        contains_text
-                        and not contains_text.lower() in answer.text.lower()
-                ):
-                    logging.debug(f"Filter: Excluding {answer} "
-                                  f"(Content Rules)")
-                    continue  # will not be selected, skip to next answer
+                if contains_text:
+                    required_text: str = contains_text.lower()
+                    searched_text: str = answer.text.lower()
+                    if required_text not in searched_text:
+                        logging.debug(f"Filter: Excluding {answer} "
+                                      f"(Content Rules)")
+                        continue  # will not be selected, skip to next answer
                 selected_answers.append(answer)
             if selected_answers:
                 results[participant] = selected_answers
