@@ -219,6 +219,23 @@ class Question(AbstractQuestion):
 
         return results
 
+    def grouped_by_answer(self) -> Dict[Answer, List[int]]:
+        """
+        Group the given answers of a question.
+
+        Returns:
+            An association between the possible answers and a list of the
+            participant IDs who selected that answer.
+        """
+        results: Dict[Answer, List[str]] = dict(
+            (answer, []) for answer in self._predefined_answers
+        )
+        for participant_id, answer_list in self.given_answers.items():
+            for answer in answer_list:
+                if answer.text != 'nan':
+                    results[answer].append(participant_id)
+        return results
+
 
 class QuestionCollection(AbstractQuestion):
     """
