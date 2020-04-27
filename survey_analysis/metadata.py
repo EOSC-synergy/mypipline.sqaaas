@@ -48,8 +48,7 @@ def parse_answer(content: YamlDict) -> Answer:
     assert KEYWORD_TEXT in content
 
     answer_id: str = content[KEYWORD_ID]
-    answer_text: str = \
-        content[KEYWORD_TEXT] if KEYWORD_TEXT in content else None
+    answer_text: str = content[KEYWORD_TEXT]
     answer_short_text: Optional[str] = \
         content[KEYWORD_SHORT] if KEYWORD_SHORT in content else None
     return Answer(answer_id, answer_text, answer_short_text)
