@@ -58,7 +58,8 @@ class Answer(object):
 
     @property
     def short_text(self) -> Optional[str]:
-        """ Obtain the short text representation for the answer.
+        """
+        Obtain the short text representation for the answer.
 
         Returns:
             The short text as string if one was set, None otherwise.
@@ -70,7 +71,7 @@ class Answer(object):
         """
         Obtain the shortest possible label for the answer.
 
-            Defaults to returneing the short text.
+            Defaults to returning the short text.
             If no short text is defined, the full text will be used instead.
 
             Returns:
