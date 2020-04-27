@@ -30,6 +30,7 @@ import pandas
 from survey_analysis import dispatch, globals
 from survey_analysis.metadata import (construct_questions_from_metadata,
                                       fetch_participant_answers)
+from survey_analysis.settings import OutputFormat
 
 from .__init__ import __version__
 
@@ -43,12 +44,17 @@ from .__init__ import __version__
 @click.option("--scripts", "-s",
               default="scripts",
               help="Select the folder containing analysis scripts")
-def cli(verbose: int, scripts: str) -> None:
+@click.option("--output-format", "-f",
+              default="screen",
+              help=f"Designate output format. "
+                   f"Supported values are: {OutputFormat.list_supported()}")
+def cli(verbose: int, scripts: str, output_format: str) -> None:
     """Analyze a given CSV file with a set of independent python scripts."""
     # NOTE that click takes above documentation for generating help text
     # Thus the documentation refers to the application per se and not the
     # function (as it should)
     set_verbosity(verbose)
+    set_output_format(output_format)
 
     logging.info(f"Selected script folder {scripts}")
     globals.settings.script_folder = Path(scripts)
@@ -151,3 +157,22 @@ def set_verbosity(verbose_count: int) -> None:
                 fg="yellow",
                 )
             )
+
+
+def set_output_format(output_format: str) -> None:
+    """
+    Attempt to determine the desired output format from the given string.
+
+    The format name is not case sensitive.
+
+    Args:
+        output_format: A textual representation of the desired format.
+    """
+    try:
+        chosen_format: OutputFormat = OutputFormat[output_format.upper()]
+        globals.settings.output_format = chosen_format
+        logging.info(f"Output format set to {chosen_format.name}")
+    except KeyError:
+        logging.error(f"Output Format {output_format} not recognized. "
+                      f"Supported values are: {OutputFormat.list_supported()}")
+        exit(2)
