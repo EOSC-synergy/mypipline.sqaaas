@@ -39,6 +39,7 @@ from .__init__ import __version__
 @click.option("--verbose", "-v",
               count=True,
               default=0,
+              show_default=True,
               help="Enable verbose output. "
                    "Repeat up to 3 times for increased effect")
 @click.option("--scripts", "-s",
