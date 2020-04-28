@@ -43,6 +43,7 @@ from .__init__ import __version__
                    "Repeat up to 3 times for increased effect")
 @click.option("--scripts", "-s",
               default="scripts",
+              show_default=True,
               help="Select the folder containing analysis scripts")
 @click.option("--output-format", "-f",
               default="screen",
