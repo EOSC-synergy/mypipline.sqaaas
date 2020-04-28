@@ -48,6 +48,7 @@ from .__init__ import __version__
               help="Select the folder containing analysis scripts")
 @click.option("--output-format", "-f",
               default="screen",
+              show_default=True,
               help=f"Designate output format. "
                    f"Supported values are: {OutputFormat.list_supported()}")
 def cli(verbose: int, scripts: str, output_format: str) -> None:
