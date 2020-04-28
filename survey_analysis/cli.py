@@ -41,7 +41,7 @@ from .__init__ import __version__
               default=0,
               show_default=True,
               help="Enable verbose output. "
-                   "Repeat up to 3 times for increased effect")
+                   "Increase verbosity by setting this option up to 3 times.")
 @click.option("--scripts", "-s",
               default="scripts",
               show_default=True,
