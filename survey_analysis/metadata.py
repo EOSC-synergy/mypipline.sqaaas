@@ -194,4 +194,4 @@ def fetch_participant_answers(
         participant_id: str
         answer_text: str
         for (participant_id, answer_text) in answers.items():
-            current_question.add_given_answer(participant_id, answer_text)
+            current_question.add_given_answer(str(participant_id), answer_text)
