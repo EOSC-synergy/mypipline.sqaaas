@@ -10,6 +10,7 @@ AbstractQuestion models the baseline for all questions which specialize into
 """
 import logging
 from abc import ABC
+from collections import defaultdict
 from typing import Dict, List, Optional
 
 from .answer import Answer
@@ -227,9 +228,7 @@ class Question(AbstractQuestion):
             An association between the possible answers and a list of the
             participant IDs who selected that answer.
         """
-        results: Dict[Answer, List[str]] = dict(
-            (answer, []) for answer in self._predefined_answers
-        )
+        results: Dict[Answer, List[str]] = defaultdict(list)
         for participant_id, answer_list in self.given_answers.items():
             for answer in answer_list:
                 if answer.text != 'nan':
