@@ -5,6 +5,7 @@ This module provides helper functions.
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 
+from collections import defaultdict
 from typing import Dict, List
 
 from .answer import Answer
@@ -31,8 +32,7 @@ def filter_and_group(
     """
     grouped_answers = group_question.grouped_by_answer()
 
-    results: Dict[Answer, Dict[str, List[Answer]]] = \
-        dict.fromkeys(grouped_answers)
+    results: Dict[Answer, Dict[str, List[Answer]]] = defaultdict(dict)
 
     for answer, participant_ids in grouped_answers.items():
         filter_args['participant_id'] = participant_ids
