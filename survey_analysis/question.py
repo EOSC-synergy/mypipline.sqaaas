@@ -233,7 +233,7 @@ class Question(AbstractQuestion):
         for participant_id, answer_list in self.given_answers.items():
             for answer in answer_list:
                 if answer.text == 'nan':
-	            results[nan_answer].append(participant_id)
+                    results[nan_answer].append(participant_id)
                 else:
                     results[answer].append(participant_id)
         return results
