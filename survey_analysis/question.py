@@ -220,7 +220,7 @@ class Question(AbstractQuestion):
 
         return results
 
-    def grouped_by_answer(self) -> Dict[Answer, List[int]]:
+    def grouped_by_answer(self) -> Dict[Answer, List[str]]:
         """
         Group the given answers of a question.
 
