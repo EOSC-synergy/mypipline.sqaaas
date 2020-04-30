@@ -231,8 +231,7 @@ class Question(AbstractQuestion):
         results: Dict[Answer, List[str]] = defaultdict(list)
         for participant_id, answer_list in self.given_answers.items():
             for answer in answer_list:
-                if answer.text != 'nan':
-                    results[answer].append(participant_id)
+                results[answer].append(participant_id)
         return results
 
 
