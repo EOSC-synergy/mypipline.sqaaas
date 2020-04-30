@@ -229,9 +229,13 @@ class Question(AbstractQuestion):
             participant IDs who selected that answer.
         """
         results: Dict[Answer, List[str]] = defaultdict(list)
+        nan_answer: Answer = Answer('Free Text', 'nan')
         for participant_id, answer_list in self.given_answers.items():
             for answer in answer_list:
-                results[answer].append(participant_id)
+                if answer.text == 'nan':
+	            results[nan_answer].append(participant_id)
+                else:
+                    results[answer].append(participant_id)
         return results
 
 
