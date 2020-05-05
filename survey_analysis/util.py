@@ -9,7 +9,7 @@ from collections import defaultdict
 from typing import Dict, List
 
 from .answer import Answer
-from .question import Question
+from .question import AbstractQuestion, Question, QuestionCollection
 
 
 def filter_and_group(
@@ -41,3 +41,59 @@ def filter_and_group(
         )
 
     return results
+
+
+def get_free_text_subquestion(
+        question: QuestionCollection,
+        free_text_question_id: str = 'other'
+        ) -> Question:
+    """
+    Get the subquestion of QuestionCollection that asks for free text answers.
+
+    Args:
+        question: QuestionCollection, in which the sub-question for free text
+                  answers is searched
+
+    Returns:
+        A sub-question that asks for custom free text answers.
+    """
+    assert question.has_subquestions, \
+        "QuestionCollection should have subquestions, but didn't"
+
+    return next(
+        (
+            subquestion
+            for subquestion in question.subquestions
+            if subquestion.id == f"{question.id}[{free_text_question_id}]"
+        ),
+        None
+    )
+
+
+def get_free_text_answers(
+        abstract_question: AbstractQuestion
+        ) -> Dict[str, Answer]:
+    """
+    Obtain valid free text answers of a Question.
+
+    Args:
+        question: A Question or QuestionCollection whose free text answers are
+        to be determined.
+
+    Returns:
+        An association of participant IDs to the free text answers from these
+        participants. Only participants for which free text answers were found
+        are included in the results.
+    """
+    if isinstance(abstract_question, QuestionCollection):
+        question = get_free_text_subquestion(abstract_question)
+    elif isinstance(abstract_question, Question):
+        question = abstract_question
+    else:
+        return None
+
+    return {
+        participant_id: list_of_answers[0]
+        for participant_id, list_of_answers in question.given_answers.items()
+        if list_of_answers[0].text != 'nan'
+    }
