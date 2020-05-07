@@ -70,7 +70,7 @@ def get_free_text_subquestion(
     )
 
 
-def get_free_text_answers(
+def get_given_free_text_answers(
         abstract_question: AbstractQuestion
         ) -> Dict[str, Answer]:
     """
