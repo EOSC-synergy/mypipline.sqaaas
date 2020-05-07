@@ -93,6 +93,7 @@ def get_free_text_answers(
         return None
 
     return {
+        # it is assumed that only one free text answer is given to a question
         participant_id: list_of_answers[0]
         for participant_id, list_of_answers in question.given_answers.items()
         if list_of_answers[0].text != 'nan'
