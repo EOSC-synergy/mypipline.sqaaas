@@ -1,5 +1,6 @@
 - id: G1001
   text: How many years of research related work do you have?
+  datatype: float
 
 - id: G1002
   text: In which research field is your research work?
@@ -83,6 +84,7 @@
 
 - id: G2001
   text: How many years of software development experience do you have?
+  datatype: float
 
 - id: G2002
   text: Which kind of education or training do you have in the area of software
@@ -90,53 +92,29 @@
   questions:
     - id: SQ001
       text: It was a core part of my education.
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ002
       text: I took some courses during my education.
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ003
       text: I took some courses offered at my research organization.
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ004
       text: I visited a Software / Data / Library Carpentry workshop.
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ005
-      text: Colleagues at my research organization (informally) introduced / helped
-        me.
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      text: Colleagues at my research organization (informally) introduced / helped me.
+      datatype: bool
     - id: SQ006
       text: I learned it by myself.
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
 
 - id: G2003
   text: Which percentage of your working time is spent on software development?
   questions:
     - id: SQ001
       text: '-'
+      datatype: int
 
 - id: G2004
   text: With how many other developers do you typically develop software together?
@@ -211,221 +189,97 @@
       text: Other
     - id: SQ001
       text: Assembly language
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ002
       text: C
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ003
       text: C++
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ004
       text: C#
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ005
       text: COBOL
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ006
       text: Delphi
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ007
       text: F#
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ008
       text: Fortran
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ009
       text: Go
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ010
       text: Haskell
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ011
       text: Java
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ012
       text: JavaScript
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ013
       text: Julia
-      aanswers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      adatatype: bool
     - id: SQ014
       text: Lisp
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ015
       text: MATLAB
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ016
       text: Mathematica
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ017
       text: Object Pascal
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ018
       text: Octave
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ019
       text: Perl
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ020
       text: PHP
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ021
       text: Prolog
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ022
       text: Python
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ023
       text: R
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ024
       text: Rust
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ025
       text: Sage
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ026
       text: SAS
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ027
       text: SQL
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ028
       text: System-C
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ029
       text: Verilog
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ030
       text: VHDL
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ031
       text: Visual Basic .NET
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
 - id: G3002
   text: Which version control systems (VCS) do you use for software development?
   questions:
@@ -433,47 +287,23 @@
       text: Other
     - id: SQ001
       text: Subversion
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ002
       text: Git
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ003
       text: Other centralized VCS (e.g., DARCS, SourceSafe)
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ004
       text: Other Dezentralized VCS (e.g. Bazaar, BitKeeper, GNU arch, Mercurial,
         Monotone)
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ005
       text: CVS
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ006
       text: None
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
 
 - id: G3003
   text: Which web-based software development platform do you use?
@@ -482,81 +312,37 @@
       text: Other
     - id: SQ001
       text: GitHub.com
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ002
       text: Self-hosted GitHub instance
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ003
       text: GitLab.com
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ004
       text: Self-hosted GitLab instance
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ005
       text: Redmine
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ006
       text: Bitbucket (+ other Atlassian tools)
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ007
       text: Azure DevOps
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ008
       text: Gitea
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ009
       text: Gogs
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ010
       text: Phabricator
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ011
       text: None
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
 
 - id: G3004
   text: Which Continuous Integration service do you use to automate building and
@@ -566,53 +352,25 @@
       text: Other
     - id: SQ001
       text: Travis CI
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ002
       text: Jenkins
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ003
       text: GitLab CI
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ004
       text: Circle CI
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ005
       text: Atlassian Bamboo
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ006
       text: Jetbrains TeamCity
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ007
       text: None
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
 
 - id: G3005
   text: Which tools do you use to review your code?
@@ -621,46 +379,22 @@
       text: Other
     - id: SQ001
       text: GitHub
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ002
       text: GitLab
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ003
       text: Atlassian Crucible
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ004
       text: Jetbrains Upsource
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ005
       text: Review Board
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ006
       text: None
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
 
 - id: G3006
   text: Which other tools do you typically use during software development?
@@ -1270,25 +1004,13 @@
 
     - id: SQ001
       text: Add a citation hint in my README file.
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ002
       text: Use a separate citation file (e.g. CFF, codemeta.json)
-      aanswers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      adatatype: bool
     - id: SQ003
       text: Nothing
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
 
 - id: G5005
   text: How do you reference software in a research publication?
@@ -1297,32 +1019,16 @@
       text: Other
     - id: SQ001
       text: Name
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ002
       text: Link
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ003
       text: DOI
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ004
       text: Never
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
 
 - id: G6001
   text: Do you already get any support or training in your research organization?
@@ -1343,67 +1049,31 @@
   questions:
     - id: SQ001
       text: Access to central software development tools and infrastructure
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ002
       text: Training courses
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ003
       text: Provision of tutorials and other learning material
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ004
       text: On-site support of an experienced software developer for a specific time
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ005
       text: Consultation on improvement of software development practices
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ006
       text: Consultation on technology related topics
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ007
       text: Consultation on technology related toConsultation on software publication
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ008
       text: Consultation on software licensing
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ009
       text: Consultation on creation of internal communities
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
 
 - id: G6003
   text: Which kind of learning do you prefer?
@@ -1413,32 +1083,16 @@
 
     - id: SQ001
       text: Participation in training courses or workshops
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ002
       text: Participation in an online training
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ003
       text: Reading tutorial and trying it on your own
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
     - id: SQ004
       text: Following video tutorials
-      answers:
-        - id: A1
-          text: 'No'
-        - id: A2
-          text: 'Yes'
+      datatype: bool
 
 - id: G6004
   text: What are your wishes and suggestions for a good software development support at your organization?

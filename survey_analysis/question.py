@@ -9,11 +9,13 @@ AbstractQuestion models the baseline for all questions which specialize into
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import logging
-from abc import ABC
+from abc import ABC, abstractmethod
 from collections import defaultdict
 from typing import Dict, List, Optional
 
-from .answer import Answer
+from pandas import Series
+
+from .answer import Answer, AnswerType
 
 
 class AbstractQuestion(ABC):
@@ -59,6 +61,17 @@ class AbstractQuestion(ABC):
         """
         return False
 
+    @abstractmethod
+    def flatten(self) -> List["Question"]:
+        """
+        Provide a unified flat representation of the questions structure.
+
+        Returns:
+            A list either containing the question itself or all concrete
+            subquestions.
+        """
+        pass
+
 
 class Question(AbstractQuestion):
     """
@@ -74,7 +87,8 @@ class Question(AbstractQuestion):
 
     def __init__(self, question_id: str,
                  question_text: str,
-                 predefined_answers: List[Answer]):
+                 predefined_answers: List[Answer],
+                 answers_data_type: type = str):
         """
         Initialize a new Question with the given metadata.
 
@@ -82,15 +96,47 @@ class Question(AbstractQuestion):
             question_id:        A unique string representing the question
             question_text:      The text of the question in the form
             predefined_answers: The answer options provided by the form
+            answers_data_type:  The type of answers given by participants
+                                (str [default], bool, int, float)
         """
+        if answers_data_type is None:
+            raise ValueError(
+                f"Attempt to construct question {question_id} "
+                f"with answer type 'None'"
+                )
+
         super().__init__(question_id, question_text)
+        # Check that type of answer data matches type of question data and
+        # raise TypeError if they do not match.
+        for answer in predefined_answers:
+            if answer.data_type is not answers_data_type:
+                raise TypeError(f"Type of answer {answer.id} "
+                                f"'{answer.text}' "
+                                f"(type '{answer.data_type.__name__}') "
+                                f"is not equal to expected type "
+                                f"'{answers_data_type.__name__}'.")
         self._predefined_answers = predefined_answers
         self._given_answers: Dict[str, List[Answer]] = {}
+        self._data_type: type = answers_data_type
 
     def __str__(self) -> str:
         """Generate a string representation of the question."""
         return f"{self.id}: {self.text} " \
                f"({len(self._predefined_answers)} predefined answers)"
+
+    @property
+    def data_type(self) -> type:
+        """
+        Get the type of data of a question.
+
+        Questions have a data type which determines how to process the data
+        depending on the type. Possible data types are str (default), bool,
+        int, float.
+
+        Returns:
+            The type of data to this question.
+        """
+        return self._data_type
 
     @property
     def predefined_answers(self) -> List[Answer]:
@@ -121,7 +167,8 @@ class Question(AbstractQuestion):
         """
         return self._given_answers
 
-    def add_given_answer(self, participant_id: str, answer_text: str) -> None:
+    def add_given_answer(self, participant_id: str,
+                         answer_data: AnswerType) -> None:
         """
         Insert an answer given by an participant for the question.
 
@@ -131,19 +178,32 @@ class Question(AbstractQuestion):
         Args:
             participant_id: The identifier for the participant that is being
                             processed
-            answer_text:    The text associated with the answer as given by the
-                            participant
+            answer_data:    The text associated with the answer as given by the
+                            participant.
+                            Its type should match the question data type
         """
+        assert answer_data is not None
+        if not type(answer_data) == self._data_type:
+            raise TypeError(f"Answer data type did not match question type. "
+                            f"Answer was {answer_data} "
+                            f"(type '{type(answer_data).__name__}') "
+                            f"for participant {participant_id}, "
+                            f"but question {self._id} expected type "
+                            f"'{self._data_type.__name__}'.")
+
         if participant_id not in self._given_answers:
             self._given_answers[participant_id] = []
 
         candidates: List[Answer] = [
             answer for answer in self.predefined_answers
-            if answer.text == answer_text
+            if answer.raw_data == answer_data
             ]
 
-        new_answer: Answer = \
-            candidates[0] if candidates else Answer("Free Text", answer_text)
+        new_answer: Answer = candidates[0] \
+            if candidates else Answer(answer_id="Free Text",
+                                      answer_data=answer_data,
+                                      answer_short_text=None,
+                                      answer_data_type=self._data_type)
 
         self._given_answers[participant_id].append(new_answer)
 
@@ -238,6 +298,62 @@ class Question(AbstractQuestion):
                     results[answer].append(participant_id)
         return results
 
+    def flatten(self) -> List["Question"]:
+        """
+        Provide a flattened list representation of the question.
+
+        Returns:
+            A list containing the question itself
+        """
+        return [self]
+
+    def as_series(self, filter_invalid: bool = True) -> Series:
+        """
+        Create a pandas series from a given question.
+
+        The answers given to the question by participants will be converted
+        to a data type given in the metadata of the question in order to
+        be able to process the given answers depending on this data type
+        (e.g. removing invalid data like NaN from the pandas series).
+        If for a given Question more than one answer is provided per
+        participant, the data is not univariate and therefor the result may be
+        unexpected by omitting answers from the provided data.
+
+        Args:
+            filter_invalid: Whether to remove invalid data entries. Will remove
+                            data entries considered invalid by pandas if set to
+                            True, which is the default.
+
+        Returns:
+            A new pandas series from the given answers, with participant IDs as
+            index.
+        """
+        question_answers: List[AnswerType] = []
+
+        participant_id: str
+        for participant_id in self.given_answers:
+
+            assert len(self._given_answers[participant_id])
+            # Should have had answer if participant id is a key
+
+            # (0) Assume univariate data, only take first element
+            # Should not have multiple elements
+            if len(self._given_answers[participant_id]) > 1:  # See Note (0)
+                raise ValueError(
+                    "Multivariate data can not be converted to series")
+
+            answer = self.given_answers[participant_id][0]  # See Note (0)
+            question_answers.append(answer.raw_data)
+
+        series = Series(data=question_answers,
+                        index=self.given_answers.keys(),
+                        copy=True,
+                        name=self.id + " Series")
+        series = series.astype(self._data_type)
+        if filter_invalid:
+            series.dropna(inplace=True)
+        return series
+
 
 class QuestionCollection(AbstractQuestion):
     """
@@ -291,5 +407,14 @@ class QuestionCollection(AbstractQuestion):
 
         Returns:
             A list containing all the subquestions that were nested.
+        """
+        return self._subquestions
+
+    def flatten(self) -> List[Question]:
+        """
+        Provide a flattened list representation of the question collection.
+
+        Returns:
+            A list containing all the subquestions
         """
         return self._subquestions

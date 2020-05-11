@@ -12,6 +12,8 @@ from typing import Dict
 
 from pandas import DataFrame
 
+from .answer import AnswerType
+
 
 class DataContainer(object):
     """
@@ -77,7 +79,7 @@ class DataContainer(object):
         """
         return self._raw_data.copy(deep=True)
 
-    def data_for_question(self, question_id: str) -> Dict[str, str]:
+    def data_for_question(self, question_id: str) -> Dict[str, AnswerType]:
         """
         Obtain the data for each participant for a given question.
 
@@ -93,7 +95,7 @@ class DataContainer(object):
                 or question_id not in self._raw_data):
             raise ValueError(f"{question_id} is not a valid question ID")
 
-        per_participant_data: Dict[str, str] = {}
+        per_participant_data: Dict[str, AnswerType] = {}
         column = self._raw_data[question_id]
         for participant in self._raw_data.index:
             per_participant_data[participant] = column[participant]

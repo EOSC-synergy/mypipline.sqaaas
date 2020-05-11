@@ -4,7 +4,14 @@ This module contains a class to represent survey answers.
 .. currentmodule:: survey_analysis.answer
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
-from typing import Optional
+from typing import List, Optional, Union
+
+#: Type to represent raw answer data.
+#: Supported datatypes of answer data are str, float, int, bool.
+AnswerType: type = Union[str, float, int, bool]
+#: Representation of type alias 'AnswerType' as a list of type strings.
+#: Supported datatypes of answer data are str, float, int, bool.
+ValidAnswerTypes: List[str] = ["str", "float", "int", "bool"]
 
 
 class Answer(object):
@@ -20,8 +27,9 @@ class Answer(object):
 
     def __init__(self,
                  answer_id: str,
-                 answer_text: Optional[str] = None,
-                 answer_short_text: Optional[str] = None):
+                 answer_data: Optional[AnswerType] = None,
+                 answer_short_text: Optional[str] = None,
+                 answer_data_type: type = str):
         """
         Initialize an Answer from the data or metadata.
 
@@ -37,14 +45,21 @@ class Answer(object):
             answer_short_text:
                 An optional string to be used for the string
                 representation instead of the full text.
+
+            answer_data_type:
+                The type of the data associated with this answer.
+                Supported types are bool, int, float and str.
+                Defaults to str, if not specified otherwise.
+
         """
         self._id: str = answer_id
-        self._text: str = str(answer_text) if answer_text else ""
+        self._data: Optional[AnswerType] = answer_data
         self._short_text: Optional[str] = answer_short_text
+        self._data_type: type = answer_data_type
 
     def __str__(self) -> str:
         """Generate a string representation of the answer."""
-        return f"{self._id}: {self._text}"
+        return f"{self._id}: {self.text}"
 
     @property
     def id(self) -> str:
@@ -52,9 +67,14 @@ class Answer(object):
         return self._id
 
     @property
+    def raw_data(self) -> AnswerType:
+        """Obtain the raw data that was associated with this answer."""
+        return self._data
+
+    @property
     def text(self) -> str:
         """Obtain the full text that was associated with this answer."""
-        return self._text
+        return str(self._data)
 
     @property
     def short_text(self) -> Optional[str]:
@@ -78,4 +98,9 @@ class Answer(object):
                 the short text representation, if available,
                 otherwise the full text
         """
-        return self._short_text if self._short_text else self._text
+        return self._short_text if self._short_text else self.text
+
+    @property
+    def data_type(self) -> type:
+        """Obtain the data type of the answer."""
+        return self._data_type

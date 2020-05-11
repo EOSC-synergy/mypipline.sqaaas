@@ -12,15 +12,16 @@ Survey metadata given in a YAML file is transformed into a dictionary.
 
 import logging
 from pathlib import Path
+from pydoc import locate
 from typing import Dict, List, Optional, Union
 
 import yaml
 
 from survey_analysis import globals
 
-from .answer import Answer
+from .answer import Answer, AnswerType, ValidAnswerTypes
 from .data import DataContainer
-from .question import Question, QuestionCollection
+from .question import AbstractQuestion, Question, QuestionCollection
 
 # The YAML dictionary has a recursive type
 YamlDict = Dict[str, Optional[Union[str, "YamlDict"]]]
@@ -32,14 +33,17 @@ KEYWORD_ANSWERS: str = "answers"
 KEYWORD_ID: str = "id"
 KEYWORD_TEXT: str = "text"
 KEYWORD_SHORT: str = "short-text"
+KEYWORD_DATATYPE: str = "datatype"
 
 
-def parse_answer(content: YamlDict) -> Answer:
+def parse_answer(content: YamlDict,
+                 question_data_type: type = str) -> Answer:
     """
     Parse an Answer object from YAML.
 
     Args:
-        content:        The YAML representation as a dictionary
+        content:            The YAML representation as a dictionary
+        question_data_type: The data type of an answer to a question.
 
     Returns:
         A newly constructed Answer object.
@@ -51,7 +55,8 @@ def parse_answer(content: YamlDict) -> Answer:
     answer_text: str = content[KEYWORD_TEXT]
     answer_short_text: Optional[str] = \
         content[KEYWORD_SHORT] if KEYWORD_SHORT in content else None
-    return Answer(answer_id, answer_text, answer_short_text)
+    return Answer(answer_id, answer_text, answer_short_text,
+                  question_data_type)
 
 
 def parse_question(content: YamlDict,
@@ -81,15 +86,32 @@ def parse_question(content: YamlDict,
     question_text: str = content.get(KEYWORD_TEXT)
     predefined_answers: List[Answer] = []
 
+    # Data types from metadata are given as string.
+    # They need to be converted to type with pydoc.locate().
+    # The default data type is string.
+    question_data_type: type
+    if KEYWORD_DATATYPE in content:
+        type_string: str = content[KEYWORD_DATATYPE]
+        if type_string not in ValidAnswerTypes:
+            # TODO is there a more robust way to create the filter string?
+            raise ValueError(
+                f"Could not parse type name '{type_string}' from metadata "
+                f"when constructing question {question_id}"
+                )
+
+        question_data_type = locate(type_string)
+    else:
+        question_data_type = str
+
     # Check for predefined answers
     if KEYWORD_ANSWERS in content and content[KEYWORD_ANSWERS]:
         answer_yaml: YamlDict
         for answer_yaml in content[KEYWORD_ANSWERS]:
-            new_answer: Answer = parse_answer(answer_yaml)
+            new_answer: Answer = parse_answer(answer_yaml, question_data_type)
             predefined_answers.append(new_answer)
 
     new_question: Question = Question(question_id, question_text,
-                                      predefined_answers)
+                                      predefined_answers, question_data_type)
     logging.debug(f"Parsed question {new_question}")
 
     # Put the newly parsed object into the global dictionary
@@ -186,12 +208,70 @@ def fetch_participant_answers(
                          "data source was empty")
 
     for question_id in globals.survey_questions:
-        current_question = globals.survey_questions[question_id]
-        if current_question.has_subquestions:
+        question: AbstractQuestion = globals.survey_questions[question_id]
+        if question.has_subquestions:
             continue  # collections have no answers
 
-        answers: Dict[str, str] = data_source.data_for_question(question_id)
+        answers: Dict[str, AnswerType] = \
+            data_source.data_for_question(question_id)
+
         participant_id: str
-        answer_text: str
-        for (participant_id, answer_text) in answers.items():
-            current_question.add_given_answer(str(participant_id), answer_text)
+        answer_data: AnswerType
+        for (participant_id, answer_data) in answers.items():
+            if answer_data is None:
+                raise ValueError(
+                    f"Received answer with no data "
+                    f"for question {question_id}, "
+                    f"participant {participant_id}"
+                    )
+
+            # Convert the given data to their respective values given the
+            # Target type.
+            if question.data_type is bool:
+                # # TODO externalize boolean keywords
+                # if answer_data.lower() in ["y", "yes", "true", "1", "on"]:
+                #     question.add_given_answer(participant_id, True)
+                # elif answer_data.lower() in ["n", "no", "false", "0", "off"]:
+                #     question.add_given_answer(participant_id, False)
+                # else:
+                #     logging.error(f"Could not parse answer to bool for "
+                #                   f"question {question.id}, "
+                #                   f"participant {participant_id}, "
+                #                   f"answer text '{answer_data}'")
+                try:
+                    question.add_given_answer(participant_id,
+                                              bool(answer_data))
+                except ValueError:
+                    logging.warning(
+                        f"Could not parse answer to type 'bool' for "
+                        f"question {question.id}, "
+                        f"participant {participant_id}, "
+                        f"answer text '{answer_data}'. "
+                        f"Data entry ignored"
+                        )
+
+            elif question.data_type is float:
+                try:
+                    question.add_given_answer(participant_id,
+                                              float(answer_data))
+                except ValueError:
+                    logging.warning(
+                        f"Could not parse answer to type 'float' for "
+                        f"question {question.id}, "
+                        f"participant {participant_id}, "
+                        f"answer text '{answer_data}'. "
+                        f"Data entry ignored"
+                    )
+            elif question.data_type is int:
+                try:
+                    question.add_given_answer(participant_id, int(answer_data))
+                except ValueError:
+                    logging.warning(
+                        f"Could not parse answer to type 'int' for "
+                        f"question {question.id}, "
+                        f"participant {participant_id}, "
+                        f"answer text '{answer_data}'. "
+                        f"Data entry ignored"
+                        )
+            else:
+                question.add_given_answer(participant_id, str(answer_data))
