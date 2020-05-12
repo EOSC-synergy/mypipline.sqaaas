@@ -105,11 +105,12 @@ def analyze(file_name, metadata: str) -> None:
     """
     logging.info(f"Analyzing file {file_name.name}")
     try:
-        frame: pandas.DataFrame = pandas.read_csv(file_name,
-                                                  true_values=["Yes"],
-                                                  false_values=["No"])
-        # TODO The true_values and false_values are only a quick solution
-        # Maybe externalize these into the metadata as well?
+        frame: pandas.DataFrame = pandas.read_csv(
+            file_name,
+            true_values=globals.settings.true_values,
+            false_values=globals.settings.false_values
+            )
+
         logging.debug('\n' + str(frame))
 
         # Put the Data Frame into the global container

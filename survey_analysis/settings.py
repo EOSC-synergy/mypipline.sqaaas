@@ -9,7 +9,7 @@ import logging
 from datetime import datetime
 from enum import Enum, auto, unique
 from pathlib import Path
-from typing import List
+from typing import List, Set
 
 
 @unique
@@ -56,3 +56,38 @@ class Settings(object):
         # The date prefix is used to identify the run
         # (e.g. for saving output images)
         self.run_timestamp: str = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
+
+        # Using a set for true_values and false_values to avoid duplicates and
+        # because order does not matter
+        self.true_values: Set[str] = {
+            "True", "Yes", "Y", "On", "1"
+            }
+        """
+        A set of strings to be interpreted as boolean 'True' when 
+        parsing the input data.
+        """
+
+        self.false_values: Set[str] = {
+            "False", "No", "N", "Off", "0"
+            }
+        """
+        A set of strings to be interpreted as boolean 'False' when 
+        parsing the input data.
+        """
+
+        # Add upper- and lowercase variants for
+        # 'true_values' and 'false_values'
+        # Using an extra set because one can not change a set
+        # while iterating over it.
+
+        additional_versions: Set[str] = set()
+        for item in self.true_values:
+            additional_versions.add(item.lower())
+            additional_versions.add(item.upper())
+        self.true_values.update(additional_versions)
+
+        additional_versions.clear()
+        for item in self.false_values:
+            additional_versions.add(item.lower())
+            additional_versions.add(item.upper())
+        self.false_values.update(additional_versions)
