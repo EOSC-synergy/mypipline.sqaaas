@@ -1007,7 +1007,7 @@
       datatype: bool
     - id: SQ002
       text: Use a separate citation file (e.g. CFF, codemeta.json)
-      adatatype: bool
+      datatype: bool
     - id: SQ003
       text: Nothing
       datatype: bool
