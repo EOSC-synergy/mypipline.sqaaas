@@ -11,7 +11,7 @@ AbstractQuestion models the baseline for all questions which specialize into
 import logging
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from pandas import Series
 
@@ -418,3 +418,63 @@ class QuestionCollection(AbstractQuestion):
             A list containing all the subquestions
         """
         return self._subquestions
+
+    def collapse(self) -> Question:
+        """
+        Attempt to collapse the question collection into a singular question.
+
+        This method is primarily intended to convert question collections that
+        represent multiple-choice questions with boolean options into a
+        singular question.
+
+        Boolean sub-questions will be transformed to predefined answers, any
+        answer to the boolean questions that resulted in True will be counted
+        as a given answer on the base of the newly created predefined question.
+        Non-boolean question answers will be counted as individual given
+        answers and the answer text will be prefixed with the question text in
+        parenthesis.
+
+        The ID of the generated question will be the the collection ID with an
+        asterisk as postfix.
+        The type of the generated question will be str.
+
+        Returns:
+            A Question subsuming the answers given in the sub-questions of the
+            collection.
+        """
+        predefined_answers: List[Answer] = []
+        given_answers: List[Tuple[str, str]] = []
+
+        # Extract the new predefined answers and given answers
+        subquestion: Question
+        for subquestion in self._subquestions:
+            if subquestion.data_type is bool:
+                new_answer : Answer = Answer(
+                    answer_id=subquestion.id,
+                    answer_data=subquestion.text)
+                predefined_answers.append(new_answer)
+
+                answers : List[Answer]
+                participant : str
+                for (participant, answers) in subquestion.given_answers():
+                    assert len(answers) == 1
+                    if answers[0].raw_data:
+                        given_answers.append(
+                            tuple(participant, new_answer.raw_data))
+            else:
+                for (participant, answers) in subquestion.given_answers():
+                    for answer in answers:
+                        given_answers.append(
+                            tuple(participant, answer.text))
+
+        # Generate the new question and fill in the given data
+        new_question = Question(
+            question_id=f"{self.id}*",
+            question_text=self.text,
+            predefined_answers=predefined_answers
+            )
+
+        for (participant, answer) in given_answers:
+            new_question.add_given_answer(participant, answer)
+
+        return new_question
