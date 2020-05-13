@@ -454,12 +454,13 @@ class QuestionCollection(AbstractQuestion):
                     answer_data=subquestion.text)
                 predefined_answers.append(new_answer)
 
-                answers : List[Answer]
-                participant : str
+                answers: List[Answer]
+                participant: str
                 for participant in subquestion.given_answers:
                     answers = subquestion.given_answers[participant]
                     assert len(answers) == 1
-                    if not answers[0].raw_data:
+
+                    if not (answers[0].raw_data is True):
                         continue
                     given_answers.append((participant, new_answer.raw_data))
             else:
