@@ -456,16 +456,16 @@ class QuestionCollection(AbstractQuestion):
 
                 answers : List[Answer]
                 participant : str
-                for (participant, answers) in subquestion.given_answers():
+                for participant in subquestion.given_answers:
+                    answers = subquestion.given_answers[participant]
                     assert len(answers) == 1
-                    if answers[0].raw_data:
-                        given_answers.append(
-                            tuple(participant, new_answer.raw_data))
+                    if not answers[0].raw_data:
+                        continue
+                    given_answers.append((participant, new_answer.raw_data))
             else:
-                for (participant, answers) in subquestion.given_answers():
-                    for answer in answers:
-                        given_answers.append(
-                            tuple(participant, answer.text))
+                for participant in subquestion.given_answers:
+                    for answer in subquestion.given_answers[participant]:
+                        given_answers.append((participant, answer.text))
 
         # Generate the new question and fill in the given data
         new_question = Question(
