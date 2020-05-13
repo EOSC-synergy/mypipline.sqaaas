@@ -225,7 +225,7 @@
       datatype: bool
     - id: SQ013
       text: Julia
-      adatatype: bool
+      datatype: bool
     - id: SQ014
       text: Lisp
       datatype: bool
