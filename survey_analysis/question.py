@@ -466,7 +466,12 @@ class QuestionCollection(AbstractQuestion):
             else:
                 for participant in subquestion.given_answers:
                     for answer in subquestion.given_answers[participant]:
-                        given_answers.append((participant, answer.text))
+                        given_answers.append(
+                            (   # Parenthesis for tuple
+                                participant,
+                                f"({subquestion.text}) {answer.text}"
+                            )
+                        )
 
         # Generate the new question and fill in the given data
         new_question = Question(
