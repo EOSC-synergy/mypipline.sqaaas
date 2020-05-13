@@ -434,7 +434,7 @@ class QuestionCollection(AbstractQuestion):
         answers and the answer text will be prefixed with the question text in
         parenthesis.
 
-        The ID of the generated question will be the the collection ID with an
+        The ID of the generated question will be the collection ID with an
         asterisk as postfix.
         The type of the generated question will be str.
 
