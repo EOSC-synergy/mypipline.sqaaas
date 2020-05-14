@@ -449,7 +449,7 @@ class QuestionCollection(AbstractQuestion):
         subquestion: Question
         for subquestion in self._subquestions:
             if subquestion.data_type is bool:
-                new_answer : Answer = Answer(
+                new_answer: Answer = Answer(
                     answer_id=subquestion.id,
                     answer_data=subquestion.text)
                 predefined_answers.append(new_answer)
