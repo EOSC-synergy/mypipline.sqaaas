@@ -22,7 +22,7 @@ freeze:
 	pip freeze > requirements.txt
 
 lint:
-        # Sort the python import statements
+	# Sort the python import statements
 	isort -rc -c -df **/*.py
 	$(LINTER) $(PROJ_SLUG)
 
@@ -70,3 +70,7 @@ install:
 licenses:
 	pip-licenses --with-url --format=rst \
 	--ignore-packages $(shell cat .pip-license-ignore | awk '{$$1=$$1};1')
+
+load:
+	# install language model for spaCy
+	python -m spacy download en_core_web_sm

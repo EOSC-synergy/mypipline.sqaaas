@@ -55,6 +55,7 @@ setup(
         'numpy>=1.18.1',
         'pandas>=1.0.1',
         'pyyaml>=5.3.1',
+        'spacy>=2.2.4',
     ],
     extras_require={
         'dev': [
