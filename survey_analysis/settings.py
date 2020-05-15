@@ -33,5 +33,10 @@ class Settings(object):
     def __init__(self):  # Note: This object must have an empty constructor.
         """Create a new instance."""
         self.verbosity: int = logging.NOTSET
+        # Path in which modules to be executed are located which defaults
+        # to "scripts" folder.
         self.script_folder: Path = Path("scripts")
+        # List of selected module names to be executed which defaults to
+        # an empty list for all modules in the module folder.
+        self.script_names: List[str] = []
         self.output_format: OutputFormat = OutputFormat.SCREEN

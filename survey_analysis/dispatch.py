@@ -15,38 +15,58 @@ class Dispatcher(object):
     """
     Provides analysis function module and execution facilities.
 
-    The operations are based on a module folder to be given at initialization.
+    The operations are based on a module folder and optionally a list of
+    module names to be given at initialization.
     """
 
-    def __init__(self, module_folder: Path):
+    def __init__(self, module_folder: Path, module_names: List[str]):
         """
         Initialize the Dispatcher.
 
         Args:
             module_folder: The path to a directory containing loadable modules.
-            If the given path does not exist or is not a directory a ValueError
-            will be thrown.
+                If the given path does not exist or is not a directory a
+                ValueError will be thrown.
+            module_names: A list of module names (without file ending)
+                within module folder to be executed.
+                If the selected module does not exist in the module directory
+                a ValueError will be thrown.
         """
         if not (module_folder.exists() and module_folder.is_dir()):
-            raise ValueError("Module folder should be a directory")
+            raise ValueError("Module folder should be a directory.")
 
         self.module_folder: Path = module_folder
+        self.module_names: List[str] = module_names
+        self.module_name_paths: List[Path] = []
         self._discovered_modules: List[str] = []
+
+        # Check that all selected modules exist in module folder.
+        if self.module_names:
+            for module_name in self.module_names:
+                module_path: Path = Path(module_folder, f"{module_name}.py")
+                if not module_path.exists():
+                    raise ValueError(f"Module {module_name} not found in "
+                                     f"module folder.")
+                self.module_name_paths.append(module_path)
+        else:
+            self.module_name_paths.extend(self.module_folder.iterdir())
 
     def discover(self) -> None:
         """
-        Discover all potential modules in the module folder.
+        Discover all potential or selected modules in the module folder.
 
-        Iterate over the module folder (non-recursive) and cache the names all
-        python (.py) files.
+        Iterate over all modules in the module folder (non-recursive) or
+        selected modules only and cache the names of those python (.py) files.
         Exception: __init__.py is excluded.
         """
-        for entry in self.module_folder.iterdir():
-            if entry.is_file() \
-                    and entry.suffix == ".py" \
-                    and not entry.stem == "__init__":
-                logging.info(f"Discovered module {entry.stem}")
-                self._discovered_modules.append(entry.stem)
+        # Execute all scripts in scripts folder or selected scripts only.
+        for name_path in self.module_name_paths:
+            if (name_path.is_file()
+                    and name_path.suffix == ".py"
+                    and not name_path.stem == "__init__"):
+
+                logging.info(f"Discovered module {name_path.stem}.")
+                self._discovered_modules.append(name_path.stem)
 
     def load_all_modules(self) -> None:
         """
@@ -58,7 +78,7 @@ class Dispatcher(object):
 
         """
         if not self._discovered_modules:
-            logging.warning("No modules have been discovered - Nothing to do")
+            logging.warning("No modules have been discovered - Nothing to do.")
             return
 
         for module_name in self._discovered_modules:
@@ -79,12 +99,12 @@ class Dispatcher(object):
 
         module_path: Path = self.module_folder / module_name
         module_dot_path: str = str(module_path).replace('/', '.')
-        logging.info(f"Running Module {module_dot_path}")
+        logging.info(f"Running Module {module_dot_path}.")
 
         try:
             module = importlib.import_module(module_dot_path)
         except ImportError:
-            logging.error(f"Failed to load module {module_dot_path}")
+            logging.error(f"Failed to load module {module_dot_path}.")
 
         try:
             module.run()
@@ -92,4 +112,4 @@ class Dispatcher(object):
             traceback.print_exc()
             logging.error(f"Module {module_dot_path}: "
                           f"Error when calling run() - method: "
-                          f"{error}")
+                          f"{error}.")

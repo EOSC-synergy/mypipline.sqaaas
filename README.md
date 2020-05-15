@@ -81,7 +81,8 @@ The program accepts a couple of flags:
 1. Help flag
 2. Verbosity flag
 3. Scripts flag
-4. Output Format flag
+4. Names flag
+5. Output Format flag
 
 #### Help flag
 
@@ -96,14 +97,18 @@ Usage: survey_analysis [OPTIONS] COMMAND [ARGS]...
   Analyze a given CSV file with a set of independent python scripts.
 
 Options:
-  -v, --verbose             Enable verbose output. Repeat up to 2 times for
-                            increased effect  [default: 0]
+  -v, --verbose             Enable verbose output. Increase verbosity by
+                            setting this option up to 3 times.  [default: 0]
 
-  -s, --scripts TEXT        Select the folder containing analysis scripts
+  -s, --scripts TEXT        Select the folder containing analysis scripts.
                             [default: scripts]
 
+  -n, --names TEXT          Select the script names contained in the scripts
+                            folder as comma-separated list (omitting file
+                            endings) which should be executed.  [default: all]
+
   -f, --output-format TEXT  Designate output format. Supported values are:
-                            SCREEN, PDF, PNG, SVG  [default: screen]
+                            SCREEN, PDF, PNG, SVG.  [default: screen]
 
   --help                    Show this message and exit.
 
@@ -141,17 +146,32 @@ Beside verbosity there is a _scripts_-flag called `--scripts` or
 `-s` for short:
 
 ```shell script
-$ pipenv run survey_analysis --scripts scripts/ <COMMAND>
+$ pipenv run survey_analysis --scripts "scripts/" <COMMAND>
 ```
 ```shell script
-$ pipenv run survey_analysis -s scripts/ <COMMAND>
+$ pipenv run survey_analysis -s "scripts/" <COMMAND>
 ```
 
 This will tell the program in which folder to look for the actual 
 analysis scripts.
 In case the _scripts_-flag is omitted it defaults to sub-folder `scripts/`.
 
-#### Output Format flag
+#### Names flag
+
+The _names_-flag called `--names` or `-n` for short:
+
+```shell script
+$ pipenv run survey_analysis --names "example_script_1" --names "example_script_2" <COMMAND>
+```
+```shell script
+$ pipenv run survey_analysis -n "example_script_1" -n "example_script_2" <COMMAND>
+```
+
+This will tell the program which scripts in the scripts folder to execute.
+In case the _names_-flag is omitted it defaults to all scripts in the
+scripts folder.
+
+#### Output format flag
 
 The user is also able to let the application know in which output format the
 diagrams should be generated during the analysis. 

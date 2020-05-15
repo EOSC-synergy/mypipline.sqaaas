@@ -45,13 +45,20 @@ from .__init__ import __version__
 @click.option("--scripts", "-s",
               default="scripts",
               show_default=True,
-              help="Select the folder containing analysis scripts")
+              help="Select the folder containing analysis scripts.")
+@click.option("--names", "-n",
+              multiple=True,
+              default=[],
+              help="Optionally select the specific script names contained "
+                   "in the scripts folder (while omitting file endings) "
+                   "which should be executed.")
 @click.option("--output-format", "-f",
               default="screen",
               show_default=True,
               help=f"Designate output format. "
-                   f"Supported values are: {OutputFormat.list_supported()}")
-def cli(verbose: int, scripts: str, output_format: str) -> None:
+                   f"Supported values are: {OutputFormat.list_supported()}.")
+def cli(verbose: int, scripts: str, names: List[str],
+        output_format: str) -> None:
     """Analyze a given CSV file with a set of independent python scripts."""
     # NOTE that click takes above documentation for generating help text
     # Thus the documentation refers to the application per se and not the
@@ -61,6 +68,8 @@ def cli(verbose: int, scripts: str, output_format: str) -> None:
 
     logging.info(f"Selected script folder {scripts}")
     globals.settings.script_folder = Path(scripts)
+    # Set a list of selected module names contained in the module folder.
+    globals.settings.script_names = names
     sys.path.insert(0, scripts)
 
 
@@ -74,7 +83,7 @@ def version() -> None:
 @click.argument("file_name", type=click.File(mode="r"))
 @click.option("--metadata", "-m",
               default="data/HIFIS_Software_Survey_2020_Questions.yml",
-              help="Give file name which contains survey metadata")
+              help="Give file name which contains survey metadata.")
 def analyze(file_name, metadata: str) -> None:
     """
     Read the given files into global data and metadata objects.
@@ -116,7 +125,8 @@ def analyze(file_name, metadata: str) -> None:
         logging.error("Could not parse the metadata file as YAML.")
         exit(1)
 
-    dispatcher = dispatch.Dispatcher(globals.settings.script_folder)
+    dispatcher = dispatch.Dispatcher(globals.settings.script_folder,
+                                     globals.settings.script_names)
     dispatcher.discover()
     dispatcher.load_all_modules()
 
