@@ -13,11 +13,10 @@ from matplotlib import pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
 from survey_analysis import globals
-from survey_analysis.answer import Answer
 from survey_analysis.question import Question, QuestionCollection
-from survey_analysis.settings import OutputFormat
 from survey_analysis.util import (get_free_text_subquestion,
-                                  get_given_free_text_answers)
+                                  get_given_free_text_answers,
+                                  output_pyplot_image)
 
 
 def run():
@@ -26,7 +25,7 @@ def run():
     """
     click.echo(f"Start free text analysis for Question G3001 ..")
 
-    question: Question = globals.survey_questions['G3001']
+    question: QuestionCollection = globals.survey_questions['G3001']
     assert question.has_subquestions
     click.echo(f"{question.text}")
 
@@ -88,7 +87,4 @@ def run():
     # prevent xlabel cut off
     plt.tight_layout()
 
-    if globals.settings.output_format == OutputFormat.SCREEN:
-        plt.show()
-    else:
-        plt.savefig(f"data/G3001_free_text_answers.{globals.settings.output_format.name.lower()}")
+    output_pyplot_image()
