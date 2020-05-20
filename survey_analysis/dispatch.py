@@ -6,6 +6,7 @@ This module allows discovery and dispatch of analysis functions.
 """
 import importlib
 import logging
+import os
 import traceback
 from pathlib import Path
 from typing import List
@@ -98,7 +99,7 @@ class Dispatcher(object):
         # TODO if the module_name has a .py ending, remove it beforehand
 
         module_path: Path = self.module_folder / module_name
-        module_dot_path: str = str(module_path).replace('/', '.')
+        module_dot_path: str = str(module_path).replace(os.sep, '.')
         logging.info(f"Running Module {module_dot_path}.")
 
         try:
