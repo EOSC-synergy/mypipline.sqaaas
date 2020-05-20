@@ -13,10 +13,10 @@ from matplotlib import pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
 from survey_analysis import globals
+from survey_analysis.plot import output_pyplot_image
 from survey_analysis.question import Question, QuestionCollection
 from survey_analysis.util import (get_free_text_subquestion,
-                                  get_given_free_text_answers,
-                                  output_pyplot_image)
+                                  get_given_free_text_answers)
 
 
 def run():
