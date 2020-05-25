@@ -61,9 +61,14 @@ Command-Line-Interface (CLI).
 
 ### Quick Start Example: Run Analysis
 
-In order to run the survey analysis you need to copy the data-file into
-a central location like the [data/](data/) sub-folder and tell the program 
-the path to that data file.
+In order to run the survey analysis you need to copy the data-CSV-file 
+for example from the 
+[wiki page](https://gitlab.hzdr.de/hifis/survey-about-current-development-practice/-/wikis/home) 
+of the associated GitLab project 
+[Survey about current Development Practice](https://gitlab.hzdr.de/hifis/survey-about-current-development-practice)
+into a central location like the [data/](data/) sub-folder of your local python 
+project and tell the program the path to that data file.
+
 Now you can do the following to start the survey analysis from the CLI:
 
 ```shell script
@@ -73,6 +78,14 @@ $ pipenv run survey_analysis analyze data/<data_file_name>.csv
 It tells the program that you would like to do the analysis,
 where to find the analysis scripts, the _metadata_-file as well as 
 the _data_-file to be taken into account for the analysis.
+
+**Caution:** 
+Depending on the Operating System used an issue with the file 
+encoding might occur.
+There might be data-CSV-files around which are encoded with `UTF-8-BOM`
+which causes errors when read in on Windows OS.
+In this case you need to change the encoding to `UTF-8` before running
+the survey analysis.
 
 ### Flags
 
@@ -216,7 +229,7 @@ which comes with a _metadata_-flag `--metadata` or `-m` for short and
 a _data_-parameter.
 In case the _metadata_-flag is omitted it assumes the following
 path to the metadata file: 
-`data/HIFIS_Software_Survey_2020_Questions.yml`.
+`metadata/HIFIS_Software_Survey_2020_Questions.yml`.
 The _data_-parameter can _not_ be omitted and need to be given explicitly
 in order to be able to start the analysis.
 This is an example of how to do the analysis:

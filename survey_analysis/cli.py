@@ -82,7 +82,7 @@ def version() -> None:
 @cli.command()
 @click.argument("file_name", type=click.File(mode="r"))
 @click.option("--metadata", "-m",
-              default="data/HIFIS_Software_Survey_2020_Questions.yml",
+              default="metadata/HIFIS_Software_Survey_2020_Questions.yml",
               help="Give file name which contains survey metadata.")
 def analyze(file_name, metadata: str) -> None:
     """
