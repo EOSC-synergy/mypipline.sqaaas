@@ -72,33 +72,40 @@ def output_pyplot_image(output_file_stem: str = "") -> None:
     pyplot.close()
 
 
-def plot_as_stacked_bar_chart(data_frame: DataFrame,
-                              plot_file_name: str = "",
-                              **kwargs):
+def plot_bar_chart(data_frame: DataFrame,
+                   plot_file_name: str = "",
+                   **kwargs):
     """
-    Plot given data-frame as a stacked bar chart.
+    Plot given data-frame as a (stacked) bar chart.
 
-    A pandas DataFrame is used as input data from which a stacked bar chart
+    A pandas DataFrame is used as input data from which a (stacked) bar chart
     is generated. This DataFrame need be structured in a particular way.
     The actual data values are taken column by column and plotted as bars
-    for each index entry. Each sequence of bars is stacked on top of the
-    previous and labeled accordingly in the legend. The index names are used
-    to label the ticks along the x-axis, while the column names are used as
-    labels in the legend.
+    for each index entry.
+    In case of a normal bar chart this means each sequence of bars / column
+    is put next to each other while each sequence is grouped by the
+    series / rows and labeled accordingly in the legend.
+    By contrast in case of a stacked bar chart each sequence of bars / column
+    is stacked on top of the previous instead of put next to each other and
+    labeled accordingly in the legend.
+    The index names are used to label the ticks along the x-axis, while the
+    column names are used as labels in the legend.
 
     Args:
         data_frame(DataFrame): All data needed for this function to plot
             a stacked bar chart is encapsulated in this DataFrame.
-        plot_file_name(str): File name which is used to store the plot
-            to a file. If this argument is an empty string which is the
+        plot_file_name(str): Optional file name which is used to store the
+            plot to a file. If this argument is an empty string which is the
             default for this argument, a suitable file name is auto-generated.
-        **kwargs: All other arguments are passed as **kwargs.
-            These may contain plot_title, x_axis_label, y_axis_label,
-            legend_location and legend_anchor, but can be None or omitted.
+        **kwargs: All other arguments are passed as optional **kwargs.
+            These optional parameters may contain a flag "stacked"
+            to create a stacked bar chart, strings specifying the labels
+            "plot_title", "x_axis_label", "y_axis_label" and data to
+            position the legend with "legend_location" and "legend_anchor".
     """
     rcParams.update({'figure.autolayout': True})
 
-    data_frame.plot(kind="bar", stacked=True)
+    data_frame.plot(kind="bar", stacked=kwargs.get("stacked", False))
 
     ax = pyplot.gca()
 
