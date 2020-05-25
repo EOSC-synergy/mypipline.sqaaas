@@ -52,12 +52,20 @@ from .__init__ import __version__
               help="Optionally select the specific script names contained "
                    "in the scripts folder (while omitting file endings) "
                    "which should be executed.")
+@click.option("--output-folder", "-o",
+              default="output",
+              show_default=True,
+              help="Select the folder to put the generated output like plots "
+                   "into.")
 @click.option("--output-format", "-f",
               default="screen",
               show_default=True,
               help=f"Designate output format. "
                    f"Supported values are: {OutputFormat.list_supported()}.")
-def cli(verbose: int, scripts: str, names: List[str],
+def cli(verbose: int,
+        scripts: str,
+        names: List[str],
+        output_folder: str,
         output_format: str) -> None:
     """Analyze a given CSV file with a set of independent python scripts."""
     # NOTE that click takes above documentation for generating help text
@@ -66,8 +74,10 @@ def cli(verbose: int, scripts: str, names: List[str],
     set_verbosity(verbose)
     set_output_format(output_format)
 
-    logging.info(f"Selected script folder {scripts}")
+    logging.info(f"Selected script folder: {scripts}")
     globals.settings.script_folder = Path(scripts)
+    logging.info(f"Selected output folder: {output_folder}")
+    globals.settings.output_folder = Path(output_folder)
     # Set a list of selected module names contained in the module folder.
     globals.settings.script_names = names
     sys.path.insert(0, scripts)

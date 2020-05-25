@@ -95,7 +95,8 @@ The program accepts a couple of flags:
 2. Verbosity flag
 3. Scripts flag
 4. Names flag
-5. Output Format flag
+5. Output Folder flag
+6. Output Format flag
 
 #### Help flag
 
@@ -116,9 +117,12 @@ Options:
   -s, --scripts TEXT        Select the folder containing analysis scripts.
                             [default: scripts]
 
-  -n, --names TEXT          Select the script names contained in the scripts
-                            folder as comma-separated list (omitting file
-                            endings) which should be executed.  [default: all]
+  -n, --names TEXT          Optionally select the specific script names
+                            contained in the scripts folder (while omitting
+                            file endings) which should be executed.
+
+  -o, --output-folder TEXT  Select the folder to put the generated output like
+                            plots into.  [default: output]
 
   -f, --output-format TEXT  Designate output format. Supported values are:
                             SCREEN, PDF, PNG, SVG.  [default: screen]
@@ -159,10 +163,10 @@ Beside verbosity there is a _scripts_-flag called `--scripts` or
 `-s` for short:
 
 ```shell script
-$ pipenv run survey_analysis --scripts "scripts/" <COMMAND>
+$ pipenv run survey_analysis --scripts "scripts" <COMMAND>
 ```
 ```shell script
-$ pipenv run survey_analysis -s "scripts/" <COMMAND>
+$ pipenv run survey_analysis -s "scripts" <COMMAND>
 ```
 
 This will tell the program in which folder to look for the actual 
@@ -171,7 +175,7 @@ In case the _scripts_-flag is omitted it defaults to sub-folder `scripts/`.
 
 #### Names flag
 
-The _names_-flag called `--names` or `-n` for short:
+There is also a _names_-flag called `--names` or `-n` for short:
 
 ```shell script
 $ pipenv run survey_analysis --names "example_script_1" --names "example_script_2" <COMMAND>
@@ -183,6 +187,23 @@ $ pipenv run survey_analysis -n "example_script_1" -n "example_script_2" <COMMAN
 This will tell the program which scripts in the scripts folder to execute.
 In case the _names_-flag is omitted it defaults to all scripts in the
 scripts folder.
+
+#### Output Folder flag
+
+The _output-folder_-flag called `--output-folder` or `-o` for short 
+is another option:
+
+```shell script
+$ pipenv run survey_analysis --output-folder "output" <COMMAND>
+```
+```shell script
+$ pipenv run survey_analysis -o "output" <COMMAND>
+```
+
+This will tell the program in which folder to put the generated output 
+like plots into.
+In case the _output-folder_-flag is omitted it defaults to sub-folder 
+`output/`.
 
 #### Output format flag
 
