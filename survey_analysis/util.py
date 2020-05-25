@@ -7,6 +7,8 @@ This module provides helper functions.
 from collections import defaultdict
 from typing import Dict, List
 
+from pandas import DataFrame
+
 from survey_analysis.answer import Answer
 from survey_analysis.question import (AbstractQuestion, Question,
                                       QuestionCollection)
@@ -98,3 +100,33 @@ def get_given_free_text_answers(
         for participant_id, list_of_answers in question.given_answers.items()
         if list_of_answers[0].text != 'nan'
     }
+
+
+def dataframe_value_counts(dataframe: DataFrame,
+                           relative_values: bool = False,
+                           drop_nans: bool = True) -> DataFrame:
+    """
+    Count how often a unique value appears in each column of a data frame.
+
+    Args:
+        dataframe:          The data frame of which the values shall be counted
+        relative_values:    Instead of absolute counts fill the cells with
+                            their relative contribution to the column total
+        drop_nans:          Whether to remove the NaN value count.
+                            Defaults to True
+
+    Returns:
+        A new data frame with the same columns as the input.
+        The index is changed to represent the unique values and the cell
+        contain the count of the unique values in the given column.
+    """
+    new_frame: DataFrame = DataFrame([
+        dataframe[column].value_counts(
+            normalize=relative_values,
+            dropna=drop_nans)
+        for column in dataframe.columns
+        ])
+    new_frame.fillna(0, inplace=True)
+    new_frame = new_frame.transpose()
+
+    return new_frame

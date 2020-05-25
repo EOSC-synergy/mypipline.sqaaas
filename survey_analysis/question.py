@@ -13,7 +13,8 @@ from abc import ABC, abstractmethod
 from collections import defaultdict
 from typing import Dict, List, Optional, Tuple
 
-from pandas import Series
+import numpy
+from pandas import DataFrame, Series
 
 from .answer import Answer, AnswerType
 
@@ -349,10 +350,40 @@ class Question(AbstractQuestion):
                         index=self.given_answers.keys(),
                         copy=True,
                         name=self.id + " Series")
-        series = series.astype(self._data_type)
+        series = series.astype(self._data_type.__name__)
+        # TODO this is a workaround, fix parsing given answers from CSV
+        # "nan" strings did not get recognized as NaNs properly when parsing
+        # the data from the CSV
+        series.replace("nan", numpy.NaN, inplace=True)
         if filter_invalid:
             series.dropna(inplace=True)
         return series
+
+    def as_counted_series(self,
+                          relative_values: bool = False,
+                          drop_nans: bool = True) -> Series:
+        """
+        Count the occurrence of given answers.
+
+        The occurrences of given answers to a question is counted
+        in a pandas series. The value counts can be calculated
+        as relative values and NaN values can be removed along
+        the way.
+
+        Args:
+            relative_values:    Instead of absolute counts fill the
+                                cells with their relative contribution
+                                to the column total. Defaults to False.
+            drop_nans:          Whether to remove the NaN value count.
+                                Defaults to True.
+
+        Returns:
+            A series containing the count per answer.
+        """
+        return self.as_series().value_counts(
+            normalize=relative_values,
+            dropna=drop_nans
+            )
 
 
 class QuestionCollection(AbstractQuestion):
@@ -484,3 +515,31 @@ class QuestionCollection(AbstractQuestion):
             new_question.add_given_answer(participant, answer)
 
         return new_question
+
+    def as_dataframe(self, question_text_as_id: bool = False) -> DataFrame:
+        """
+        Generate a composition of answers for the sub-questions as a dataframe.
+
+        The data frame is constructed by obtaining each question as series and
+        merging them together.
+        The resulting dataframe may contain NaN-values as a result.
+
+        Args:
+            question_text_as_id:    Indicates whether to use the text of the
+                                    sub-question as column names of the data
+                                    frame, instead of the sub-question ids.
+                                    Defaults to False.
+
+        Returns:
+            A data frame containing the answer data with sub-questions as
+            columns and participant ids as indices.
+        """
+        collected_data: Dict[str, Series] = {}
+        for question in self._subquestions:
+            series = question.as_series(filter_invalid=False)
+            if question_text_as_id:
+                collected_data[question.text] = series
+            else:
+                collected_data[question.id] = series
+
+        return DataFrame(collected_data)
