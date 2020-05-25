@@ -63,7 +63,7 @@ class Settings(object):
             "True", "Yes", "Y", "On", "1"
             }
         """
-        A set of strings to be interpreted as boolean 'True' when 
+        A set of strings to be interpreted as boolean 'True' when
         parsing the input data.
         """
 
@@ -71,7 +71,7 @@ class Settings(object):
             "False", "No", "N", "Off", "0"
             }
         """
-        A set of strings to be interpreted as boolean 'False' when 
+        A set of strings to be interpreted as boolean 'False' when
         parsing the input data.
         """
 
