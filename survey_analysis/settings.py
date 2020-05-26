@@ -76,18 +76,12 @@ class Settings(object):
         """
 
         # Add upper- and lowercase variants for
-        # 'true_values' and 'false_values'
-        # Using an extra set because one can not change a set
-        # while iterating over it.
+        # 'true_values' and 'false_values'.
+        additional_lower: Set[str] = set(map(str.lower, self.true_values))
+        additional_upper: Set[str] = set(map(str.upper, self.true_values))
+        self.true_values.update(additional_lower.union(additional_upper))
 
-        additional_versions: Set[str] = set()
-        for item in self.true_values:
-            additional_versions.add(item.lower())
-            additional_versions.add(item.upper())
-        self.true_values.update(additional_versions)
+        additional_lower: Set[str] = set(map(str.lower, self.false_values))
+        additional_upper: Set[str] = set(map(str.upper, self.false_values))
+        self.false_values.update(additional_lower.union(additional_upper))
 
-        additional_versions.clear()
-        for item in self.false_values:
-            additional_versions.add(item.lower())
-            additional_versions.add(item.upper())
-        self.false_values.update(additional_versions)
