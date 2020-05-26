@@ -84,4 +84,3 @@ class Settings(object):
         additional_lower: Set[str] = set(map(str.lower, self.false_values))
         additional_upper: Set[str] = set(map(str.upper, self.false_values))
         self.false_values.update(additional_lower.union(additional_upper))
-
