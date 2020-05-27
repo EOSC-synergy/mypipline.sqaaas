@@ -15,6 +15,7 @@ from pathlib import Path
 from pydoc import locate
 from typing import Dict, List, Optional, Union
 
+import numpy
 import yaml
 
 from survey_analysis import globals
@@ -239,8 +240,12 @@ def fetch_participant_answers(
                 #                   f"participant {participant_id}, "
                 #                   f"answer text '{answer_data}'")
                 try:
-                    question.add_given_answer(participant_id,
-                                              bool(answer_data))
+                    if answer_data is numpy.NaN:
+                        question.add_given_answer(participant_id,
+                                                  answer_data)
+                    else:
+                        question.add_given_answer(participant_id,
+                                                  bool(answer_data))
                 except ValueError:
                     logging.warning(
                         f"Could not parse answer to type 'bool' for "
@@ -264,7 +269,12 @@ def fetch_participant_answers(
                     )
             elif question.data_type is int:
                 try:
-                    question.add_given_answer(participant_id, int(answer_data))
+                    if answer_data is numpy.NaN:
+                        question.add_given_answer(participant_id,
+                                                  answer_data)
+                    else:
+                        question.add_given_answer(participant_id,
+                                                  int(answer_data))
                 except ValueError:
                     logging.warning(
                         f"Could not parse answer to type 'int' for "

@@ -184,7 +184,8 @@ class Question(AbstractQuestion):
                             Its type should match the question data type
         """
         assert answer_data is not None
-        if not type(answer_data) == self._data_type:
+        if (not type(answer_data) == self._data_type
+                and answer_data is not numpy.NaN):
             raise TypeError(f"Answer data type did not match question type. "
                             f"Answer was {answer_data} "
                             f"(type '{type(answer_data).__name__}') "
