@@ -1,7 +1,7 @@
 """
 A dummy script for testing the function dispatch
 
-.. currentmodule:: survey_analysis.scripts.dummy
+.. currentmodule:: survey_analysis.scripts.example_institute_count.py
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 from typing import Dict, List

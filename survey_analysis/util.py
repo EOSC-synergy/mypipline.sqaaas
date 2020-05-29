@@ -5,9 +5,9 @@ This module provides helper functions.
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 from collections import defaultdict
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from pandas import DataFrame
+from pandas import DataFrame, Series, concat
 
 from survey_analysis.answer import Answer
 from survey_analysis.question import (AbstractQuestion, Question,
@@ -29,7 +29,7 @@ def filter_and_group(
         filter_args:     Arguments passed to filter.
 
     Returns:
-        An association of answers of grouped_question to the filtered answers
+        An association of answers of group_question to the filtered answers
         of filter_question from these participants.
     """
     grouped_answers = group_question.grouped_by_answer()
@@ -45,6 +45,7 @@ def filter_and_group(
     return results
 
 
+# TODO this can be a member of QuestionCollection itself
 def get_free_text_subquestion(
         question: QuestionCollection,
         free_text_question_id: str = 'other'
@@ -117,7 +118,7 @@ def dataframe_value_counts(dataframe: DataFrame,
 
     Returns:
         A new data frame with the same columns as the input.
-        The index is changed to represent the unique values and the cell
+        The index is changed to represent the unique values and the cells
         contain the count of the unique values in the given column.
     """
     new_frame: DataFrame = DataFrame([
@@ -130,3 +131,61 @@ def dataframe_value_counts(dataframe: DataFrame,
     new_frame = new_frame.transpose()
 
     return new_frame
+
+
+def cross_reference_sum(data: DataFrame, grouping: Series) -> DataFrame:
+    """
+    Cross references a data frame with a series and count correlations.
+
+    The data frame is processed column-wise.
+    For each column, indices are grouped up by their respective value in the
+    grouping series and each group is summed up.
+
+    Columns with incomplete data or rows that can not be cross-referenced may
+    be dropped.
+
+    In the context of the survey analysis, data usually is a multiple choice
+    question, while the grouping series is a single choice question.
+    They get matched by the participant IDs and the correlations get summed up.
+
+    Args:
+        data:       A data frame of which the columns are to be grouped and
+                    summed up.
+        grouping:   A series with indices (mostly) matching that of "data",
+                    associating each index with a group towards which the
+                    values of "data" are to be counted.
+
+    Returns:
+        A data frame containing the columns from data (minus dropped columns)
+        and the unique values of the grouping series as indices.
+        Each cell at [column, index] holds the sum of the values in the
+        respective column of the data which corresponded to the index in the
+        grouping series.
+
+    """
+    grouping_values: List[Any] = grouping.unique()
+    grouping_header: str = grouping.name
+
+    # Join the frame and the series for association and clean N/A values
+    # Rows that can not be associated get dropped, they will not contribute to
+    # the summary.
+    joined_frame: DataFrame = data.join(grouping, how="inner")
+    joined_frame.dropna(inplace=True)
+
+    # Process the singular rows and keep them in a list to concatenate them all
+    # at once later on. This seems to be more efficient than DataFrame.append()
+    # The latter also seems to drop the type information which can lead to
+    # trouble when attempting to plot the result.
+    per_field: List[Series] = []
+    for current_group in grouping_values:
+        mask = joined_frame[grouping_header] == current_group
+        filtered = joined_frame[mask]
+
+        # Drop the series entries previously added for association, so they do
+        # not show up in the result. Also set the name so it becomes the index
+        # label on concatenation.
+        summary: Series = filtered.drop(columns=[grouping_header]).sum()
+        summary.name = current_group
+        per_field.append(summary)
+
+    return concat(per_field, axis=1)

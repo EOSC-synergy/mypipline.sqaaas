@@ -13,6 +13,7 @@ The actual plotting is done by utilizing a separate plotting library called
 import logging
 from inspect import FrameInfo, getmodulename, stack
 from pathlib import Path
+from textwrap import wrap
 
 from matplotlib import pyplot, rcParams
 from pandas import DataFrame
@@ -74,7 +75,8 @@ def output_pyplot_image(output_file_stem: str = "") -> None:
 
 def plot_bar_chart(data_frame: DataFrame,
                    plot_file_name: str = "",
-                   **kwargs):
+                   x_label_rotation: int = 0,
+                   **kwargs) -> None:
     """
     Plot given data-frame as a (stacked) bar chart.
 
@@ -92,16 +94,35 @@ def plot_bar_chart(data_frame: DataFrame,
     column names are used as labels in the legend.
 
     Args:
-        data_frame(DataFrame): All data needed for this function to plot
-            a stacked bar chart is encapsulated in this DataFrame.
-        plot_file_name(str): Optional file name which is used to store the
-            plot to a file. If this argument is an empty string which is the
-            default for this argument, a suitable file name is auto-generated.
-        **kwargs: All other arguments are passed as optional **kwargs.
-            These optional parameters may contain a flag "stacked"
-            to create a stacked bar chart, strings specifying the labels
-            "plot_title", "x_axis_label", "y_axis_label" and data to
-            position the legend with "legend_location" and "legend_anchor".
+        data_frame:
+            All data needed for this function to plot a stacked bar chart is
+            encapsulated in this DataFrame.
+
+        plot_file_name:
+            Optional file name which is used to store the plot to a file. If
+            this argument is an empty string (Default) for this argument, a
+            suitable file name is auto-generated.
+
+        **kwargs:
+            stacked:
+                Prompts the generation of a stacked bar chart instead on bars
+                being grouped side-by-side.
+            plot_title:
+                The title text for the plot. (Dafault: "")
+            x_axis_label:
+                The label for the x-axis. Default: "")
+            x_label_rotation:
+                Allows to rotate the x-axis labels for better readability.
+                Value is given in degrees. (Default: 0)
+            y_axis_label:
+                The label for the y-axis. Default: "")
+            legend_location:
+                Specifies positioning of the plot's legend. (Default: "best")
+                See Also: pandas.Axis.legend(loc)
+            legend_anchor:
+                Allows to specify an anchor point for the plot's legend
+                (Default: None)
+                See Also: pandas.Axis.legend(bbox_to_anchor)
     """
     rcParams.update({'figure.autolayout': True})
 
@@ -113,11 +134,71 @@ def plot_bar_chart(data_frame: DataFrame,
     ax.set_xlabel(kwargs.get("x_axis_label", ""))
     ax.set_ylabel(kwargs.get("y_axis_label", ""))
     ax.set_xticklabels(data_frame.index.values,
-                       rotation=45,
+                       rotation=kwargs.get("x_label_rotation", 0),
                        ha="right")
 
     ax.legend(data_frame.columns.values,
               loc=kwargs.get("legend_location", "best"),
               bbox_to_anchor=kwargs.get("legend_anchor", None))
+
+    output_pyplot_image(plot_file_name)
+
+
+def plot_matrix_chart(data_frame: DataFrame,
+                      plot_file_name: str = "",
+                      **kwargs) -> None:
+    """
+    Plot given data frame as matrix chart.
+
+    Args:
+        data_frame:
+            The data frame to plot
+
+        plot_file_name:
+            (Optional) The file name stem for the output file
+
+        kwargs:
+            plot_title:
+                The title text for the plot. (Dafault: "")
+            x_axis_label:
+                The label for the x-axis. Default: "")
+            x_label_rotation:
+                Allows to rotate the x-axis labels for better readability.
+                Value is given in degrees. (Default: 0)
+            y_axis_label:
+                The label for the y-axis. Default: "")
+    """
+    rcParams.update({'figure.autolayout': True})
+
+    column_count: int = len(data_frame.columns)
+    row_count: int = len(data_frame.index)
+
+    x_tick_labels = ["\n".join(wrap(label, 20))
+                     for label in data_frame.columns.values]
+
+    x_rotation: int = kwargs.get("x_label_rotation", 0)
+
+    figure, axes = pyplot.subplots()
+    axes.imshow(data_frame, aspect="auto")
+    axes.set_title(kwargs.get("plot_title", ""))
+    axes.set_xlabel(kwargs.get("x_axis_label", ""))
+    axes.set_ylabel(kwargs.get("y_axis_label", ""))
+    axes.set_xticks(range(column_count))
+    axes.set_yticks(range(row_count))
+    axes.set_xticklabels(x_tick_labels,
+                         rotation=x_rotation,
+                         ha="right" if x_rotation else "center",
+                         rotation_mode="anchor")
+    axes.set_yticklabels(data_frame.index.values)
+
+    # Loop over the data and annotate the actual values
+    for i in range(row_count):
+        for j in range(column_count):
+            axes.text(
+                j, i,
+                round(data_frame.iloc[i, j], 2),
+                ha="center",
+                va="center",
+                color="w")
 
     output_pyplot_image(plot_file_name)

@@ -199,6 +199,10 @@ def fetch_participant_answers(
     All answers will be stored in the globals.survey_questions dictionary.
     No data will be filtered during this operation, all will be transferred
     as-is.
+    Note: Entries with no data tend to be represented as numpy.nan in pandas.
+    If the respective column holds boolean or integer values, there is no valid
+    representation in these data types for NaN. To preserve clean typing in
+    these columns, the numpy.nan will be replaced by None.
 
     Args:
         data_source:    A DataContainer wrapping the raw data.
@@ -229,23 +233,13 @@ def fetch_participant_answers(
             # Convert the given data to their respective values given the
             # Target type.
             if question.data_type is bool:
-                # # TODO externalize boolean keywords
-                # if answer_data.lower() in ["y", "yes", "true", "1", "on"]:
-                #     question.add_given_answer(participant_id, True)
-                # elif answer_data.lower() in ["n", "no", "false", "0", "off"]:
-                #     question.add_given_answer(participant_id, False)
-                # else:
-                #     logging.error(f"Could not parse answer to bool for "
-                #                   f"question {question.id}, "
-                #                   f"participant {participant_id}, "
-                #                   f"answer text '{answer_data}'")
                 try:
-                    if answer_data is numpy.NaN:
-                        question.add_given_answer(participant_id,
-                                                  answer_data)
-                    else:
+                    if answer_data is not numpy.NaN:
                         question.add_given_answer(participant_id,
                                                   bool(answer_data))
+                    else:
+                        # numpy.nan is not a valid bool, replace by None
+                        question.add_given_answer(participant_id, None)
                 except ValueError:
                     logging.warning(
                         f"Could not parse answer to type 'bool' for "
@@ -269,12 +263,12 @@ def fetch_participant_answers(
                     )
             elif question.data_type is int:
                 try:
-                    if answer_data is numpy.NaN:
-                        question.add_given_answer(participant_id,
-                                                  answer_data)
-                    else:
+                    if answer_data is not numpy.NaN:
                         question.add_given_answer(participant_id,
                                                   int(answer_data))
+                    else:
+                        # numpy.nan is not a valid int, replace by None
+                        question.add_given_answer(participant_id, None)
                 except ValueError:
                     logging.warning(
                         f"Could not parse answer to type 'int' for "
@@ -284,4 +278,11 @@ def fetch_participant_answers(
                         f"Data entry ignored"
                         )
             else:
-                question.add_given_answer(participant_id, str(answer_data))
+                # Note: numpy.nan will be stored as "nan", thus they will be
+                # replaced to allow them to be distinguished from valid strings
+                # containing the text "nan"
+                # TODO: Check for hacks/workarounds that filtered "nan" strings
+                if answer_data is not numpy.NaN:
+                    question.add_given_answer(participant_id, str(answer_data))
+                else:
+                    question.add_given_answer(participant_id, None)

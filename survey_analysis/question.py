@@ -169,7 +169,7 @@ class Question(AbstractQuestion):
         return self._given_answers
 
     def add_given_answer(self, participant_id: str,
-                         answer_data: AnswerType) -> None:
+                         answer_data: Optional[AnswerType]) -> None:
         """
         Insert an answer given by an participant for the question.
 
@@ -183,9 +183,8 @@ class Question(AbstractQuestion):
                             participant.
                             Its type should match the question data type
         """
-        assert answer_data is not None
         if (not type(answer_data) == self._data_type
-                and answer_data is not numpy.NaN):
+                and answer_data is not None):
             raise TypeError(f"Answer data type did not match question type. "
                             f"Answer was {answer_data} "
                             f"(type '{type(answer_data).__name__}') "
@@ -351,13 +350,13 @@ class Question(AbstractQuestion):
                         index=self.given_answers.keys(),
                         copy=True,
                         name=self.id + " Series")
-        series = series.astype(self._data_type.__name__)
-        # TODO this is a workaround, fix parsing given answers from CSV
-        # "nan" strings did not get recognized as NaNs properly when parsing
-        # the data from the CSV
-        series.replace("nan", numpy.NaN, inplace=True)
+
+        if self.data_type == str:
+            series.replace("nan", numpy.NaN, inplace=True)
+
         if filter_invalid:
             series.dropna(inplace=True)
+        series = series.astype(self._data_type.__name__)
         return series
 
     def as_counted_series(self,
