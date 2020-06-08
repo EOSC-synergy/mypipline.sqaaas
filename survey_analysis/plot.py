@@ -11,11 +11,13 @@ The actual plotting is done by utilizing a separate plotting library called
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import logging
+import math
 from inspect import FrameInfo, getmodulename, stack
 from pathlib import Path
 from textwrap import wrap
 
 from matplotlib import pyplot, rcParams
+from matplotlib.colors import ListedColormap
 from pandas import DataFrame
 
 from survey_analysis.globals import settings
@@ -60,8 +62,8 @@ def output_pyplot_image(output_file_stem: str = "") -> None:
 
     file_ending: str = settings.output_format.name.lower()
     file_name: str = f"{output_file_stem}.{file_ending}"
-    output_subfolder: Path = settings.output_folder/settings.run_timestamp
-    output_path: Path = output_subfolder/file_name
+    output_subfolder: Path = settings.output_folder / settings.run_timestamp
+    output_path: Path = output_subfolder / file_name
 
     if not output_subfolder.exists():
         output_subfolder.mkdir(parents=True)
@@ -75,7 +77,8 @@ def output_pyplot_image(output_file_stem: str = "") -> None:
 
 def plot_bar_chart(data_frame: DataFrame,
                    plot_file_name: str = "",
-                   x_label_rotation: int = 0,
+                   show_legend: bool = True,
+                   show_value_labels: bool = True,
                    **kwargs) -> None:
     """
     Plot given data-frame as a (stacked) bar chart.
@@ -103,6 +106,14 @@ def plot_bar_chart(data_frame: DataFrame,
             this argument is an empty string (Default) for this argument, a
             suitable file name is auto-generated.
 
+        show_legend:
+            Used to control whether a legend is included in the plot or not.
+            (Default: True)
+
+        show_value_labels:
+            Enable or disable labels to show the values of each bar.
+            (Default: True)
+
         **kwargs:
             stacked:
                 Prompts the generation of a stacked bar chart instead on bars
@@ -126,22 +137,210 @@ def plot_bar_chart(data_frame: DataFrame,
     """
     rcParams.update({'figure.autolayout': True})
 
-    data_frame.plot(kind="bar", stacked=kwargs.get("stacked", False))
+    # Color map Generation:
+    # 1. Pick a suitable predefined colormap. Chose one with light colors so
+    # the value labels can stand out by darkening them.
+    base_color_map = pyplot.get_cmap("Pastel1")
+    color_count = len(base_color_map.colors)
+    if len(data_frame.columns) > color_count:
+        raise NotImplementedError(
+            f"Attempt to plot a bar chart "
+            f"with more then {color_count} columns per row."
+            f"Color palette has not enough colors for all of them."
+            f"(is bar chart a fitting diagram type here?)"
+            f"(Would transposing the data frame help?)"
+            )
+    # 2. Reduce the colormap to have only as much colors as there are columns
+    # so each columns color index matches the column index
+    # (If the colormap were larger one would have to do linear interpolation to
+    # obtain the proper color)
+    colors = ListedColormap(
+        [base_color_map.colors[index]
+         for index in range(len(data_frame.columns))
+         ])
+    # This new colormap is handed to the graph and used in the value labels
 
-    ax = pyplot.gca()
+    plot_stacked: bool = kwargs.get("stacked", False)
+    x_rotation: int = kwargs.get("x_label_rotation", 0)
 
-    ax.set_title(kwargs.get("plot_title", ""))
-    ax.set_xlabel(kwargs.get("x_axis_label", ""))
-    ax.set_ylabel(kwargs.get("y_axis_label", ""))
-    ax.set_xticklabels(data_frame.index.values,
-                       rotation=kwargs.get("x_label_rotation", 0),
-                       ha="right")
+    data_frame.plot(kind="bar",
+                    stacked=plot_stacked,
+                    cmap=colors)
 
-    ax.legend(data_frame.columns.values,
-              loc=kwargs.get("legend_location", "best"),
-              bbox_to_anchor=kwargs.get("legend_anchor", None))
+    axes = pyplot.gca()
+
+    axes.set_title(kwargs.get("plot_title", ""))
+    axes.set_xlabel(kwargs.get("x_axis_label", ""))
+    axes.set_ylabel(kwargs.get("y_axis_label", ""))
+    axes.set_xticklabels(data_frame.index.values,
+                         rotation=x_rotation,
+                         ha="right" if x_rotation else "center",
+                         rotation_mode="anchor")
+    if show_legend:
+        axes.legend(data_frame.columns.values,
+                    loc=kwargs.get("legend_location", "best"),
+                    bbox_to_anchor=kwargs.get("legend_anchor", None))
+    else:
+        axes.get_legend().remove()
+
+    if show_value_labels:
+        _add_bar_chart_value_labels(data_frame, colors, plot_stacked)
 
     output_pyplot_image(plot_file_name)
+
+
+def _add_bar_chart_value_labels(data_frame: DataFrame,
+                                color_map,
+                                plot_stacked: bool) -> None:
+    """
+    Add value labels to a bar chart.
+
+    This is a helper method and not supposed to be called on its own.
+
+    Args:
+        data_frame:
+            The data frame providing the data for the chart.
+
+        color_map:
+            The color map used by the bar chart.
+
+        plot_stacked:
+            Whether the chart is a stacked bar chart or not.
+    """
+    default_font_size = rcParams["font.size"]
+    axes = pyplot.gca()
+
+    # Loop over the data and annotate the actual values
+    column_count: int = len(data_frame.columns)
+    row_count: int = len(data_frame.index)
+
+    if plot_stacked:
+        sums = data_frame.sum(axis=1)
+        minimum_value = sums.min()
+        maximum_value = sums.max()
+
+        if minimum_value > 0:
+            minimum_value = 0
+
+        # The lower boundary of the plotting area
+        y_range = maximum_value - minimum_value
+
+        # The minimum height until which a label can be included
+        # directly in the bar as fraction of the plot height
+        min_include_height = y_range / 15
+
+        for row in range(row_count):
+            row_sum = 0
+
+            for column in range(column_count):
+                value = data_frame.iloc[row, column]
+
+                # Skip values that can not be plotted in a stacked bar chart
+                if (value in [0, None]) or math.isnan(value):
+                    continue
+
+                color = color_map.colors[column]
+                # Darken the color by setting each component to 50%
+                color_dark = [0.5 * component for component in color]
+
+                bar_center_y = row_sum + value / 2
+
+                # If the value fits inside the bar plot it directly in the
+                # center, otherwise move it to the outside and add a line as
+                # indicator
+                if value > min_include_height:
+                    text_x = row
+                    text_y = bar_center_y
+                else:
+                    # The label has to go outside the bar
+                    # The following numbers come from eyeballing and implicit
+                    # knowledge how the x-axis is organized.
+                    # See also below in the non-stacked section.
+
+                    # The text goes to the left of the bar if the column index
+                    # is an odd number, otherwise the text is offset
+                    # to the right.
+                    # 0.375 is the middle of the white space between the
+                    # section borders (relative coordinates -0.5 … +0.5 ) and
+                    # bar borders (relative coordinates -0.25 … + 0.25)
+                    text_left: bool = bool(column % 2)
+                    text_x_offset: float = -0.375 if text_left else 0.375
+                    line_x_overhang: float = -0.1 if text_left else 0.1
+
+                    # Move the text_y up a bit so it does not overlap the
+                    # indicator line
+                    text_y = bar_center_y + min_include_height/4
+                    text_x = row + text_x_offset
+
+                    # Plot the indicator line
+                    pyplot.plot(
+                        [text_x + line_x_overhang, row],
+                        [bar_center_y, bar_center_y],
+                        color=color)
+
+                # Values with more than 2 digits get displayed with smaller
+                # font size to fit them better
+                axes.text(text_x, text_y, value,
+                          ha="center",
+                          va="center",
+                          color=color_dark,
+                          size=default_font_size if value < 100 else "smaller")
+                # for next row iteration:
+                row_sum += value
+    else:
+
+        maximum_value = data_frame.max().max()
+        minimum_value = data_frame.min().min()
+        # If not stacked, all bar texts share the same y-component
+        # This has to account for the possible range of values
+        # and negative values.
+        # An offset from the x-axis of 1/10th of the most extreme value was
+        # chosen for the text labels by iterative eyeballing.
+        if abs(maximum_value) >= abs(minimum_value):
+            text_y = maximum_value / 10
+        else:
+            text_y = minimum_value / 10
+
+        # For the x-offset calculation, negative values mean left,
+        # positive values mean right.
+        # The x-axis is subdivided into <row_count> equal sections
+        # Each section has by definition a width of 1 unit
+        # The bar area starts at 0.25 units to the left
+        # and ends at 0.25 units to the right
+        bar_area_offset = 0.25
+        bar_area_width = 0.5
+
+        # In case of non-stacked plots, the bar area is equally distributed
+        # across <column_count> bars and each label is offset by a half bar
+        # width within the bar to center it
+        bar_width = bar_area_width / column_count
+        bar_offset = bar_width / 2
+        for row in range(row_count):
+            for column in range(column_count):
+                color = color_map.colors[column]
+
+                # Darken the color by setting each component to 50%
+                color = [0.5 * component for component in color]
+
+                # Within each bar area the bar for each column starts at:
+                column_offset = bar_width * column
+                # And thus, the final x-component is distributed around <row>,
+                # which indicates the center of the section.
+                # The bar_area_offset gives the leftmost point of the bar area,
+                # the column_offset yields the leftmost point of the current
+                # column within the bar area and from there out, the bar_offset
+                # gives the center of the bar. So:
+                text_x = row - bar_area_offset + column_offset + bar_offset
+
+                value = data_frame.iloc[row, column]
+
+                # Values with more than 2 digits get displayed with smaller
+                # font size to fit them better
+                axes.text(text_x, text_y, value,
+                          ha="center",
+                          va="center",
+                          color=color,
+                          size=default_font_size if value < 100 else "smaller")
 
 
 def plot_matrix_chart(data_frame: DataFrame,
