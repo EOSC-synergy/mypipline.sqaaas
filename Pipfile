@@ -16,9 +16,6 @@ sphinx-rtd-theme = ">=0.4.3,<1"
 tox = ">=3.0.0,<4"
 twine = ">=1.11.0,<2"
 
-[packages]
-pyyaml = "*"
-
 [requires]
 python_version = "3.8"
 
