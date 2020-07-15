@@ -5,11 +5,13 @@ This module provides helper functions.
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 from collections import defaultdict
-from typing import Any, Dict, List
+from logging import error
+from typing import Any, Dict, List, Set
 
 from pandas import DataFrame, Series, concat
 
 from survey_analysis.answer import Answer
+from survey_analysis.globals import survey_questions
 from survey_analysis.question import (AbstractQuestion, Question,
                                       QuestionCollection)
 
@@ -18,7 +20,7 @@ def filter_and_group(
         filter_question: Question,
         group_question: Question,
         **filter_args
-        ) -> Dict[Answer, Dict[str, List[Answer]]]:
+) -> Dict[Answer, Dict[str, List[Answer]]]:
     """
     Obtain filtered results grouped by the answers of a question.
 
@@ -49,7 +51,7 @@ def filter_and_group(
 def get_free_text_subquestion(
         question: QuestionCollection,
         free_text_question_id: str = 'other'
-        ) -> Question:
+) -> Question:
     """
     Get the subquestion of QuestionCollection that asks for free text answers.
 
@@ -75,7 +77,7 @@ def get_free_text_subquestion(
 
 def get_given_free_text_answers(
         abstract_question: AbstractQuestion
-        ) -> Dict[str, Answer]:
+) -> Dict[str, Answer]:
     """
     Obtain valid free text answers of a Question.
 
@@ -126,7 +128,7 @@ def dataframe_value_counts(dataframe: DataFrame,
             normalize=relative_values,
             dropna=drop_nans)
         for column in dataframe.columns
-        ])
+    ])
     new_frame.fillna(0, inplace=True)
     new_frame = new_frame.transpose()
 
@@ -189,3 +191,39 @@ def cross_reference_sum(data: DataFrame, grouping: Series) -> DataFrame:
         per_field.append(summary)
 
     return concat(per_field, axis=1)
+
+
+def question_ids_to_dataframe(question_ids: Set[str] = []) -> DataFrame:
+    """
+    Combine multiple questions into a single pandas DataFrame.
+
+    It replaces all question collections with their
+    sub questions and ignores all invalid identifiers.
+
+    In case the argument is omitted, all questions will be loaded.
+
+    Args:
+        question_ids: A list containing question IDs as string.
+
+    Returns:
+        A joint data frame containing the columns for each question_id.
+    """
+    if not question_ids:  # if arg is empty, use full list
+        question_ids = set(survey_questions.keys())
+
+    questions: Set[Question] = set()
+    for question_id in question_ids:
+        try:
+            question: AbstractQuestion = survey_questions[question_id]
+            for item in question.flatten():
+                questions.add(item)
+        except KeyError:
+            error(f"When constructing data frame from multiple questions: "
+                  f"{question_id} is not a valid ID")
+            continue
+
+    questions_as_dataframe: DataFrame = concat(
+        list(item.as_series(filter_invalid=False) for item in questions),
+        axis=1, join='outer')
+
+    return questions_as_dataframe
