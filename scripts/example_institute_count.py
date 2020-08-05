@@ -4,46 +4,36 @@ A dummy script for testing the function dispatch
 .. currentmodule:: survey_analysis.scripts.example_institute_count.py
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
-from typing import Dict, List
+from typing import Dict
+
+from pandas import DataFrame, Series
 
 from survey_analysis import globals
-from survey_analysis.answer import Answer
+from survey_analysis.plot import plot_bar_chart, plot_box_chart
 from survey_analysis.question import Question
 
 
 def run():
-    print("Example Script: Counting Answers for Question G1003")
-
     # As an example, count how many participants there were for each
     # institution
+    question_id: str = "G1003"
+    question: Question = globals.survey_questions[question_id]
+    print(f"Example Script: "
+          f"Counting Answers for Question {question_id}:\n"
+          f"\t{question.text}")
 
-    question: Question = globals.survey_questions["G1003"]
+    # Replace the series index by the short versions of the answers since the
+    # full text does not fit on the plot
+    count: Series = question.as_counted_series(use_short_answer=True)
 
-    print(f"\t{question.text}")
+    # Set a proper name for the series, it will become the tick label for the
+    # box plot
+    count.name = "Count"
 
-    valid_answers: Dict[str, List[Answer]] = \
-        question.filter_given_answers(include_free_text=False)
+    # The plot functions take data frames, so convert the series into one
+    frame: DataFrame = DataFrame(count)
 
-    counted_answers: Dict[Answer, int] = {}
-
-    # valid_answers yields the participant ID as well which we do not need for
-    # this use case. That is why the .values() is used here
-
-    # Flatten the obtained list of lists
-    # See also https://stackoverflow.com/questions/952914/how-to-make-a-flat
-    # -list-out-of-list-of-lists
-    answers: List[Answer] = [
-        item
-        for sublist in valid_answers.values()
-        for item in sublist
-        ]
-
-    answer: Answer
-    for answer in answers:
-        if answer in counted_answers:
-            counted_answers[answer] += 1
-        else:
-            counted_answers[answer] = 1
-
-    for answer in counted_answers:
-        print(f"{counted_answers[answer]:>4} \t{answer.text}")
+    # Generate a box plot and a bar plot
+    # The x labels for the bar plot are rotated to make better use of the space
+    plot_bar_chart(frame, show_legend=False, x_label_rotation=45)
+    plot_box_chart(frame)

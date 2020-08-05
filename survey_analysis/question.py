@@ -308,7 +308,8 @@ class Question(AbstractQuestion):
         """
         return [self]
 
-    def as_series(self, filter_invalid: bool = True) -> Series:
+    def as_series(self, filter_invalid: bool = True,
+                  use_short_answer: bool = False) -> Series:
         """
         Create a pandas series from a given question.
 
@@ -321,9 +322,14 @@ class Question(AbstractQuestion):
         unexpected by omitting answers from the provided data.
 
         Args:
-            filter_invalid: Whether to remove invalid data entries. Will remove
-                            data entries considered invalid by pandas if set to
-                            True, which is the default.
+            filter_invalid:     Whether to remove invalid data entries.
+                                Will remove data entries considered invalid by
+                                pandas if set to True, which is the default.
+
+            use_short_answer:   Use the short version of the answer instead of
+                                the raw data, if available.
+                                Especially useful if the answer would generate
+                                very long labels. Default is False.
 
         Returns:
             A new pandas series from the given answers, with participant IDs as
@@ -344,7 +350,11 @@ class Question(AbstractQuestion):
                     "Multivariate data can not be converted to series")
 
             answer = self.given_answers[participant_id][0]  # See Note (0)
-            question_answers.append(answer.raw_data)
+
+            if use_short_answer and answer.short_text:
+                question_answers.append(answer.short_text)
+            else:
+                question_answers.append(answer.raw_data)
 
         series = Series(data=question_answers,
                         index=self.given_answers.keys(),
@@ -361,7 +371,8 @@ class Question(AbstractQuestion):
 
     def as_counted_series(self,
                           relative_values: bool = False,
-                          drop_nans: bool = True) -> Series:
+                          filter_invalid: bool = True,
+                          use_short_answer: bool = False) -> Series:
         """
         Count the occurrence of given answers.
 
@@ -374,16 +385,23 @@ class Question(AbstractQuestion):
             relative_values:    Instead of absolute counts fill the
                                 cells with their relative contribution
                                 to the column total. Defaults to False.
-            drop_nans:          Whether to remove the NaN value count.
+
+            filter_invalid:     Whether to remove the NaN / None value count.
                                 Defaults to True.
+
+            use_short_answer:   Use the short version of the answer instead of
+                                the raw data, if available.
+                                Especially useful if the answer would generate
+                                very long labels. Default is False.
 
         Returns:
             A series containing the count per answer.
         """
-        return self.as_series().value_counts(
-            normalize=relative_values,
-            dropna=drop_nans
-            )
+        as_series = self.as_series(filter_invalid=filter_invalid,
+                                   use_short_answer=use_short_answer)
+
+        return as_series.value_counts(normalize=relative_values,
+                                      dropna=filter_invalid)
 
 
 class QuestionCollection(AbstractQuestion):

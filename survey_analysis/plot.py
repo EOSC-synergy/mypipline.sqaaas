@@ -15,6 +15,7 @@ import math
 from inspect import FrameInfo, getmodulename, stack
 from pathlib import Path
 from textwrap import wrap
+from typing import List, Optional
 
 from matplotlib import pyplot, rcParams
 from matplotlib.colors import ListedColormap
@@ -24,7 +25,7 @@ from survey_analysis.globals import settings
 from survey_analysis.settings import OutputFormat
 
 
-def output_pyplot_image(output_file_stem: str = "") -> None:
+def _output_pyplot_image(output_file_stem: str = "") -> None:
     """
     Shorthand function to render pyplot images depending on output settings.
 
@@ -192,7 +193,7 @@ def plot_bar_chart(data_frame: DataFrame,
         _add_bar_chart_value_labels(data_frame, colors, plot_stacked,
                                     round_value_labels_to_decimals)
 
-    output_pyplot_image(plot_file_name)
+    _output_pyplot_image(plot_file_name)
 
 
 def _add_bar_chart_value_labels(data_frame: DataFrame,
@@ -368,6 +369,98 @@ def _add_bar_chart_value_labels(data_frame: DataFrame,
                           size=default_font_size if value < 100 else "smaller")
 
 
+def plot_box_chart(data_frame: Optional[DataFrame] = None,
+                   data_frames: List[DataFrame] = None,
+                   plot_file_name: str = "",
+                   **kwargs) -> None:
+    """
+    Generate a box chart from the provided data.
+
+    Each column in the frame corresponds to one box with whiskers.
+
+    Args:
+        data_frame:
+            A singular data frame. Syntactic sugar for using
+            `data_frame=x` instead of `data_frames=[x]`.
+
+        data_frames:
+            A list of data frames. The columns with the same column index
+            across all the frames are grouped together.
+
+        plot_file_name:
+            Optional file name which is used to store the plot to a file. If
+            this argument is an empty string (Default) for this argument, a
+            suitable file name is auto-generated.
+
+        **kwargs:
+            plot_title:
+                The title text for the plot. (Default: "")
+            x_axis_label:
+                The label for the x-axis. Default: "")
+            x_label_rotation:
+                Allows to rotate the x-axis labels for better readability.
+                Value is given in degrees. (Default: 0)
+            y_axis_label:
+                The label for the y-axis. Default: "")
+    """
+    rcParams.update({'figure.autolayout': True})
+    x_rotation: int = kwargs.get("x_label_rotation", 0)
+
+    # Create a new holder for the data frames to not manipulate the default
+    # parameter
+    _data_frames: List[DataFrame] = data_frames.copy() if data_frames else []
+
+    if (data_frame is not None) and (not data_frame.empty):
+        _data_frames.append(data_frame.copy())
+
+    if not _data_frames:
+        logging.warning(f"Attempt to create box plot {plot_file_name} without "
+                        f"data. Skipping this plot.")
+        return
+
+    column_count: int = max(len(frame.columns) for frame in _data_frames)
+    frame_count: int = len(_data_frames)
+
+    figure, axes = pyplot.subplots()
+    axes.set_title(kwargs.get("plot_title", ""))
+    axes.set_xlabel(kwargs.get("x_axis_label", ""))
+    axes.set_ylabel(kwargs.get("y_axis_label", ""))
+    axes.grid("on", axis="y", which="major", color="lightgray")
+
+    x_tick_labels: List[str] = []
+    for column_index in range(column_count):
+        group_position = column_index * frame_count
+        data_frame_counter: int = 0
+        for frame in _data_frames:
+
+            # Handle frames with fewer columns
+            if len(frame.columns) <= column_index:
+                continue
+
+            # Using the factor 0.75 to keep plots of one group closer together
+            position = group_position + data_frame_counter * 0.75
+            x_tick_labels.append(frame.columns[column_index])
+            column_frame = frame.iloc[:, column_index].dropna()
+            plot = axes.boxplot(column_frame,
+                                positions=[position],
+                                widths=0.5,
+                                patch_artist=True)
+
+            # Fill the box background so the boxes overlay the grid lines
+            for patch in plot["boxes"]:
+                patch.set_facecolor("wheat")
+            data_frame_counter += 1
+
+    axes.set_xticklabels(x_tick_labels,
+                         rotation=x_rotation,
+                         ha="right" if x_rotation else "center",
+                         rotation_mode="anchor")
+    # Adapt the figure to its content
+    figure.set_size_inches(column_count * frame_count * 0.5, 6)
+
+    _output_pyplot_image(plot_file_name)
+
+
 def plot_matrix_chart(data_frame: DataFrame,
                       plot_file_name: str = "",
                       invert_colors: bool = False,
@@ -445,4 +538,4 @@ def plot_matrix_chart(data_frame: DataFrame,
                 va="center",
                 color="black" if switch_color else "white")
 
-    output_pyplot_image(plot_file_name)
+    _output_pyplot_image(plot_file_name)

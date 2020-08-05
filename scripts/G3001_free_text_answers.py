@@ -13,7 +13,7 @@ from matplotlib import pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
 from survey_analysis import globals
-from survey_analysis.plot import output_pyplot_image
+from survey_analysis.plot import _output_pyplot_image
 from survey_analysis.question import Question, QuestionCollection
 from survey_analysis.util import (get_free_text_subquestion,
                                   get_given_free_text_answers)
@@ -87,4 +87,4 @@ def run():
     # prevent xlabel cut off
     plt.tight_layout()
 
-    output_pyplot_image()
+    _output_pyplot_image()
