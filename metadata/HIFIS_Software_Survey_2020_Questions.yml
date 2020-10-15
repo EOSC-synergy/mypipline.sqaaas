@@ -9,10 +9,12 @@
       text: Energy
     - id: A2
       text: Earth and Environment
+      short-text: Earth…
     - id: A3
       text: Health
     - id: A4
       text: Aeronautics, Space and Transport
+      short-text: Aeronautics…
     - id: A5
       text: Matter
     - id: A6

@@ -6,7 +6,7 @@ This module provides helper functions.
 """
 from collections import defaultdict
 from logging import error
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List, Optional, Set
 
 from pandas import DataFrame, Series, concat
 
@@ -227,3 +227,57 @@ def question_ids_to_dataframe(question_ids: Set[str] = []) -> DataFrame:
         axis=1, join='outer')
 
     return questions_as_dataframe
+
+
+# TODO Remove filter and group for Questions?
+def filter_and_group_series(base_data: Series,
+                            group_by: Series,
+                            min_value: Optional[float] = None,
+                            max_value: Optional[float] = None) -> DataFrame:
+    """
+    Filter a series and group its values according to another series.
+
+    Generate a sparse DataFrame in which all values of base_data are assigned
+    to a column according to the corresponding value for the same index in
+    group_by.
+
+    Indexes not present in group_by will result in an empty row.
+    Indexes not present in base_data will result in an empty column.
+
+    Args:
+        base_data:  The series of which the data is to be sorted and
+                    filtered.
+        group_by:   A series assigning each index to a group
+        min_value:  An optional minimum value. All values of base_data below
+                    this value will be excluded from the result.
+                    Not set by default.
+        max_value:  An optional maximum value. All values of base_data above
+                    this value will be excluded from the result.
+                    Not set by default.
+
+    Returns:
+        A new DataFrame where each row represents an index of base_data and
+        each column is one of the unique values of the group_by series.
+        The values of base_data are put into the column where the base_data
+        index matches the group_by index.
+    """
+    result_frame: DataFrame = DataFrame(
+        index=base_data.index,
+        columns=group_by.unique()
+        )
+
+    for group_index, group_name in group_by.iteritems():
+        if group_index not in base_data.index:
+            continue
+        value = base_data.get(group_index, None)
+
+        # Apply all the filters
+        if max_value and max_value < value:
+            continue
+
+        if min_value and min_value > value:
+            continue
+
+        result_frame[group_name][group_index] = value
+
+    return result_frame

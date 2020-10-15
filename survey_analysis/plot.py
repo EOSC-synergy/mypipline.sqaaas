@@ -76,6 +76,24 @@ def _output_pyplot_image(output_file_stem: str = "") -> None:
     pyplot.close()
 
 
+def _set_figure_size(width: float, height: float):
+    """
+    Set the figure size so the main area always fits into the desired space.
+
+    Args:
+        width:  Desired plotting space width in inches
+        height: Desired plotting space height in inches
+    """
+    figure = pyplot.gcf()
+    left: float = figure.subplotpars.left
+    right: float = figure.subplotpars.right
+    top: float = figure.subplotpars.top
+    bottom: float = figure.subplotpars.bottom
+    figure_width = float(width) / (right - left)
+    figure_height = float(height) / (top - bottom)
+    figure.set_size_inches(figure_width, figure_height)
+
+
 def plot_bar_chart(data_frame: DataFrame,
                    plot_file_name: str = "",
                    show_legend: bool = True,
@@ -193,6 +211,7 @@ def plot_bar_chart(data_frame: DataFrame,
         _add_bar_chart_value_labels(data_frame, colors, plot_stacked,
                                     round_value_labels_to_decimals)
 
+    _set_figure_size(len(data_frame.index) * 0.25, 5)
     _output_pyplot_image(plot_file_name)
 
 
@@ -455,9 +474,9 @@ def plot_box_chart(data_frame: Optional[DataFrame] = None,
                          rotation=x_rotation,
                          ha="right" if x_rotation else "center",
                          rotation_mode="anchor")
-    # Adapt the figure to its content
-    figure.set_size_inches(column_count * frame_count * 0.5, 6)
 
+    # Adapt the figure to its content
+    _set_figure_size(column_count * frame_count * 0.25, 5)
     _output_pyplot_image(plot_file_name)
 
 
@@ -497,7 +516,7 @@ def plot_matrix_chart(data_frame: DataFrame,
                 The label for the y-axis. Default: "")
     """
     rcParams.update({'figure.autolayout': True})
-    color_map_name = "magma_r" if invert_colors else "magma"
+    color_map_name = "Blues_r" if invert_colors else "Blues"
     color_map = pyplot.get_cmap(color_map_name)
 
     column_count: int = len(data_frame.columns)
@@ -536,6 +555,6 @@ def plot_matrix_chart(data_frame: DataFrame,
                 value,
                 ha="center",
                 va="center",
-                color="black" if switch_color else "white")
+                color="white" if switch_color else "black")
 
     _output_pyplot_image(plot_file_name)
