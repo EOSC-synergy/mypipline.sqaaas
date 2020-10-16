@@ -74,9 +74,7 @@ def run():
                       mapping=p9.aes(x='research_area',
                                      y='coding_percentage'))
             + p9.geom_boxplot()
-            + p9.theme(
-                figure_size=(18, 6)
-            )
+            + p9.theme(figure_size=(18, 6))
             )
 
     plot.save(filename=f'{output_path}/time_area.png')
