@@ -19,6 +19,5 @@ twine = ">=1.11.0,<2"
 [requires]
 python_version = "3.8"
 
-[packages.surveyanalysis2020]
-editable = true
-path = "."
+[packages]
+surveyanalysis2020 = {editable = true, path = "."}

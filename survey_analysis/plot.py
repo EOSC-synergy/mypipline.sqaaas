@@ -157,6 +157,10 @@ def plot_bar_chart(data_frame: DataFrame,
                 Allows to specify an anchor point for the plot's legend
                 (Default: None)
                 See Also: pandas.Axis.legend(bbox_to_anchor)
+            ylim:
+                Allows to specify the maximum and minimum values of the y axis
+                (Default: None)
+                See Also: matplotlib.axes.Axes.set_ylim
 
     """
     rcParams.update({'figure.autolayout': True})
@@ -200,6 +204,9 @@ def plot_bar_chart(data_frame: DataFrame,
                          rotation=x_rotation,
                          ha="right" if x_rotation else "center",
                          rotation_mode="anchor")
+    if "ylim" in kwargs:
+        axes.set_ylim(kwargs.get("ylim"))
+
     if show_legend:
         axes.legend(data_frame.columns.values,
                     loc=kwargs.get("legend_location", "best"),

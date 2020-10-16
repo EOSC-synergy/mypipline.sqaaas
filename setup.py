@@ -56,6 +56,10 @@ setup(
         'pandas>=1.0.1',
         'pyyaml>=5.3.1',
         'spacy>=2.2.4',
+        'wordcloud==1.7.0',
+        'plotnine==0.7.1',
+        'requests==2.24.0',
+        'tabulate==0.8.7'
     ],
     extras_require={
         'dev': [

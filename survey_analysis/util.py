@@ -4,6 +4,7 @@ This module provides helper functions.
 .. currentmodule:: survey_analysis.util
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
+
 from collections import defaultdict
 from logging import error
 from typing import Any, Dict, List, Optional, Set
