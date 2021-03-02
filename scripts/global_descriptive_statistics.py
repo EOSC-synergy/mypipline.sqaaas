@@ -7,15 +7,14 @@ A script for showing coding time distribution
 
 # pipenv run survey_analysis -f PNG -n global_descriptive_statistics analyze data/results-survey652278_all.csv
 
-import os
-from datetime import datetime
+from pathlib import Path
 
-import matplotlib.pyplot as plt
 import yaml
 from numpy import float64
 from pandas import DataFrame, Index
 from tabulate import tabulate
 
+from survey_analysis.globals import settings
 from survey_analysis.plot import plot_bar_chart
 from survey_analysis.util import question_ids_to_dataframe
 
@@ -48,9 +47,9 @@ def run():
         meta = yaml.load(meta_yml, Loader=yaml.FullLoader)
 
     # create output path
-    now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    output_path = f"output/{now}"
-    os.mkdir(output_path)
+    output_path: Path = settings.output_folder / settings.run_timestamp
+    if not output_path.exists():
+        output_path.mkdir(parents=True)
 
     # handle numerical questions
     results_table = []

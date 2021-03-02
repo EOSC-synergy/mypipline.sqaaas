@@ -7,15 +7,15 @@ A script for showing coding time distribution
 
 # pipenv run survey_analysis -n community_topic_search analyze data/results-survey652278_all.csv
 
-import os
 from collections import OrderedDict
-from datetime import datetime
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import pandas
 import requests
 from wordcloud import STOPWORDS, WordCloud
 
+from survey_analysis.globals import settings
 from survey_analysis.util import question_ids_to_dataframe
 
 
@@ -284,9 +284,9 @@ def run():
                           'sort_out_empty': True}
 
     # create path
-    now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    output_path = f'output/{now}'
-    os.mkdir(output_path)
+    output_path: Path = settings.output_folder / settings.run_timestamp
+    if not output_path.exists():
+        output_path.mkdir(parents=True)
 
     analyze(relevant_questions=relevant_questions,
             name='all',

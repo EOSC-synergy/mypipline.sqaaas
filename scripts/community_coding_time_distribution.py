@@ -7,13 +7,13 @@ A script for showing coding time distribution
 
 # pipenv run survey_analysis -n community_coding_time_distribution analyze data/results-survey652278_all.csv
 
-import os
-from datetime import datetime
+from pathlib import Path
 
 import plotnine as p9
 from pandas import DataFrame
 
 from survey_analysis import globals
+from survey_analysis.globals import settings
 from survey_analysis.question import Question
 
 
@@ -46,9 +46,9 @@ def run():
     print('##########')
 
     # create path
-    now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    output_path = f'output/{now}'
-    os.mkdir(output_path)
+    output_path: Path = settings.output_folder / settings.run_timestamp
+    if not output_path.exists():
+        output_path.mkdir(parents=True)
 
     # coding time all
     plot = (p9.ggplot(data=time_coding_percentage_frame,
