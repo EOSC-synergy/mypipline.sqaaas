@@ -55,7 +55,7 @@ class Settings(object):
 
         # The date prefix is used to identify the run
         # (e.g. for saving output images)
-        self.run_timestamp: str = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
+        self.run_timestamp: str = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
         # Using a set for true_values and false_values to avoid duplicates and
         # because order does not matter

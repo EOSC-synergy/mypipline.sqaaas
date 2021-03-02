@@ -284,7 +284,7 @@ def run():
                           'sort_out_empty': True}
 
     # create path
-    now = datetime.now().strftime("%Y-%m-%d_%H:%m:%S")
+    now = datetime.now().strftime("%Y-%m-%d_%H-%m-%S")
     output_path = f'output/{now}'
     os.mkdir(output_path)
 
