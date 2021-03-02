@@ -46,7 +46,7 @@ def run():
     print('##########')
 
     # create path
-    now = datetime.now().strftime("%Y-%m-%d_%H-%m-%S")
+    now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     output_path = f'output/{now}'
     os.mkdir(output_path)
 

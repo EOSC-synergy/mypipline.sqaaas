@@ -48,7 +48,7 @@ def run():
         meta = yaml.load(meta_yml, Loader=yaml.FullLoader)
 
     # create output path
-    now = datetime.now().strftime("%Y-%m-%d_%H-%m-%S")
+    now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     output_path = f"output/{now}"
     os.mkdir(output_path)
 
