@@ -130,6 +130,9 @@ def run():
     centers = meta[2]["answers"]
 
     for center in old_index:
+        if center == "None":
+            new_index.append("(Unknown)")
+            continue
         for tmp in centers:
             if tmp["text"] == center:
                 new_index.append(tmp["short-text"])
