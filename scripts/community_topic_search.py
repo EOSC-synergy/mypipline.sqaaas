@@ -198,7 +198,7 @@ def remove_entries(word_count: dict,
     return word_count
 
 
-def analyze(relevant_questions: list, name: str, filter: dict, path: str):
+def analyze(relevant_questions: list, name: str, filter: dict, path: Path):
     print(f'##### {name} #####')
     answer_data_frame = question_ids_to_dataframe(relevant_questions)
 
@@ -283,10 +283,8 @@ def run():
                           'max_coding_experience': 9.999,
                           'sort_out_empty': True}
 
-    # create path
-    output_path: Path = settings.output_folder / settings.run_timestamp
-    if not output_path.exists():
-        output_path.mkdir(parents=True)
+    # get output path
+    output_path: Path = settings.analysis_output_path
 
     analyze(relevant_questions=relevant_questions,
             name='all',

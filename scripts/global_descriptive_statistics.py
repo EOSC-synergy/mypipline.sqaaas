@@ -46,10 +46,8 @@ def run():
     with open("metadata/HIFIS_Software_Survey_2020_Questions.yml") as meta_yml:
         meta = yaml.load(meta_yml, Loader=yaml.FullLoader)
 
-    # create output path
-    output_path: Path = settings.output_folder / settings.run_timestamp
-    if not output_path.exists():
-        output_path.mkdir(parents=True)
+    # get output path
+    output_path: Path = settings.analysis_output_path
 
     # handle numerical questions
     results_table = []

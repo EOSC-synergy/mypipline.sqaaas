@@ -57,6 +57,13 @@ class Settings(object):
         # (e.g. for saving output images)
         self.run_timestamp: str = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
+        # Path to sub-folder which holds all output files of a single
+        # analysis run
+        self.__analysis_output_path: Path = None
+
+        # Set path to sub-folder and create sub-folder in one go
+        self.analysis_output_path = self.output_folder / self.run_timestamp
+
         # Using a set for true_values and false_values to avoid duplicates and
         # because order does not matter
         self.true_values: Set[str] = {
@@ -84,3 +91,42 @@ class Settings(object):
         additional_lower: Set[str] = set(map(str.lower, self.false_values))
         additional_upper: Set[str] = set(map(str.upper, self.false_values))
         self.false_values.update(additional_lower.union(additional_upper))
+
+    @property
+    def analysis_output_path(self) -> Path:
+        """
+        Getter method of property.
+
+        Returns:
+            analysis_output_path (Path): Path to sub-folder which holds all
+                                         output files of a single analysis run.
+        """
+        return self.__analysis_output_path
+
+    @analysis_output_path.setter
+    def analysis_output_path(self, analysis_output_path: Path) -> None:
+        """
+        Setter method of property that sets value only once and creates folder.
+
+        This setter method not only sets the path of the analysis output folder
+        once per analysis run but also takes care of the creation of the
+        sub-folder as well.
+
+        Args:
+            analysis_output_path (Path): Path to sub-folder which holds all
+                                         output files of a single analysis run.
+        """
+        if self.__analysis_output_path is None:
+            self.__analysis_output_path = analysis_output_path
+        self.__create_analysis_output_folder()
+
+    def __create_analysis_output_folder(self) -> None:
+        """
+        Create a unique sub-folder to hold all output files of an analysis run.
+
+        The sub-folder for the output of the analysis run is only created
+        if path property is set and only created once per analysis run.
+        """
+        if self.analysis_output_path is not None:
+            if not self.analysis_output_path.exists():
+                self.analysis_output_path.mkdir(parents=True)

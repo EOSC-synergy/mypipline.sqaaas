@@ -63,11 +63,8 @@ def _output_pyplot_image(output_file_stem: str = "") -> None:
 
     file_ending: str = settings.output_format.name.lower()
     file_name: str = f"{output_file_stem}.{file_ending}"
-    output_subfolder: Path = settings.output_folder / settings.run_timestamp
-    output_path: Path = output_subfolder / file_name
 
-    if not output_subfolder.exists():
-        output_subfolder.mkdir(parents=True)
+    output_path: Path = settings.analysis_output_path / file_name
 
     if output_path.exists():
         logging.warning(f"Overriding existing output file {output_path}")
