@@ -13,14 +13,11 @@ from pandas import DataFrame, Series, concat
 
 from survey_analysis.answer import Answer
 from survey_analysis.globals import survey_questions
-from survey_analysis.question import (AbstractQuestion, Question,
-                                      QuestionCollection)
+from survey_analysis.question import AbstractQuestion, Question, QuestionCollection
 
 
 def filter_and_group(
-        filter_question: Question,
-        group_question: Question,
-        **filter_args
+    filter_question: Question, group_question: Question, **filter_args
 ) -> Dict[Answer, Dict[str, List[Answer]]]:
     """
     Obtain filtered results grouped by the answers of a question.
@@ -40,18 +37,15 @@ def filter_and_group(
     results: Dict[Answer, Dict[str, List[Answer]]] = defaultdict(dict)
 
     for answer, participant_ids in grouped_answers.items():
-        filter_args['participant_id'] = participant_ids
-        results[answer] = filter_question.filter_given_answers(
-            **filter_args
-        )
+        filter_args["participant_id"] = participant_ids
+        results[answer] = filter_question.filter_given_answers(**filter_args)
 
     return results
 
 
 # TODO this can be a member of QuestionCollection itself
 def get_free_text_subquestion(
-        question: QuestionCollection,
-        free_text_question_id: str = 'other'
+    question: QuestionCollection, free_text_question_id: str = "other"
 ) -> Question:
     """
     Get the subquestion of QuestionCollection that asks for free text answers.
@@ -63,8 +57,9 @@ def get_free_text_subquestion(
     Returns:
         A sub-question that asks for custom free text answers.
     """
-    assert question.has_subquestions, \
-        "QuestionCollection should have subquestions, but didn't"
+    assert (
+        question.has_subquestions
+    ), "QuestionCollection should have subquestions, but didn't"
 
     return next(
         (
@@ -72,12 +67,12 @@ def get_free_text_subquestion(
             for subquestion in question.subquestions
             if subquestion.id == f"{question.id}[{free_text_question_id}]"
         ),
-        None
+        None,
     )
 
 
 def get_given_free_text_answers(
-        abstract_question: AbstractQuestion
+    abstract_question: AbstractQuestion,
 ) -> Dict[str, Answer]:
     """
     Obtain valid free text answers of a Question.
@@ -102,13 +97,13 @@ def get_given_free_text_answers(
         # it is assumed that only one free text answer is given to a question
         participant_id: list_of_answers[0]
         for participant_id, list_of_answers in question.given_answers.items()
-        if list_of_answers[0].text != 'nan'
+        if list_of_answers[0].text != "nan"
     }
 
 
-def dataframe_value_counts(dataframe: DataFrame,
-                           relative_values: bool = False,
-                           drop_nans: bool = True) -> DataFrame:
+def dataframe_value_counts(
+    dataframe: DataFrame, relative_values: bool = False, drop_nans: bool = True
+) -> DataFrame:
     """
     Count how often a unique value appears in each column of a data frame.
 
@@ -124,12 +119,12 @@ def dataframe_value_counts(dataframe: DataFrame,
         The index is changed to represent the unique values and the cells
         contain the count of the unique values in the given column.
     """
-    new_frame: DataFrame = DataFrame([
-        dataframe[column].value_counts(
-            normalize=relative_values,
-            dropna=drop_nans)
-        for column in dataframe.columns
-    ])
+    new_frame: DataFrame = DataFrame(
+        [
+            dataframe[column].value_counts(normalize=relative_values, dropna=drop_nans)
+            for column in dataframe.columns
+        ]
+    )
     new_frame.fillna(0, inplace=True)
     new_frame = new_frame.transpose()
 
@@ -219,22 +214,28 @@ def question_ids_to_dataframe(question_ids: Set[str] = []) -> DataFrame:
             for item in question.flatten():
                 questions.add(item)
         except KeyError:
-            error(f"When constructing data frame from multiple questions: "
-                  f"{question_id} is not a valid ID")
+            error(
+                f"When constructing data frame from multiple questions: "
+                f"{question_id} is not a valid ID"
+            )
             continue
 
     questions_as_dataframe: DataFrame = concat(
         list(item.as_series(filter_invalid=False) for item in questions),
-        axis=1, join='outer')
+        axis=1,
+        join="outer",
+    )
 
     return questions_as_dataframe
 
 
 # TODO Remove filter and group for Questions?
-def filter_and_group_series(base_data: Series,
-                            group_by: Series,
-                            min_value: Optional[float] = None,
-                            max_value: Optional[float] = None) -> DataFrame:
+def filter_and_group_series(
+    base_data: Series,
+    group_by: Series,
+    min_value: Optional[float] = None,
+    max_value: Optional[float] = None,
+) -> DataFrame:
     """
     Filter a series and group its values according to another series.
 
@@ -263,9 +264,8 @@ def filter_and_group_series(base_data: Series,
         index matches the group_by index.
     """
     result_frame: DataFrame = DataFrame(
-        index=base_data.index,
-        columns=group_by.unique()
-        )
+        index=base_data.index, columns=group_by.unique()
+    )
 
     for group_index, group_name in group_by.iteritems():
         if group_index not in base_data.index:

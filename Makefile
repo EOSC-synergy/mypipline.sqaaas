@@ -1,16 +1,12 @@
 .DEFAULT_GOAL := build
-.PHONY: build publish package coverage test lint docs venv
+.PHONY: build publish package coverage test lint docs
 PROJ_SLUG = survey_analysis
 CLI_NAME = survey_analysis
-PY_VERSION = 3.8
-LINTER = flake8
-
+LINTER = flakehell lint
 SHELL = bash
 
-
-
 build:
-	pip install --editable .
+	poetry build
 
 run:
 	$(CLI_NAME) run
@@ -19,11 +15,10 @@ submit:
 	$(CLI_NAME) submit
 
 freeze:
-	pip freeze > requirements.txt
+	poetry export --without-hashes -o requirements.txt
 
 lint:
 	# Sort the python import statements
-	isort -rc -c -df **/*.py
 	$(LINTER) $(PROJ_SLUG)
 
 test: lint
@@ -46,10 +41,10 @@ answers:
 	xdg-open docs/build/html/index.html
 
 package: clean docs
-	python setup.py sdist
+	poetry build
 
 publish: package
-	twine upload dist/*
+	poetry publish
 
 clean :
 	rm -rf dist \
@@ -57,20 +52,6 @@ clean :
 	rm -rf *.egg-info
 	coverage erase
 
-venv :
-
-
-	python3 -m venv venv
-	source venv/bin/activate && pip install pip --upgrade --index-url=https://pypi.org/simple
-
-
-install:
-	pip install -r requirements.txt
-
-licenses:
-	pip-licenses --with-url --format=rst \
-	--ignore-packages $(shell cat .pip-license-ignore | awk '{$$1=$$1};1')
-
-load:
-	# install language model for spaCy
-	python -m spacy download en_core_web_sm
+reformat:
+	isort .
+	black .

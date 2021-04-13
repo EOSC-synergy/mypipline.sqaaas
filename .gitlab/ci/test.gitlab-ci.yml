@@ -1,5 +1,5 @@
 test:
   stage: test
   script:
-    - pipenv run make quicktest
+    - poetry run make quicktest
   dependencies: []

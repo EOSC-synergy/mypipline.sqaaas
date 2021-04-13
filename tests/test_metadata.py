@@ -49,26 +49,25 @@ class TestMetadata(object):
         A YAML file with test data is given and loaded, so that the resulting
         data in the metadata dictionary can be compared with expected data.
         """
-        filename_yaml: str = 'tests/fixtures/metadata_one_entry.yml'
+        filename_yaml: str = "tests/fixtures/metadata_one_entry.yml"
         self.metadata.set_metadata_yaml_filename(filename_yaml)
         self.metadata.load_metadata_from_yaml_file()
         expected_metadata: typ.Dict[str] = {
-            'question': 'My question is ... ?',
-            'sub-items': {
-                'SQ001': {
-                    'text': 'This is the topic of the sub-item ...',
-                    'answers': {
-                        'A1': 'Answer1',
-                        'A2': 'Answer2'
-                    },
-                    'type': 'Single-Choice'
+            "question": "My question is ... ?",
+            "sub-items": {
+                "SQ001": {
+                    "text": "This is the topic of the sub-item ...",
+                    "answers": {"A1": "Answer1", "A2": "Answer2"},
+                    "type": "Single-Choice",
                 }
             },
-            'type': 'Multiple-Choice'
+            "type": "Multiple-Choice",
         }
-        id_key: str = 'G1234'
-        actual_metadata: typ.Dict[str] = \
-            self.metadata.get_metadata_dict_by_id_key(id_key)
-        assert (actual_metadata['sub-items']['SQ001']['answers']['A1'] ==
-                expected_metadata['sub-items']['SQ001']['answers']['A1']), \
-            'Metadata content is not valid.'
+        id_key: str = "G1234"
+        actual_metadata: typ.Dict[str] = self.metadata.get_metadata_dict_by_id_key(
+            id_key
+        )
+        assert (
+            actual_metadata["sub-items"]["SQ001"]["answers"]["A1"]
+            == expected_metadata["sub-items"]["SQ001"]["answers"]["A1"]
+        ), "Metadata content is not valid."

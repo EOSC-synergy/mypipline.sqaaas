@@ -91,12 +91,14 @@ def _set_figure_size(width: float, height: float):
     figure.set_size_inches(figure_width, figure_height)
 
 
-def plot_bar_chart(data_frame: DataFrame,
-                   plot_file_name: str = "",
-                   show_legend: bool = True,
-                   show_value_labels: bool = True,
-                   round_value_labels_to_decimals: int = 0,
-                   **kwargs) -> None:
+def plot_bar_chart(
+    data_frame: DataFrame,
+    plot_file_name: str = "",
+    show_legend: bool = True,
+    show_value_labels: bool = True,
+    round_value_labels_to_decimals: int = 0,
+    **kwargs,
+) -> None:
     """
     Plot given data-frame as a (stacked) bar chart.
 
@@ -160,7 +162,7 @@ def plot_bar_chart(data_frame: DataFrame,
                 See Also: matplotlib.axes.Axes.set_ylim
 
     """
-    rcParams.update({'figure.autolayout': True})
+    rcParams.update({"figure.autolayout": True})
 
     # Color map Generation:
     # 1. Pick a suitable predefined colormap. Chose one with light colors so
@@ -174,56 +176,59 @@ def plot_bar_chart(data_frame: DataFrame,
             f"Color palette has not enough colors for all of them."
             f"(is bar chart a fitting diagram type here?)"
             f"(Would transposing the data frame help?)"
-            )
+        )
     # 2. Reduce the colormap to have only as much colors as there are columns
     # so each columns color index matches the column index
     # (If the colormap were larger one would have to do linear interpolation to
     # obtain the proper color)
     colors = ListedColormap(
-        [base_color_map.colors[index]
-         for index in range(len(data_frame.columns))
-         ])
+        [base_color_map.colors[index] for index in range(len(data_frame.columns))]
+    )
     # This new colormap is handed to the graph and used in the value labels
 
     plot_stacked: bool = kwargs.get("stacked", False)
     x_rotation: int = kwargs.get("x_label_rotation", 0)
 
-    data_frame.plot(kind="bar",
-                    stacked=plot_stacked,
-                    cmap=colors)
+    data_frame.plot(kind="bar", stacked=plot_stacked, cmap=colors)
 
     axes = pyplot.gca()
 
     axes.set_title(kwargs.get("plot_title", ""))
     axes.set_xlabel(kwargs.get("x_axis_label", ""))
     axes.set_ylabel(kwargs.get("y_axis_label", ""))
-    axes.set_xticklabels(data_frame.index.values,
-                         rotation=x_rotation,
-                         ha="right" if x_rotation else "center",
-                         rotation_mode="anchor")
+    axes.set_xticklabels(
+        data_frame.index.values,
+        rotation=x_rotation,
+        ha="right" if x_rotation else "center",
+        rotation_mode="anchor",
+    )
     if "ylim" in kwargs:
         axes.set_ylim(kwargs.get("ylim"))
 
     if show_legend:
-        axes.legend(data_frame.columns.values,
-                    loc=kwargs.get("legend_location", "best"),
-                    bbox_to_anchor=kwargs.get("legend_anchor", None))
+        axes.legend(
+            data_frame.columns.values,
+            loc=kwargs.get("legend_location", "best"),
+            bbox_to_anchor=kwargs.get("legend_anchor", None),
+        )
     else:
         axes.get_legend().remove()
 
     if show_value_labels:
-        _add_bar_chart_value_labels(data_frame, colors, plot_stacked,
-                                    round_value_labels_to_decimals)
+        _add_bar_chart_value_labels(
+            data_frame, colors, plot_stacked, round_value_labels_to_decimals
+        )
 
     _set_figure_size(len(data_frame.index) * 0.25, 5)
     _output_pyplot_image(plot_file_name)
 
 
-def _add_bar_chart_value_labels(data_frame: DataFrame,
-                                color_map,
-                                plot_stacked: bool,
-                                round_value_labels_to_decimals: int = 0
-                                ) -> None:
+def _add_bar_chart_value_labels(
+    data_frame: DataFrame,
+    color_map,
+    plot_stacked: bool,
+    round_value_labels_to_decimals: int = 0,
+) -> None:
     """
     Add value labels to a bar chart.
 
@@ -304,29 +309,35 @@ def _add_bar_chart_value_labels(data_frame: DataFrame,
 
                     # Move the text_y up a bit so it does not overlap the
                     # indicator line
-                    text_y = bar_center_y + min_include_height/4
+                    text_y = bar_center_y + min_include_height / 4
                     text_x = row + text_x_offset
 
                     # Plot the indicator line
                     pyplot.plot(
                         [text_x + line_x_overhang, row],
                         [bar_center_y, bar_center_y],
-                        color=color)
+                        color=color,
+                    )
 
                 # Round values to the number of decimals given in parameter
                 # round_value_labels_decimals.
-                value_rounded = \
-                    int(value.round(round_value_labels_to_decimals)) \
-                    if round_value_labels_to_decimals == 0 \
+                value_rounded = (
+                    int(value.round(round_value_labels_to_decimals))
+                    if round_value_labels_to_decimals == 0
                     else value.round(round_value_labels_to_decimals)
+                )
 
                 # Values with more than 2 digits get displayed with smaller
                 # font size to fit them better
-                axes.text(text_x, text_y, value_rounded,
-                          ha="center",
-                          va="center",
-                          color=color_dark,
-                          size=default_font_size if value < 100 else "smaller")
+                axes.text(
+                    text_x,
+                    text_y,
+                    value_rounded,
+                    ha="center",
+                    va="center",
+                    color=color_dark,
+                    size=default_font_size if value < 100 else "smaller",
+                )
                 # for next row iteration:
                 row_sum += value
     else:
@@ -378,24 +389,31 @@ def _add_bar_chart_value_labels(data_frame: DataFrame,
 
                 # Round values to the number of digits given in parameter
                 # round_value_labels_decimals.
-                value_rounded = \
-                    int(value.round(round_value_labels_to_decimals)) \
-                    if round_value_labels_to_decimals == 0 \
+                value_rounded = (
+                    int(value.round(round_value_labels_to_decimals))
+                    if round_value_labels_to_decimals == 0
                     else value.round(round_value_labels_to_decimals)
+                )
 
                 # Values with more than 2 digits get displayed with smaller
                 # font size to fit them better
-                axes.text(text_x, text_y, value_rounded,
-                          ha="center",
-                          va="center",
-                          color=color,
-                          size=default_font_size if value < 100 else "smaller")
+                axes.text(
+                    text_x,
+                    text_y,
+                    value_rounded,
+                    ha="center",
+                    va="center",
+                    color=color,
+                    size=default_font_size if value < 100 else "smaller",
+                )
 
 
-def plot_box_chart(data_frame: Optional[DataFrame] = None,
-                   data_frames: List[DataFrame] = None,
-                   plot_file_name: str = "",
-                   **kwargs) -> None:
+def plot_box_chart(
+    data_frame: Optional[DataFrame] = None,
+    data_frames: List[DataFrame] = None,
+    plot_file_name: str = "",
+    **kwargs,
+) -> None:
     """
     Generate a box chart from the provided data.
 
@@ -426,7 +444,7 @@ def plot_box_chart(data_frame: Optional[DataFrame] = None,
             y_axis_label:
                 The label for the y-axis. Default: "")
     """
-    rcParams.update({'figure.autolayout': True})
+    rcParams.update({"figure.autolayout": True})
     x_rotation: int = kwargs.get("x_label_rotation", 0)
 
     # Create a new holder for the data frames to not manipulate the default
@@ -437,8 +455,10 @@ def plot_box_chart(data_frame: Optional[DataFrame] = None,
         _data_frames.append(data_frame.copy())
 
     if not _data_frames:
-        logging.warning(f"Attempt to create box plot {plot_file_name} without "
-                        f"data. Skipping this plot.")
+        logging.warning(
+            f"Attempt to create box plot {plot_file_name} without "
+            f"data. Skipping this plot."
+        )
         return
 
     column_count: int = max(len(frame.columns) for frame in _data_frames)
@@ -464,31 +484,34 @@ def plot_box_chart(data_frame: Optional[DataFrame] = None,
             position = group_position + data_frame_counter * 0.75
             x_tick_labels.append(frame.columns[column_index])
             column_frame = frame.iloc[:, column_index].dropna()
-            plot = axes.boxplot(column_frame,
-                                positions=[position],
-                                widths=0.5,
-                                patch_artist=True)
+            plot = axes.boxplot(
+                column_frame, positions=[position], widths=0.5, patch_artist=True
+            )
 
             # Fill the box background so the boxes overlay the grid lines
             for patch in plot["boxes"]:
                 patch.set_facecolor("wheat")
             data_frame_counter += 1
 
-    axes.set_xticklabels(x_tick_labels,
-                         rotation=x_rotation,
-                         ha="right" if x_rotation else "center",
-                         rotation_mode="anchor")
+    axes.set_xticklabels(
+        x_tick_labels,
+        rotation=x_rotation,
+        ha="right" if x_rotation else "center",
+        rotation_mode="anchor",
+    )
 
     # Adapt the figure to its content
     _set_figure_size(column_count * frame_count * 0.25, 5)
     _output_pyplot_image(plot_file_name)
 
 
-def plot_matrix_chart(data_frame: DataFrame,
-                      plot_file_name: str = "",
-                      invert_colors: bool = False,
-                      value_label_decimals: int = 2,
-                      **kwargs) -> None:
+def plot_matrix_chart(
+    data_frame: DataFrame,
+    plot_file_name: str = "",
+    invert_colors: bool = False,
+    value_label_decimals: int = 2,
+    **kwargs,
+) -> None:
     """
     Plot given data frame as matrix chart.
 
@@ -519,15 +542,14 @@ def plot_matrix_chart(data_frame: DataFrame,
             y_axis_label:
                 The label for the y-axis. Default: "")
     """
-    rcParams.update({'figure.autolayout': True})
+    rcParams.update({"figure.autolayout": True})
     color_map_name = "Blues_r" if invert_colors else "Blues"
     color_map = pyplot.get_cmap(color_map_name)
 
     column_count: int = len(data_frame.columns)
     row_count: int = len(data_frame.index)
 
-    x_tick_labels = ["\n".join(wrap(label, 20))
-                     for label in data_frame.columns.values]
+    x_tick_labels = ["\n".join(wrap(label, 20)) for label in data_frame.columns.values]
 
     x_rotation: int = kwargs.get("x_label_rotation", 0)
 
@@ -538,10 +560,12 @@ def plot_matrix_chart(data_frame: DataFrame,
     axes.set_ylabel(kwargs.get("y_axis_label", ""))
     axes.set_xticks(range(column_count))
     axes.set_yticks(range(row_count))
-    axes.set_xticklabels(x_tick_labels,
-                         rotation=x_rotation,
-                         ha="right" if x_rotation else "center",
-                         rotation_mode="anchor")
+    axes.set_xticklabels(
+        x_tick_labels,
+        rotation=x_rotation,
+        ha="right" if x_rotation else "center",
+        rotation_mode="anchor",
+    )
     axes.set_yticklabels(data_frame.index.values)
 
     # Loop over the data and annotate the actual values
@@ -552,13 +576,15 @@ def plot_matrix_chart(data_frame: DataFrame,
         for j in range(column_count):
             value = round(data_frame.iloc[i, j], value_label_decimals)
             switch_color = bool(
-                (value < threshold) if invert_colors
-                else (value > threshold))
+                (value < threshold) if invert_colors else (value > threshold)
+            )
             axes.text(
-                j, i,
+                j,
+                i,
                 value,
                 ha="center",
                 va="center",
-                color="white" if switch_color else "black")
+                color="white" if switch_color else "black",
+            )
 
     _output_pyplot_image(plot_file_name)

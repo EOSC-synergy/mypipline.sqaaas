@@ -50,12 +50,9 @@ class Settings(object):
         # if the output format is not screen
         self.output_folder: Path = Path("output")
 
-        if not self.output_folder.exists():
-            self.output_folder.mkdir()
-
         # The date prefix is used to identify the run
         # (e.g. for saving output images)
-        self.run_timestamp: str = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        self.run_timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
         # Path to sub-folder which holds all output files of a single
         # analysis run
@@ -66,17 +63,13 @@ class Settings(object):
 
         # Using a set for true_values and false_values to avoid duplicates and
         # because order does not matter
-        self.true_values: Set[str] = {
-            "True", "Yes", "Y", "On", "1"
-            }
+        self.true_values: Set[str] = {"True", "Yes", "Y", "On", "1"}
         """
         A set of strings to be interpreted as boolean 'True' when
         parsing the input data.
         """
 
-        self.false_values: Set[str] = {
-            "False", "No", "N", "Off", "0"
-            }
+        self.false_values: Set[str] = {"False", "No", "N", "Off", "0"}
         """
         A set of strings to be interpreted as boolean 'False' when
         parsing the input data.

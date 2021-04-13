@@ -1,6 +1,15 @@
-# HIFIS Survey Analysis 2020
+# HIFIS Survey Tool
 
 This project is used to develop analysis scripts for the HIFIS Software survey.
+
+## Table of Content
+
+* [Installation](#installation)
+* [Getting Started](#getting-started)
+* [Development](#development)
+* [Start Analysis from Command-Line-Interface](#start-analysis-from-command-line-interface)
+* [Contribute with Own Analysis Scripts](#contribute-with-own-analysis-scripts)
+* [Resources](#resources)
 
 ## Getting Started
 
@@ -9,39 +18,37 @@ The project's documentation contains a section to help you
 user of the analysis scripts.
 
 ## Installation
-To install the package locally, you can either use [pipenv](https://github.com/pypa/pipenv)
-or `pip`. It is common practice to create an individual virtual environment.
-In case you're using pipenv, pipenv cares about the creation of the environment.
-Refer to the _Using Pip_ installation instruction to see how to create a 
-virtual environment manually.
+To install the package locally, you can either use [poetry](https://python-poetry.org/)
+or `pip`.
 
-- Using Pipenv:
-  ```console
-  $ pipenv install
-  $ pipenv run survey_analysis --help
-  ```
-- Using Pip:
-  ```console
-  $ python3 -m venv .venv
-  $ source .venv/bin/activate
-  $ pip install -e .
-  ```
+### Using pip
+
+```shell
+pip install survey_analysis
+```
+
+After the installation, you can use the tool from the command line with `survey_analysis --help`.
+
+### Using poetry
+
+```shell
+git clone $PATH_TO_THIS_PROJECT
+cd survey-analysis-framework
+poetry install --no-dev
+```
+
+After the installation, you can use the tool from the command line with `poetry run survey_analysis --help`
+The following documentation references the pip installation.
+You can use the same commands with a poetry installation, if you refix you commands with `poetry run COMMAND`.
 
 ## Development
 If you want to actively contribute changes to the project, you are required to
 also install the development packages.
 Therefore, use below extended installation options.
-- Using Pipenv:
-  ```console
-  $ pipenv install --dev
-  $ pipenv run survey_analysis --help
-  ```
-- Using Pip:
-  ```console
-  $ python3 -m venv .venv # Only required if not already done before.
-  $ source .venv/bin/activate
-  $ pip install -e .[dev]
-  ```
+
+```shell
+poetry install
+```
 
 This installs some packages that are required for performing quality checks.
 Usually they are also performed via GitLab CI, but can also be executed locally.
@@ -72,7 +79,7 @@ project and tell the program the path to that data file.
 Now you can do the following to start the survey analysis from the CLI:
 
 ```shell script
-$ pipenv run survey_analysis analyze data/<data_file_name>.csv
+survey_analysis analyze data/<data_file_name>.csv
 ```
 
 It tells the program that you would like to do the analysis,
@@ -105,7 +112,7 @@ when being encountered with this program.
 It outputs a so-called _Usage_-message to the CLI:
 
 ```shell script
-$ pipenv run survey_analysis --help
+$ survey_analysis --help
 Usage: survey_analysis [OPTIONS] COMMAND [ARGS]...
 
   Analyze a given CSV file with a set of independent python scripts.
@@ -141,20 +148,20 @@ of the output to the CLI.
 This flag is called `--verbose` or `-v` for short:
 
 ```shell script
-$ pipenv run survey_analysis --verbose <COMMAND>
+survey_analysis --verbose <COMMAND>
 ```
 ```shell script
-$ pipenv run survey_analysis -v <COMMAND>
+survey_analysis -v <COMMAND>
 ```
 
 The verbosity of the output can be increased even more 
 by duplicating the flag `--verbose` or `-v` up to two times:
 
 ```shell script
-$ pipenv run survey_analysis --verbose --verbose --verbose <COMMAND>
+survey_analysis --verbose --verbose --verbose <COMMAND>
 ```
 ```shell script
-$ pipenv run survey_analysis -vvv <COMMAND>
+survey_analysis -vvv <COMMAND>
 ```
 
 #### Scripts flag
@@ -163,10 +170,10 @@ Beside verbosity there is a _scripts_-flag called `--scripts` or
 `-s` for short:
 
 ```shell script
-$ pipenv run survey_analysis --scripts "scripts" <COMMAND>
+survey_analysis --scripts "scripts" <COMMAND>
 ```
 ```shell script
-$ pipenv run survey_analysis -s "scripts" <COMMAND>
+survey_analysis -s "scripts" <COMMAND>
 ```
 
 This will tell the program in which folder to look for the actual 
@@ -178,10 +185,10 @@ In case the _scripts_-flag is omitted it defaults to sub-folder `scripts/`.
 There is also a _names_-flag called `--names` or `-n` for short:
 
 ```shell script
-$ pipenv run survey_analysis --names "example_script_1" --names "example_script_2" <COMMAND>
+survey_analysis --names "example_script_1" --names "example_script_2" <COMMAND>
 ```
 ```shell script
-$ pipenv run survey_analysis -n "example_script_1" -n "example_script_2" <COMMAND>
+survey_analysis -n "example_script_1" -n "example_script_2" <COMMAND>
 ```
 
 This will tell the program which scripts in the scripts folder to execute.
@@ -194,10 +201,10 @@ The _output-folder_-flag called `--output-folder` or `-o` for short
 is another option:
 
 ```shell script
-$ pipenv run survey_analysis --output-folder "output" <COMMAND>
+survey_analysis --output-folder "output" <COMMAND>
 ```
 ```shell script
-$ pipenv run survey_analysis -o "output" <COMMAND>
+survey_analysis -o "output" <COMMAND>
 ```
 
 This will tell the program in which folder to put the generated output 
@@ -219,10 +226,10 @@ Allowed values to this flag are the following:
 On the CLI the actual call looks like this:
 
 ```shell script
-$ pipenv run survey_analysis --output-format PNG <COMMAND>
+survey_analysis --output-format PNG <COMMAND>
 ```
 ```shell script
-$ pipenv run survey_analysis -f PNG <COMMAND>
+survey_analysis -f PNG <COMMAND>
 ```
 
 ### Commands
@@ -239,7 +246,7 @@ The `version` command outputs the version number of
 this CLI-program like so:
 
 ```shell script
-$ pipenv run survey_analysis version
+survey_analysis version
 0.0.1
 ```
 
@@ -256,7 +263,7 @@ in order to be able to start the analysis.
 This is an example of how to do the analysis:
 
 ```shell script
-$ pipenv run survey_analysis analyze data/<data_file_name>.csv
+survey_analysis analyze data/<data_file_name>.csv
 ```
 
 ## Contribute with Own Analysis Scripts

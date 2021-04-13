@@ -64,8 +64,7 @@ class DataContainer(object):
 
         if self.empty:
             self._raw_data = data_frame
-            self._raw_data.set_index(DataContainer.ID_COLUMN_NAME,
-                                     inplace=True)
+            self._raw_data.set_index(DataContainer.ID_COLUMN_NAME, inplace=True)
         else:
             raise RuntimeError("Do not re-assign the global data frame")
 
@@ -91,8 +90,10 @@ class DataContainer(object):
             gave.
             The result may still contain "N/A" or "nan".
         """
-        if (question_id == DataContainer.ID_COLUMN_NAME
-                or question_id not in self._raw_data):
+        if (
+            question_id == DataContainer.ID_COLUMN_NAME
+            or question_id not in self._raw_data
+        ):
             raise ValueError(f"{question_id} is not a valid question ID")
 
         per_participant_data: Dict[str, AnswerType] = {}

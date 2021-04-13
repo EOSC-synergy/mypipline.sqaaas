@@ -25,11 +25,13 @@ class Answer(object):
       selection a user made.
     """
 
-    def __init__(self,
-                 answer_id: str,
-                 answer_data: Optional[AnswerType] = None,
-                 answer_short_text: Optional[str] = None,
-                 answer_data_type: type = str):
+    def __init__(
+        self,
+        answer_id: str,
+        answer_data: Optional[AnswerType] = None,
+        answer_short_text: Optional[str] = None,
+        answer_data_type: type = str,
+    ):
         """
         Initialize an Answer from the data or metadata.
 

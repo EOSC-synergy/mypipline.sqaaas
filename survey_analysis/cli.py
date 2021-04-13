@@ -28,45 +28,59 @@ import click
 import pandas
 
 from survey_analysis import dispatch, globals
-from survey_analysis.metadata import (construct_questions_from_metadata,
-                                      fetch_participant_answers)
+from survey_analysis.metadata import (
+    construct_questions_from_metadata,
+    fetch_participant_answers,
+)
 from survey_analysis.settings import OutputFormat
 
 from .__init__ import __version__
 
 
 @click.group()
-@click.option("--verbose", "-v",
-              count=True,
-              default=0,
-              show_default=True,
-              help="Enable verbose output. "
-                   "Increase verbosity by setting this option up to 3 times.")
-@click.option("--scripts", "-s",
-              default="scripts",
-              show_default=True,
-              help="Select the folder containing analysis scripts.")
-@click.option("--names", "-n",
-              multiple=True,
-              default=[],
-              help="Optionally select the specific script names contained "
-                   "in the scripts folder (while omitting file endings) "
-                   "which should be executed.")
-@click.option("--output-folder", "-o",
-              default="output",
-              show_default=True,
-              help="Select the folder to put the generated output like plots "
-                   "into.")
-@click.option("--output-format", "-f",
-              default="screen",
-              show_default=True,
-              help=f"Designate output format. "
-                   f"Supported values are: {OutputFormat.list_supported()}.")
-def cli(verbose: int,
-        scripts: str,
-        names: List[str],
-        output_folder: str,
-        output_format: str) -> None:
+@click.option(
+    "--verbose",
+    "-v",
+    count=True,
+    default=0,
+    show_default=True,
+    help="Enable verbose output. "
+    "Increase verbosity by setting this option up to 3 times.",
+)
+@click.option(
+    "--scripts",
+    "-s",
+    default="scripts",
+    show_default=True,
+    help="Select the folder containing analysis scripts.",
+)
+@click.option(
+    "--names",
+    "-n",
+    multiple=True,
+    default=[],
+    help="Optionally select the specific script names contained "
+    "in the scripts folder (while omitting file endings) "
+    "which should be executed.",
+)
+@click.option(
+    "--output-folder",
+    "-o",
+    default="output",
+    show_default=True,
+    help="Select the folder to put the generated output like plots " "into.",
+)
+@click.option(
+    "--output-format",
+    "-f",
+    default="PNG",
+    show_default=True,
+    help=f"Designate output format. "
+    f"Supported values are: {OutputFormat.list_supported()}.",
+)
+def cli(
+    verbose: int, scripts: str, names: List[str], output_folder: str, output_format: str
+) -> None:
     """Analyze a given CSV file with a set of independent python scripts."""
     # NOTE that click takes above documentation for generating help text
     # Thus the documentation refers to the application per se and not the
@@ -91,9 +105,12 @@ def version() -> None:
 
 @cli.command()
 @click.argument("file_name", type=click.File(mode="r"))
-@click.option("--metadata", "-m",
-              default="metadata/HIFIS_Software_Survey_2020_Questions.yml",
-              help="Give file name which contains survey metadata.")
+@click.option(
+    "--metadata",
+    "-m",
+    default="metadata/meta.yml",
+    help="Give file name which contains survey metadata.",
+)
 def analyze(file_name, metadata: str) -> None:
     """
     Read the given files into global data and metadata objects.
@@ -108,10 +125,10 @@ def analyze(file_name, metadata: str) -> None:
         frame: pandas.DataFrame = pandas.read_csv(
             file_name,
             true_values=globals.settings.true_values,
-            false_values=globals.settings.false_values
-            )
+            false_values=globals.settings.false_values,
+        )
 
-        logging.debug('\n' + str(frame))
+        logging.debug("\n" + str(frame))
 
         # Put the Data Frame into the global container
         globals.dataContainer.set_raw_data(frame)
@@ -136,8 +153,9 @@ def analyze(file_name, metadata: str) -> None:
         logging.error("Could not parse the metadata file as YAML.")
         exit(1)
 
-    dispatcher = dispatch.Dispatcher(globals.settings.script_folder,
-                                     globals.settings.script_names)
+    dispatcher = dispatch.Dispatcher(
+        globals.settings.script_folder, globals.settings.script_names
+    )
     dispatcher.discover()
     dispatcher.load_all_modules()
 
@@ -156,16 +174,20 @@ def set_verbosity(verbose_count: int) -> None:
         logging.ERROR,
         logging.WARNING,
         logging.INFO,
-        logging.DEBUG
-        ]
+        logging.DEBUG,
+    ]
 
     max_index: int = len(verbosity_options) - 1
 
     # Clamp verbose_count to accepted values
     # Note that it shall not be possible to unset the verbosity.
-    option_index: int = 0 if verbose_count < 0 \
-        else max_index if verbose_count > max_index \
+    option_index: int = (
+        0
+        if verbose_count < 0
+        else max_index
+        if verbose_count > max_index
         else verbose_count
+    )
 
     new_level: int = verbosity_options[option_index]
     logging.basicConfig(
@@ -173,7 +195,7 @@ def set_verbosity(verbose_count: int) -> None:
         format="%(asctime)s "
         "[%(levelname)-8s] "
         "%(module)s.%(funcName)s(): "
-        "%(message)s"
+        "%(message)s",
     )
     globals.settings.verbosity = new_level
 
@@ -183,8 +205,8 @@ def set_verbosity(verbose_count: int) -> None:
                 f"Verbose logging is enabled. "
                 f"(LEVEL={logging.getLogger().getEffectiveLevel()})",
                 fg="yellow",
-                )
             )
+        )
 
 
 def set_output_format(output_format: str) -> None:
@@ -201,6 +223,8 @@ def set_output_format(output_format: str) -> None:
         globals.settings.output_format = chosen_format
         logging.info(f"Output format set to {chosen_format.name}")
     except KeyError:
-        logging.error(f"Output Format {output_format} not recognized. "
-                      f"Supported values are: {OutputFormat.list_supported()}")
+        logging.error(
+            f"Output Format {output_format} not recognized. "
+            f"Supported values are: {OutputFormat.list_supported()}"
+        )
         exit(2)

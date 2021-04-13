@@ -86,10 +86,13 @@ class Question(AbstractQuestion):
     respectively and provide functionality to filter these for common criteria.
     """
 
-    def __init__(self, question_id: str,
-                 question_text: str,
-                 predefined_answers: List[Answer],
-                 answers_data_type: type = str):
+    def __init__(
+        self,
+        question_id: str,
+        question_text: str,
+        predefined_answers: List[Answer],
+        answers_data_type: type = str,
+    ):
         """
         Initialize a new Question with the given metadata.
 
@@ -104,26 +107,30 @@ class Question(AbstractQuestion):
             raise ValueError(
                 f"Attempt to construct question {question_id} "
                 f"with answer type 'None'"
-                )
+            )
 
         super().__init__(question_id, question_text)
         # Check that type of answer data matches type of question data and
         # raise TypeError if they do not match.
         for answer in predefined_answers:
             if answer.data_type is not answers_data_type:
-                raise TypeError(f"Type of answer {answer.id} "
-                                f"'{answer.text}' "
-                                f"(type '{answer.data_type.__name__}') "
-                                f"is not equal to expected type "
-                                f"'{answers_data_type.__name__}'.")
+                raise TypeError(
+                    f"Type of answer {answer.id} "
+                    f"'{answer.text}' "
+                    f"(type '{answer.data_type.__name__}') "
+                    f"is not equal to expected type "
+                    f"'{answers_data_type.__name__}'."
+                )
         self._predefined_answers = predefined_answers
         self._given_answers: Dict[str, List[Answer]] = {}
         self._data_type: type = answers_data_type
 
     def __str__(self) -> str:
         """Generate a string representation of the question."""
-        return f"{self.id}: {self.text} " \
-               f"({len(self._predefined_answers)} predefined answers)"
+        return (
+            f"{self.id}: {self.text} "
+            f"({len(self._predefined_answers)} predefined answers)"
+        )
 
     @property
     def data_type(self) -> type:
@@ -168,8 +175,9 @@ class Question(AbstractQuestion):
         """
         return self._given_answers
 
-    def add_given_answer(self, participant_id: str,
-                         answer_data: Optional[AnswerType]) -> None:
+    def add_given_answer(
+        self, participant_id: str, answer_data: Optional[AnswerType]
+    ) -> None:
         """
         Insert an answer given by an participant for the question.
 
@@ -183,37 +191,45 @@ class Question(AbstractQuestion):
                             participant.
                             Its type should match the question data type
         """
-        if (not type(answer_data) == self._data_type
-                and answer_data is not None):
-            raise TypeError(f"Answer data type did not match question type. "
-                            f"Answer was {answer_data} "
-                            f"(type '{type(answer_data).__name__}') "
-                            f"for participant {participant_id}, "
-                            f"but question {self._id} expected type "
-                            f"'{self._data_type.__name__}'.")
+        if not type(answer_data) == self._data_type and answer_data is not None:
+            raise TypeError(
+                f"Answer data type did not match question type. "
+                f"Answer was {answer_data} "
+                f"(type '{type(answer_data).__name__}') "
+                f"for participant {participant_id}, "
+                f"but question {self._id} expected type "
+                f"'{self._data_type.__name__}'."
+            )
 
         if participant_id not in self._given_answers:
             self._given_answers[participant_id] = []
 
         candidates: List[Answer] = [
-            answer for answer in self.predefined_answers
+            answer
+            for answer in self.predefined_answers
             if answer.raw_data == answer_data
-            ]
+        ]
 
-        new_answer: Answer = candidates[0] \
-            if candidates else Answer(answer_id="Free Text",
-                                      answer_data=answer_data,
-                                      answer_short_text=None,
-                                      answer_data_type=self._data_type)
+        new_answer: Answer = (
+            candidates[0]
+            if candidates
+            else Answer(
+                answer_id="Free Text",
+                answer_data=answer_data,
+                answer_short_text=None,
+                answer_data_type=self._data_type,
+            )
+        )
 
         self._given_answers[participant_id].append(new_answer)
 
-    def filter_given_answers(self,
-                             include_predefined: bool = True,
-                             include_free_text: bool = True,
-                             participant_id: Optional[List[str]] = None,
-                             contains_text: Optional[str] = None) \
-            -> Dict[str, List[Answer]]:
+    def filter_given_answers(
+        self,
+        include_predefined: bool = True,
+        include_free_text: bool = True,
+        participant_id: Optional[List[str]] = None,
+        contains_text: Optional[str] = None,
+    ) -> Dict[str, List[Answer]]:
         """
         Filter the answers given by participants for different conditions.
 
@@ -242,8 +258,9 @@ class Question(AbstractQuestion):
         # TODO throw a proper exception instead
         # If neither was chosen, the result of the function will be empty...duh
 
-        participants: List[str] = list(participant_id) if participant_id \
-            else list(self._given_answers.keys())
+        participants: List[str] = (
+            list(participant_id) if participant_id else list(self._given_answers.keys())
+        )
 
         results: Dict[str, List[Answer]] = {}
 
@@ -260,11 +277,12 @@ class Question(AbstractQuestion):
                 was_predefined: bool = answer in self._predefined_answers
 
                 if not (
-                        (include_predefined and was_predefined) or
-                        (include_free_text and not was_predefined)
+                    (include_predefined and was_predefined)
+                    or (include_free_text and not was_predefined)
                 ):
-                    logging.debug(f"Filter: Excluding {answer} "
-                                  f"(Pre-defined/Free Text Rules)")
+                    logging.debug(
+                        f"Filter: Excluding {answer} (Pre-defined/Free Text Rules)"
+                    )
                     continue  # will not be selected, skip to next answer
 
                 # Filter for content
@@ -272,8 +290,7 @@ class Question(AbstractQuestion):
                     required_text: str = contains_text.lower()
                     searched_text: str = answer.text.lower()
                     if required_text not in searched_text:
-                        logging.debug(f"Filter: Excluding {answer} "
-                                      f"(Content Rules)")
+                        logging.debug(f"Filter: Excluding {answer} " f"(Content Rules)")
                         continue  # will not be selected, skip to next answer
                 selected_answers.append(answer)
             if selected_answers:
@@ -290,10 +307,10 @@ class Question(AbstractQuestion):
             participant IDs who selected that answer.
         """
         results: Dict[Answer, List[str]] = defaultdict(list)
-        nan_answer: Answer = Answer('Free Text', 'nan')
+        nan_answer: Answer = Answer("Free Text", "nan")
         for participant_id, answer_list in self.given_answers.items():
             for answer in answer_list:
-                if answer.text == 'nan':
+                if answer.text == "nan":
                     results[nan_answer].append(participant_id)
                 else:
                     results[answer].append(participant_id)
@@ -308,8 +325,9 @@ class Question(AbstractQuestion):
         """
         return [self]
 
-    def as_series(self, filter_invalid: bool = True,
-                  use_short_answer: bool = False) -> Series:
+    def as_series(
+        self, filter_invalid: bool = True, use_short_answer: bool = False
+    ) -> Series:
         """
         Create a pandas series from a given question.
 
@@ -346,8 +364,7 @@ class Question(AbstractQuestion):
             # (0) Assume univariate data, only take first element
             # Should not have multiple elements
             if len(self._given_answers[participant_id]) > 1:  # See Note (0)
-                raise ValueError(
-                    "Multivariate data can not be converted to series")
+                raise ValueError("Multivariate data can not be converted to series")
 
             answer = self.given_answers[participant_id][0]  # See Note (0)
 
@@ -356,10 +373,12 @@ class Question(AbstractQuestion):
             else:
                 question_answers.append(answer.raw_data)
 
-        series = Series(data=question_answers,
-                        index=self.given_answers.keys(),
-                        copy=True,
-                        name=self.id + " Series")
+        series = Series(
+            data=question_answers,
+            index=self.given_answers.keys(),
+            copy=True,
+            name=self.id + " Series",
+        )
 
         if self.data_type == str:
             series.replace("nan", numpy.NaN, inplace=True)
@@ -369,10 +388,12 @@ class Question(AbstractQuestion):
         series = series.astype(self._data_type.__name__)
         return series
 
-    def as_counted_series(self,
-                          relative_values: bool = False,
-                          filter_invalid: bool = True,
-                          use_short_answer: bool = False) -> Series:
+    def as_counted_series(
+        self,
+        relative_values: bool = False,
+        filter_invalid: bool = True,
+        use_short_answer: bool = False,
+    ) -> Series:
         """
         Count the occurrence of given answers.
 
@@ -397,11 +418,11 @@ class Question(AbstractQuestion):
         Returns:
             A series containing the count per answer.
         """
-        as_series = self.as_series(filter_invalid=filter_invalid,
-                                   use_short_answer=use_short_answer)
+        as_series = self.as_series(
+            filter_invalid=filter_invalid, use_short_answer=use_short_answer
+        )
 
-        return as_series.value_counts(normalize=relative_values,
-                                      dropna=filter_invalid)
+        return as_series.value_counts(normalize=relative_values, dropna=filter_invalid)
 
 
 class QuestionCollection(AbstractQuestion):
@@ -412,10 +433,9 @@ class QuestionCollection(AbstractQuestion):
     the according subquestions.
     """
 
-    def __init__(self,
-                 question_id: str,
-                 question_text: str,
-                 subquestions: List[Question]):
+    def __init__(
+        self, question_id: str, question_text: str, subquestions: List[Question]
+    ):
         """
         Initialize a question that contains sub-questions.
 
@@ -435,9 +455,10 @@ class QuestionCollection(AbstractQuestion):
         for included_question in self._subquestions:
             included_questions_text += f"\n\t{included_question}"
 
-        return f"{self.id}: {self.text} " \
-               f"({len(self._subquestions)} nested questions)" + \
-               included_questions_text
+        return (
+            f"{self.id}: {self.text} "
+            f"({len(self._subquestions)} nested questions)" + included_questions_text
+        )
 
     @property
     def has_subquestions(self) -> bool:
@@ -499,8 +520,8 @@ class QuestionCollection(AbstractQuestion):
         for subquestion in self._subquestions:
             if subquestion.data_type is bool:
                 new_answer: Answer = Answer(
-                    answer_id=subquestion.id,
-                    answer_data=subquestion.text)
+                    answer_id=subquestion.id, answer_data=subquestion.text
+                )
                 predefined_answers.append(new_answer)
 
                 answers: List[Answer]
@@ -516,9 +537,9 @@ class QuestionCollection(AbstractQuestion):
                 for participant in subquestion.given_answers:
                     for answer in subquestion.given_answers[participant]:
                         given_answers.append(
-                            (   # Parenthesis for tuple
+                            (  # Parenthesis for tuple
                                 participant,
-                                f"({subquestion.text}) {answer.text}"
+                                f"({subquestion.text}) {answer.text}",
                             )
                         )
 
@@ -526,8 +547,8 @@ class QuestionCollection(AbstractQuestion):
         new_question = Question(
             question_id=f"{self.id}*",
             question_text=self.text,
-            predefined_answers=predefined_answers
-            )
+            predefined_answers=predefined_answers,
+        )
 
         for (participant, answer) in given_answers:
             new_question.add_given_answer(participant, answer)

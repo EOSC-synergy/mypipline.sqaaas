@@ -4,9 +4,8 @@ This module allows discovery and dispatch of analysis functions.
 .. currentmodule:: survey_analysis.dispatch
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
-import importlib
+import importlib.util
 import logging
-import os
 import traceback
 from pathlib import Path
 from typing import List
@@ -33,7 +32,9 @@ class Dispatcher(object):
                 If the selected module does not exist in the module directory
                 a ValueError will be thrown.
         """
-        if not (module_folder.exists() and module_folder.is_dir()):
+        if not module_folder.exists():
+            raise ValueError("Module folder should exist.")
+        if not module_folder.is_dir():
             raise ValueError("Module folder should be a directory.")
 
         self.module_folder: Path = module_folder
@@ -46,8 +47,9 @@ class Dispatcher(object):
             for module_name in self.module_names:
                 module_path: Path = Path(module_folder, f"{module_name}.py")
                 if not module_path.exists():
-                    raise ValueError(f"Module {module_name} not found in "
-                                     f"module folder.")
+                    raise ValueError(
+                        f"Module {module_name} not found in " f"module folder."
+                    )
                 self.module_name_paths.append(module_path)
         else:
             self.module_name_paths.extend(self.module_folder.iterdir())
@@ -62,9 +64,11 @@ class Dispatcher(object):
         """
         # Execute all scripts in scripts folder or selected scripts only.
         for name_path in self.module_name_paths:
-            if (name_path.is_file()
-                    and name_path.suffix == ".py"
-                    and not name_path.stem == "__init__"):
+            if (
+                name_path.is_file()
+                and name_path.suffix == ".py"
+                and not name_path.stem == "__init__"
+            ):
 
                 logging.info(f"Discovered module {name_path.stem}.")
                 self._discovered_modules.append(name_path.stem)
@@ -99,18 +103,24 @@ class Dispatcher(object):
         # TODO if the module_name has a .py ending, remove it beforehand
 
         module_path: Path = self.module_folder / module_name
-        module_dot_path: str = str(module_path).replace(os.sep, '.')
-        logging.info(f"Running Module {module_dot_path}.")
+        logging.info(f"Running Module {module_name}.")
 
         try:
-            module = importlib.import_module(module_dot_path)
-        except ImportError:
-            logging.error(f"Failed to load module {module_dot_path}.")
+            spec = importlib.util.spec_from_file_location(
+                module_name, f"{module_path}.py"
+            )
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+        except ImportError as error:
+            logging.error(f"Failed to load module {module_name}." f"{error}")
 
         try:
             module.run()
         except AttributeError as error:
             traceback.print_exc()
-            logging.error(f"Module {module_dot_path}: "
-                          f"Error when calling run() - method: "
-                          f"{error}.")
+            logging.error(
+                f"Module {module_name}: "
+                f"Error when calling run() - method: "
+                f"{error}."
+            )
+            exit(1)

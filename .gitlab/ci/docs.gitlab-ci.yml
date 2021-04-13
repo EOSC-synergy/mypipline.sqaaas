@@ -1,7 +1,7 @@
 docs:
   stage: docs
   script:
-    - pipenv run make docs
+    - poetry run make docs
   after_script:
     - mkdir public
     - mv docs/build/html/* public/

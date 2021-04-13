@@ -37,8 +37,7 @@ KEYWORD_SHORT: str = "short-text"
 KEYWORD_DATATYPE: str = "datatype"
 
 
-def parse_answer(content: YamlDict,
-                 question_data_type: type = str) -> Answer:
+def parse_answer(content: YamlDict, question_data_type: type = str) -> Answer:
     """
     Parse an Answer object from YAML.
 
@@ -54,14 +53,13 @@ def parse_answer(content: YamlDict,
 
     answer_id: str = content[KEYWORD_ID]
     answer_text: str = content[KEYWORD_TEXT]
-    answer_short_text: Optional[str] = \
+    answer_short_text: Optional[str] = (
         content[KEYWORD_SHORT] if KEYWORD_SHORT in content else None
-    return Answer(answer_id, answer_text, answer_short_text,
-                  question_data_type)
+    )
+    return Answer(answer_id, answer_text, answer_short_text, question_data_type)
 
 
-def parse_question(content: YamlDict,
-                   collection_id: Optional[str] = None) -> Question:
+def parse_question(content: YamlDict, collection_id: Optional[str] = None) -> Question:
     """
     Parse a Question object from YAML.
 
@@ -98,7 +96,7 @@ def parse_question(content: YamlDict,
             raise ValueError(
                 f"Could not parse type name '{type_string}' from metadata "
                 f"when constructing question {question_id}"
-                )
+            )
 
         question_data_type = locate(type_string)
     else:
@@ -111,8 +109,9 @@ def parse_question(content: YamlDict,
             new_answer: Answer = parse_answer(answer_yaml, question_data_type)
             predefined_answers.append(new_answer)
 
-    new_question: Question = Question(question_id, question_text,
-                                      predefined_answers, question_data_type)
+    new_question: Question = Question(
+        question_id, question_text, predefined_answers, question_data_type
+    )
     logging.debug(f"Parsed question {new_question}")
 
     # Put the newly parsed object into the global dictionary
@@ -145,8 +144,9 @@ def parse_question_collection(content: YamlDict) -> None:
 
     assert questions
 
-    new_collection: QuestionCollection = QuestionCollection(collection_id,
-                                                            text, questions)
+    new_collection: QuestionCollection = QuestionCollection(
+        collection_id, text, questions
+    )
     logging.debug(f"Parsed question collection {new_collection}")
 
     # Put the newly parsed object into the global dictionary
@@ -170,9 +170,8 @@ def construct_questions_from_metadata(metadata_file: Path) -> None:
         raise ValueError("Metadata file did not exist")
 
     try:
-        with metadata_file.open(mode='r', encoding='utf-8') as file:
-            raw_metadata = yaml.load(stream=file,
-                                     Loader=yaml.Loader)
+        with metadata_file.open(mode="r", encoding="utf-8") as file:
+            raw_metadata = yaml.load(stream=file, Loader=yaml.Loader)
     except IOError:
         logging.error(f"YAML file {metadata_file} could not be opened.")
         raise
@@ -190,7 +189,8 @@ def construct_questions_from_metadata(metadata_file: Path) -> None:
 
 
 def fetch_participant_answers(
-        data_source: DataContainer = globals.dataContainer) -> None:
+    data_source: DataContainer = globals.dataContainer,
+) -> None:
     """
     Extract the participants' answers for `globals.survey_questions`.
 
@@ -209,16 +209,16 @@ def fetch_participant_answers(
                         Defaults to global.dataContainer
     """
     if data_source.empty:
-        raise ValueError("Could not initialize participant answers - "
-                         "data source was empty")
+        raise ValueError(
+            "Could not initialize participant answers - data source was empty"
+        )
 
     for question_id in globals.survey_questions:
         question: AbstractQuestion = globals.survey_questions[question_id]
         if question.has_subquestions:
             continue  # collections have no answers
 
-        answers: Dict[str, AnswerType] = \
-            data_source.data_for_question(question_id)
+        answers: Dict[str, AnswerType] = data_source.data_for_question(question_id)
 
         participant_id: str
         answer_data: AnswerType
@@ -228,15 +228,14 @@ def fetch_participant_answers(
                     f"Received answer with no data "
                     f"for question {question_id}, "
                     f"participant {participant_id}"
-                    )
+                )
 
             # Convert the given data to their respective values given the
             # Target type.
             if question.data_type is bool:
                 try:
                     if answer_data is not numpy.NaN:
-                        question.add_given_answer(participant_id,
-                                                  bool(answer_data))
+                        question.add_given_answer(participant_id, bool(answer_data))
                     else:
                         # numpy.nan is not a valid bool, replace by None
                         question.add_given_answer(participant_id, None)
@@ -247,12 +246,11 @@ def fetch_participant_answers(
                         f"participant {participant_id}, "
                         f"answer text '{answer_data}'. "
                         f"Data entry ignored"
-                        )
+                    )
 
             elif question.data_type is float:
                 try:
-                    question.add_given_answer(participant_id,
-                                              float(answer_data))
+                    question.add_given_answer(participant_id, float(answer_data))
                 except ValueError:
                     logging.warning(
                         f"Could not parse answer to type 'float' for "
@@ -264,8 +262,7 @@ def fetch_participant_answers(
             elif question.data_type is int:
                 try:
                     if answer_data is not numpy.NaN:
-                        question.add_given_answer(participant_id,
-                                                  int(answer_data))
+                        question.add_given_answer(participant_id, int(answer_data))
                     else:
                         # numpy.nan is not a valid int, replace by None
                         question.add_given_answer(participant_id, None)
@@ -276,7 +273,7 @@ def fetch_participant_answers(
                         f"participant {participant_id}, "
                         f"answer text '{answer_data}'. "
                         f"Data entry ignored"
-                        )
+                    )
             else:
                 # Note: numpy.nan will be stored as "nan", thus they will be
                 # replaced to allow them to be distinguished from valid strings
