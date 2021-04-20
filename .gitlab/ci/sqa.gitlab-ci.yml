@@ -18,24 +18,31 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""
-This module provides the global definitions for the project.
+sqa:dev:
+  stage: sqa
+  image:
+    name: "git.gfz-potsdam.de:5000/id2/software/services/fair/software-quality-assurance/software-quality-assurance:latest"
+    entrypoint: [""]
+  tags:
+    - internal
+  script:
+    - sqa --repository_dir "$CI_PROJECT_DIR" -ol cli run -r -lli -lla -la -c
+  except:
+    refs:
+      - master
 
-.. currentmodule:: survey_analysis.globals
-.. moduleauthor:: HIFIS Software <software@hifis.net>
-"""
-from typing import Dict
-
-from survey_analysis.data import DataContainer
-from survey_analysis.question import AbstractQuestion
-from survey_analysis.settings import Settings
-
-#: A global copy-on-read container for providing the survey data
-#: to the analysis functions
-dataContainer: DataContainer = DataContainer()
-
-#: The settings storage
-settings: Settings = Settings()
-
-#: All the survey questions and their associated answers
-survey_questions: Dict[str, AbstractQuestion] = {}
+sqa:production:
+  stage: sqa
+  image:
+    name: "git.gfz-potsdam.de:5000/id2/software/services/fair/software-quality-assurance/software-quality-assurance:latest"
+    entrypoint: [""]
+  tags:
+    - internal
+  script:
+    - sqa --repository_dir "$CI_PROJECT_DIR" run -r -lli -lla -la -c
+  only:
+    refs:
+      - master
+  artifacts:
+    paths:
+      - "QUALITY.md"

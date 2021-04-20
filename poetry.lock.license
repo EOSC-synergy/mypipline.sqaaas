@@ -1,5 +1,9 @@
+survey-analysis-framework
+Framework to help developing analysis scripts for the HIFIS Software survey.
 
-Copyright (c) 2020, HIFIS Software
+SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
+
+SPDX-License-Identifier: GPL-3.0-or-later
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
