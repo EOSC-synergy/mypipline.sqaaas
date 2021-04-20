@@ -1,4 +1,4 @@
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -21,7 +21,7 @@
 """
 This module provides the definitions for a settings container.
 
-.. currentmodule:: survey_analysis.settings
+.. currentmodule:: hifis_surveyval.settings
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 

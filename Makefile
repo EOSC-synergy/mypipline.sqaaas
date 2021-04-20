@@ -1,4 +1,4 @@
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -20,8 +20,8 @@
 
 .DEFAULT_GOAL := build
 .PHONY: build publish package coverage test lint docs
-PROJ_SLUG = survey_analysis
-CLI_NAME = survey_analysis
+PROJ_SLUG = hifis_surveyval
+CLI_NAME = hifis-surveyval
 LINTER = flakehell lint
 SHELL = bash
 

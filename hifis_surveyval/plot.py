@@ -1,4 +1,4 @@
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -27,7 +27,7 @@ informative plots.
 The actual plotting is done by utilizing a separate plotting library called
 `matplotlib`.
 
-.. currentmodule:: survey_analysis.plot
+.. currentmodule:: hifis_surveyval.plot
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import logging
@@ -41,8 +41,8 @@ from matplotlib import pyplot, rcParams
 from matplotlib.colors import ListedColormap
 from pandas import DataFrame
 
-from survey_analysis.globals import settings
-from survey_analysis.settings import OutputFormat
+from hifis_surveyval.globals import settings
+from hifis_surveyval.settings import OutputFormat
 
 
 def _output_pyplot_image(output_file_stem: str = "") -> None:

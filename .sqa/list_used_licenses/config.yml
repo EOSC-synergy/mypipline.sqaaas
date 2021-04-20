@@ -1,4 +1,4 @@
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -28,6 +28,6 @@ manual dependency config:
   Python:
     - import name: 'yaml'
       pkg name: 'PyYAML'
-    - import name: 'survey_analysis#noqa'
-      pkg name: 'survey_analysis'
+    - import name: 'hifis_surveyval#noqa'
+      pkg name: 'hifis_surveyval'
       ignore: True

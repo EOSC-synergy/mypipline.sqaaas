@@ -1,4 +1,4 @@
-.. survey-analysis-framework
+.. hifis-surveyval
 .. Framework to help developing analysis scripts for the HIFIS Software survey.
 ..
 .. SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -30,11 +30,11 @@ Getting Started
 Installing the Library
 ======================
 
-You can use pip to install `survey_analysis`.
+You can use pip to install `hifis_surveyval`.
 
 .. code-block:: sh
 
-    pip install survey_analysis
+    pip install hifis_surveyval
 
 
 

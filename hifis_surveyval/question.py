@@ -1,4 +1,4 @@
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -25,7 +25,7 @@ AbstractQuestion models the baseline for all questions which specialize into
 * QuestionCollection for questions that contain subordinate questions
 * Question for actual questions with associated answers by participants
 
-.. currentmodule:: survey_analysis.question
+.. currentmodule:: hifis_surveyval.question
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import logging

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -37,7 +37,7 @@ It can be used as a handy facility for running the task from a command line.
     To learn more about running Luigi, visit the Luigi project's
     `Read-The-Docs <http://luigi.readthedocs.io/en/stable/>`_ page.
 
-.. currentmodule:: survey_analysis.cli
+.. currentmodule:: hifis_surveyval.cli
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import logging
@@ -48,12 +48,12 @@ from typing import List
 import click
 import pandas
 
-from survey_analysis import dispatch, globals
-from survey_analysis.metadata import (
+from hifis_surveyval import dispatch, globals
+from hifis_surveyval.metadata import (
     construct_questions_from_metadata,
     fetch_participant_answers,
 )
-from survey_analysis.settings import OutputFormat
+from hifis_surveyval.settings import OutputFormat
 
 from .__init__ import __version__
 

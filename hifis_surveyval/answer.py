@@ -1,4 +1,4 @@
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -21,7 +21,7 @@
 """
 This module contains a class to represent survey answers.
 
-.. currentmodule:: survey_analysis.answer
+.. currentmodule:: hifis_surveyval.answer
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 from typing import List, Optional, Union

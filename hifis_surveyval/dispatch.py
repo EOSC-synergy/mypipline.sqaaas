@@ -1,4 +1,4 @@
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -21,7 +21,7 @@
 """
 This module allows discovery and dispatch of analysis functions.
 
-.. currentmodule:: survey_analysis.dispatch
+.. currentmodule:: hifis_surveyval.dispatch
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import importlib.util

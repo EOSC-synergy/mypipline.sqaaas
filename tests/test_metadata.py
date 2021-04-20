@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -32,7 +32,7 @@ Unit tests for class Metadata.
 """
 
 
-# from survey_analysis.metadata import Metadata
+# from hifis_surveyval.metadata import Metadata
 import pytest
 
 

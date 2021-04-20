@@ -1,4 +1,4 @@
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -21,7 +21,7 @@
 """
 This module provides helper functions.
 
-.. currentmodule:: survey_analysis.util
+.. currentmodule:: hifis_surveyval.util
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 
@@ -31,9 +31,9 @@ from typing import Any, Dict, List, Optional, Set
 
 from pandas import DataFrame, Series, concat
 
-from survey_analysis.answer import Answer
-from survey_analysis.globals import survey_questions
-from survey_analysis.question import AbstractQuestion, Question, QuestionCollection
+from hifis_surveyval.answer import Answer
+from hifis_surveyval.globals import survey_questions
+from hifis_surveyval.question import AbstractQuestion, Question, QuestionCollection
 
 
 def filter_and_group(

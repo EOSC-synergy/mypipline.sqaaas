@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -25,7 +25,7 @@
 """
 This project is used to develop analysis scripts for the HIFIS Software survey.
 
-.. currentmodule:: survey_analysis
+.. currentmodule:: hifis_surveyval
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 

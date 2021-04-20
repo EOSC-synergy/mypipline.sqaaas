@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -46,7 +46,7 @@ def test_import_getVersions_originalVersions():
     """
     assert (
         # fmt: off
-        # '0.0.1' == survey_analysis.__version__,
+        # '0.0.1' == hifis_surveyval.__version__,
         # fmt: on
         "This test is expected to fail when the version increments. "
         "It is here only as an example and you can remove it."

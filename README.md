@@ -1,5 +1,5 @@
 <!--
-survey-analysis-framework
+hifis-surveyval
 Framework to help developing analysis scripts for the HIFIS Software survey.
 
 SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -20,7 +20,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 
-# HIFIS Survey Tool
+# HIFIS-Surveyval
 
 This project is used to develop analysis scripts for the HIFIS Software survey.
 
@@ -47,20 +47,20 @@ or `pip`.
 ### Using pip
 
 ```shell
-pip install survey_analysis
+pip install hifis-surveyval
 ```
 
-After the installation, you can use the tool from the command line with `survey_analysis --help`.
+After the installation, you can use the tool from the command line with `hifis-surveyval --help`.
 
 ### Using poetry
 
 ```shell
 git clone $PATH_TO_THIS_PROJECT
-cd survey-analysis-framework
+cd hifis-surveyval
 poetry install --no-dev
 ```
 
-After the installation, you can use the tool from the command line with `poetry run survey_analysis --help`
+After the installation, you can use the tool from the command line with `poetry run hifis-surveyval --help`
 The following documentation references the pip installation.
 You can use the same commands with a poetry installation, if you refix you commands with `poetry run COMMAND`.
 
@@ -102,7 +102,7 @@ project and tell the program the path to that data file.
 Now you can do the following to start the survey analysis from the CLI:
 
 ```shell script
-survey_analysis analyze data/<data_file_name>.csv
+hifis-surveyval analyze data/<data_file_name>.csv
 ```
 
 It tells the program that you would like to do the analysis,
@@ -135,8 +135,8 @@ when being encountered with this program.
 It outputs a so-called _Usage_-message to the CLI:
 
 ```shell script
-$ survey_analysis --help
-Usage: survey_analysis [OPTIONS] COMMAND [ARGS]...
+$ hifis-surveyval --help
+Usage: hifis-surveyval [OPTIONS] COMMAND [ARGS]...
 
   Analyze a given CSV file with a set of independent python scripts.
 
@@ -171,20 +171,20 @@ of the output to the CLI.
 This flag is called `--verbose` or `-v` for short:
 
 ```shell script
-survey_analysis --verbose <COMMAND>
+hifis-surveyval --verbose <COMMAND>
 ```
 ```shell script
-survey_analysis -v <COMMAND>
+hifis-surveyval -v <COMMAND>
 ```
 
 The verbosity of the output can be increased even more 
 by duplicating the flag `--verbose` or `-v` up to two times:
 
 ```shell script
-survey_analysis --verbose --verbose --verbose <COMMAND>
+hifis-surveyval --verbose --verbose --verbose <COMMAND>
 ```
 ```shell script
-survey_analysis -vvv <COMMAND>
+hifis-surveyval -vvv <COMMAND>
 ```
 
 #### Scripts flag
@@ -193,10 +193,10 @@ Beside verbosity there is a _scripts_-flag called `--scripts` or
 `-s` for short:
 
 ```shell script
-survey_analysis --scripts "scripts" <COMMAND>
+hifis-surveyval --scripts "scripts" <COMMAND>
 ```
 ```shell script
-survey_analysis -s "scripts" <COMMAND>
+hifis-surveyval -s "scripts" <COMMAND>
 ```
 
 This will tell the program in which folder to look for the actual 
@@ -208,10 +208,10 @@ In case the _scripts_-flag is omitted it defaults to sub-folder `scripts/`.
 There is also a _names_-flag called `--names` or `-n` for short:
 
 ```shell script
-survey_analysis --names "example_script_1" --names "example_script_2" <COMMAND>
+hifis-surveyval --names "example_script_1" --names "example_script_2" <COMMAND>
 ```
 ```shell script
-survey_analysis -n "example_script_1" -n "example_script_2" <COMMAND>
+hifis-surveyval -n "example_script_1" -n "example_script_2" <COMMAND>
 ```
 
 This will tell the program which scripts in the scripts folder to execute.
@@ -224,10 +224,10 @@ The _output-folder_-flag called `--output-folder` or `-o` for short
 is another option:
 
 ```shell script
-survey_analysis --output-folder "output" <COMMAND>
+hifis-surveyval --output-folder "output" <COMMAND>
 ```
 ```shell script
-survey_analysis -o "output" <COMMAND>
+hifis-surveyval -o "output" <COMMAND>
 ```
 
 This will tell the program in which folder to put the generated output 
@@ -249,10 +249,10 @@ Allowed values to this flag are the following:
 On the CLI the actual call looks like this:
 
 ```shell script
-survey_analysis --output-format PNG <COMMAND>
+hifis-surveyval --output-format PNG <COMMAND>
 ```
 ```shell script
-survey_analysis -f PNG <COMMAND>
+hifis-surveyval -f PNG <COMMAND>
 ```
 
 ### Commands
@@ -269,7 +269,7 @@ The `version` command outputs the version number of
 this CLI-program like so:
 
 ```shell script
-survey_analysis version
+hifis-surveyval version
 0.0.1
 ```
 
@@ -286,7 +286,7 @@ in order to be able to start the analysis.
 This is an example of how to do the analysis:
 
 ```shell script
-survey_analysis analyze data/<data_file_name>.csv
+hifis-surveyval analyze data/<data_file_name>.csv
 ```
 
 ## Contribute with Own Analysis Scripts
@@ -296,7 +296,7 @@ survey_analysis analyze data/<data_file_name>.csv
 As you might have read in the previous sections the actual analysis scripts 
 reside in a specific folder called `scripts/`.
 All scripts in that folder will be automatically discovered by the package 
-`survey_analysis` when running the analysis.
+`hifis-surveyval` when running the analysis.
 In order that the program recognizes the scripts in that folder as
 analysis scripts they need to fulfil the following two criteria:
 
@@ -307,7 +307,7 @@ analysis scripts they need to fulfil the following two criteria:
 """
 A dummy script for testing the function dispatch
 
-.. currentmodule:: survey_analysis.scripts.dummy
+.. currentmodule:: hifis_surveyval.scripts.dummy
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 
@@ -321,8 +321,8 @@ of the analysis scripts in an arbitrary sequence.
 ### File-System Structure of Core Component
 
 ```shell script
-$ tree survey_analysis/
-survey_analysis/
+$ tree hifis_surveyval/
+hifis_surveyval/
 ├── answer.py
 ├── cli.py
 ├── data.py
@@ -337,7 +337,7 @@ survey_analysis/
 ### Files and Classes Explained
 
 **ToDo**: This section need to be extended to all files and classes
-found in package `survey_analysis`.
+found in package `hifis_surveyval`.
 
 #### Classes to Represent Questions
 

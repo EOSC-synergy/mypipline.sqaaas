@@ -1,4 +1,4 @@
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -21,14 +21,14 @@
 """
 This module provides the global definitions for the project.
 
-.. currentmodule:: survey_analysis.globals
+.. currentmodule:: hifis_surveyval.globals
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 from typing import Dict
 
-from survey_analysis.data import DataContainer
-from survey_analysis.question import AbstractQuestion
-from survey_analysis.settings import Settings
+from hifis_surveyval.data import DataContainer
+from hifis_surveyval.question import AbstractQuestion
+from hifis_surveyval.settings import Settings
 
 #: A global copy-on-read container for providing the survey data
 #: to the analysis functions

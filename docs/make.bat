@@ -1,4 +1,4 @@
-REM survey-analysis-framework
+REM hifis-surveyval
 REM Framework to help developing analysis scripts for the HIFIS Software survey.
 REM
 REM SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>

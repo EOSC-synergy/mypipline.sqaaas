@@ -1,5 +1,5 @@
 <!--
-survey-analysis-framework
+hifis-surveyval
 Framework to help developing analysis scripts for the HIFIS Software survey.
 
 SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>

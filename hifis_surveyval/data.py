@@ -1,4 +1,4 @@
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -24,7 +24,7 @@ This module provides the definitions for a data container.
 The container is meant to serve as the data source for the individual analysis
 functions.
 
-.. currentmodule:: survey_analysis.data
+.. currentmodule:: hifis_surveyval.data
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 

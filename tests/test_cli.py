@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -33,8 +33,8 @@ module.
 from click.testing import CliRunner, Result
 
 # fmt: off
-import survey_analysis.cli as cli
-from survey_analysis import __version__
+import hifis_surveyval.cli as cli
+from hifis_surveyval import __version__
 
 # To learn more about testing Click applications, visit the link below.
 # http://click.pocoo.org/5/testing/

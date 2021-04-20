@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# survey-analysis-framework
+# hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
 # SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
@@ -27,7 +27,7 @@ This module provides the definitions for survey metadata.
 
 Survey metadata given in a YAML file is transformed into a dictionary.
 
-.. currentmodule:: survey_analysis.metadata
+.. currentmodule:: hifis_surveyval.metadata
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 
@@ -39,7 +39,7 @@ from typing import Dict, List, Optional, Union
 import numpy
 import yaml
 
-from survey_analysis import globals
+from hifis_surveyval import globals
 
 from .answer import Answer, AnswerType, ValidAnswerTypes
 from .data import DataContainer
