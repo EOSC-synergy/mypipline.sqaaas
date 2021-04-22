@@ -36,7 +36,7 @@ from typing import Dict, List, Optional, Tuple
 import numpy
 from pandas import DataFrame, Series
 
-from .answer import Answer, AnswerType
+from hifis_surveyval.answer import Answer, AnswerType
 
 
 class AbstractQuestion(ABC):

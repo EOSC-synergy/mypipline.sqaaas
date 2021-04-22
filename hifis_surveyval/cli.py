@@ -41,21 +41,21 @@ It can be used as a handy facility for running the task from a command line.
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import logging
-import sys
 from pathlib import Path
 from typing import List
 
 import click
 import pandas
+import pkg_resources
 
 from hifis_surveyval import dispatch, globals
+from hifis_surveyval.core import environment, settings
 from hifis_surveyval.metadata import (
     construct_questions_from_metadata,
     fetch_participant_answers,
 )
-from hifis_surveyval.settings import OutputFormat
 
-from .__init__ import __version__
+setting: settings.Settings = settings.get_settings()
 
 
 @click.group()
@@ -68,71 +68,35 @@ from .__init__ import __version__
     help="Enable verbose output. "
     "Increase verbosity by setting this option up to 3 times.",
 )
-@click.option(
-    "--scripts",
-    "-s",
-    default="scripts",
-    show_default=True,
-    help="Select the folder containing analysis scripts.",
-)
-@click.option(
-    "--names",
-    "-n",
-    multiple=True,
-    default=[],
-    help="Optionally select the specific script names contained "
-    "in the scripts folder (while omitting file endings) "
-    "which should be executed.",
-)
-@click.option(
-    "--output-folder",
-    "-o",
-    default="output",
-    show_default=True,
-    help="Select the folder to put the generated output like plots " "into.",
-)
-@click.option(
-    "--output-format",
-    "-f",
-    default="PNG",
-    show_default=True,
-    help=f"Designate output format. "
-    f"Supported values are: {OutputFormat.list_supported()}.",
-)
-def cli(
-    verbose: int, scripts: str, names: List[str], output_folder: str, output_format: str
-) -> None:
+def cli(verbose: int) -> None:
     """Analyze a given CSV file with a set of independent python scripts."""
     # NOTE that click takes above documentation for generating help text
     # Thus the documentation refers to the application per se and not the
     # function (as it should)
     set_verbosity(verbose)
-    set_output_format(output_format)
-
-    logging.info(f"Selected script folder: {scripts}")
-    globals.settings.script_folder = Path(scripts)
-    logging.info(f"Selected output folder: {output_folder}")
-    globals.settings.output_folder = Path(output_folder)
-    # Set a list of selected module names contained in the module folder.
-    globals.settings.script_names = names
-    sys.path.insert(0, scripts)
+    globals.settings = setting
 
 
 @cli.command()
 def version() -> None:
     """Get the library version."""
-    click.echo(click.style(f"{__version__}", bold=True))
+    version = pkg_resources.require("hifis_surveyval")[0].version
+    click.echo(click.style(f"{version}", bold=True))
 
 
 @cli.command()
+def init() -> None:
+    """
+    Create a default configuration in a .env file.
+
+    It will overwrite any existing .env file.
+    """
+    settings.create_config_file()
+
+
 @click.argument("file_name", type=click.File(mode="r"))
-@click.option(
-    "--metadata",
-    "-m",
-    default="metadata/meta.yml",
-    help="Give file name which contains survey metadata.",
-)
-def analyze(file_name, metadata: str) -> None:
+@cli.command()
+def analyze(file_name) -> None:
     """
     Read the given files into global data and metadata objects.
 
@@ -141,12 +105,13 @@ def analyze(file_name, metadata: str) -> None:
     If the metadata file can not be parsed, an error will be printed and
     the program will abort.
     """
+    environment.prepare_environment()
     logging.info(f"Analyzing file {file_name.name}")
     try:
         frame: pandas.DataFrame = pandas.read_csv(
             file_name,
-            true_values=globals.settings.true_values,
-            false_values=globals.settings.false_values,
+            true_values=globals.settings.TRUE_VALUES,
+            false_values=globals.settings.FALSE_VALUES,
         )
 
         logging.debug("\n" + str(frame))
@@ -157,14 +122,14 @@ def analyze(file_name, metadata: str) -> None:
         logging.error("Could not parse the given file as CSV")
         exit(1)
 
-    logging.info(f"Attempt to load metadata from {metadata}")
+    logging.info(f"Attempt to load metadata from {globals.settings.METADATA}")
 
     # Load survey metadata from given YAML file.
     try:
-        construct_questions_from_metadata(Path(metadata))
+        construct_questions_from_metadata(Path(globals.settings.METADATA))
 
         # When debugging, print all parsed Questions
-        if globals.settings.verbosity == logging.DEBUG:
+        if globals.settings.VERBOSITY == logging.DEBUG:
             logging.debug("Parsed Questions:")
             for question in globals.survey_questions.values():
                 logging.debug(question)
@@ -175,7 +140,7 @@ def analyze(file_name, metadata: str) -> None:
         exit(1)
 
     dispatcher = dispatch.Dispatcher(
-        globals.settings.script_folder, globals.settings.script_names
+        globals.settings.SCRIPT_FOLDER, globals.settings.SCRIPT_NAMES
     )
     dispatcher.discover()
     dispatcher.load_all_modules()
@@ -211,6 +176,7 @@ def set_verbosity(verbose_count: int) -> None:
     )
 
     new_level: int = verbosity_options[option_index]
+
     logging.basicConfig(
         level=new_level,
         format="%(asctime)s "
@@ -218,7 +184,8 @@ def set_verbosity(verbose_count: int) -> None:
         "%(module)s.%(funcName)s(): "
         "%(message)s",
     )
-    globals.settings.verbosity = new_level
+
+    setting.VERBOSITY = new_level
 
     if not new_level == logging.ERROR:
         click.echo(
@@ -228,24 +195,3 @@ def set_verbosity(verbose_count: int) -> None:
                 fg="yellow",
             )
         )
-
-
-def set_output_format(output_format: str) -> None:
-    """
-    Attempt to determine the desired output format from the given string.
-
-    The format name is not case sensitive.
-
-    Args:
-        output_format: A textual representation of the desired format.
-    """
-    try:
-        chosen_format: OutputFormat = OutputFormat[output_format.upper()]
-        globals.settings.output_format = chosen_format
-        logging.info(f"Output format set to {chosen_format.name}")
-    except KeyError:
-        logging.error(
-            f"Output Format {output_format} not recognized. "
-            f"Supported values are: {OutputFormat.list_supported()}"
-        )
-        exit(2)

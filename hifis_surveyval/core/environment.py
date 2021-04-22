@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
@@ -20,14 +18,30 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# -*- coding: utf-8 -*-
-
 """
-This module contains project version information.
+This module provides the functions to set up the environment.
 
-.. currentmodule:: hifis_surveyval.version
+It adds the script folder to PATH and creates required folders.
+
+.. currentmodule:: hifis_surveyval.core.environment
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
+import sys
 
-__version__ = "0.2.0"  #: the working version
-__release__ = "0.2.0"  #: the release version
+from hifis_surveyval.globals import settings
+
+
+def prepare_environment() -> None:
+    """
+    Prepare the runtime environment.
+
+    * setting sys path to load scripts
+    * creating output folder to save images
+    """
+    # set syspath to later on load scripts
+    sys.path.insert(0, settings.SCRIPT_FOLDER)
+
+    # create folder to output the results
+    if settings.ANALYSIS_OUTPUT_PATH is not None:
+        if not settings.ANALYSIS_OUTPUT_PATH.exists():
+            settings.ANALYSIS_OUTPUT_PATH.mkdir(parents=True)

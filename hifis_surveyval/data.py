@@ -32,7 +32,7 @@ from typing import Dict
 
 from pandas import DataFrame
 
-from .answer import AnswerType
+from hifis_surveyval.answer import AnswerType
 
 
 class DataContainer(object):

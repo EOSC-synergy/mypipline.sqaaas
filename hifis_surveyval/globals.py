@@ -26,9 +26,9 @@ This module provides the global definitions for the project.
 """
 from typing import Dict
 
+from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.data import DataContainer
 from hifis_surveyval.question import AbstractQuestion
-from hifis_surveyval.settings import Settings
 
 #: A global copy-on-read container for providing the survey data
 #: to the analysis functions

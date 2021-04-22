@@ -41,8 +41,8 @@ from matplotlib import pyplot, rcParams
 from matplotlib.colors import ListedColormap
 from pandas import DataFrame
 
+from hifis_surveyval.core.settings import OutputFormat
 from hifis_surveyval.globals import settings
-from hifis_surveyval.settings import OutputFormat
 
 
 def _output_pyplot_image(output_file_stem: str = "") -> None:
@@ -61,7 +61,7 @@ def _output_pyplot_image(output_file_stem: str = "") -> None:
                             automatic generation of a file name from the date
                             of the run and the module producing the image.
     """
-    if settings.output_format == OutputFormat.SCREEN:
+    if settings.OUTPUT_FORMAT == OutputFormat.SCREEN:
         pyplot.show()
         pyplot.close()
         return
@@ -81,10 +81,10 @@ def _output_pyplot_image(output_file_stem: str = "") -> None:
 
         output_file_stem: str = f"{calling_module_name}"
 
-    file_ending: str = settings.output_format.name.lower()
+    file_ending: str = settings.OUTPUT_FORMAT.name.lower()
     file_name: str = f"{output_file_stem}.{file_ending}"
 
-    output_path: Path = settings.analysis_output_path / file_name
+    output_path: Path = settings.ANALYSIS_OUTPUT_PATH / file_name
 
     if output_path.exists():
         logging.warning(f"Overriding existing output file {output_path}")

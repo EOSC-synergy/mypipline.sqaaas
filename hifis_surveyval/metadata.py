@@ -40,10 +40,9 @@ import numpy
 import yaml
 
 from hifis_surveyval import globals
-
-from .answer import Answer, AnswerType, ValidAnswerTypes
-from .data import DataContainer
-from .question import AbstractQuestion, Question, QuestionCollection
+from hifis_surveyval.answer import Answer, AnswerType, ValidAnswerTypes
+from hifis_surveyval.data import DataContainer
+from hifis_surveyval.question import AbstractQuestion, Question, QuestionCollection
 
 # The YAML dictionary has a recursive type
 YamlDict = Dict[str, Optional[Union[str, "YamlDict"]]]

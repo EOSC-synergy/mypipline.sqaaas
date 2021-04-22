@@ -29,12 +29,13 @@
 This is the test module for the project's command-line interface (CLI)
 module.
 """
+import pkg_resources
+
 # fmt: on
 from click.testing import CliRunner, Result
 
 # fmt: off
 import hifis_surveyval.cli as cli
-from hifis_surveyval import __version__
 
 # To learn more about testing Click applications, visit the link below.
 # http://click.pocoo.org/5/testing/
@@ -48,7 +49,7 @@ def test_version_displays_library_version():
     runner: CliRunner = CliRunner()
     result: Result = runner.invoke(cli.cli, ["version"])
     assert (
-        __version__ in result.output.strip()
+        pkg_resources.require("hifis_surveyval")[0].version in result.output.strip()
     ), "Version number should match library version."
 
 

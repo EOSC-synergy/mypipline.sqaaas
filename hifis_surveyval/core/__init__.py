@@ -18,23 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# META
-# valid names for programming languages
-# ['Python',
-#  'Node',
-#  'submodules']
+"""
+This package provides core functionalities.
 
-manual dependency config:
-  Python:
-    - import name: 'yaml'
-      pkg name: 'PyYAML'
-    - import name: 'hifis_surveyval#noqa'
-      pkg name: 'hifis_surveyval'
-      ignore: True
-    - import name: 'pkg_resources'
-      pkg name: 'pkg_resources'
-      ignore: True
-    - import name: 'python-dotenv'
-      pkg name: 'python-dotenv'
-      licenses:
-        - 'BSD-3-Clause'
+.. currentmodule:: hifis_surveyval.core
+.. moduleauthor:: HIFIS Software <software@hifis.net>
+"""
