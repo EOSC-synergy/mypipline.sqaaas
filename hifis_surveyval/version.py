@@ -29,5 +29,5 @@ This module contains project version information.
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 
-__version__ = "0.0.1"  #: the working version
-__release__ = "0.0.1"  #: the release version
+__version__ = "0.2.0"  #: the working version
+__release__ = "0.2.0"  #: the release version

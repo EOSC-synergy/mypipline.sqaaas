@@ -1,0 +1,68 @@
+# hifis-surveyval
+# Framework to help developing analysis scripts for the HIFIS Software survey.
+#
+# SPDX-FileCopyrightText: 2021 HIFIS Software <support@hifis.net>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+package_gitlab:
+  stage: package_gitlab
+  before_script:
+    - pip install -U pip
+    - pip install poetry
+    - poetry config virtualenvs.in-project true
+    - poetry install
+  script:
+    - poetry build
+    - poetry config repositories.gitlab "https://gitlab.hzdr.de/api/v4/projects/${CI_PROJECT_ID}/packages/pypi"
+    - poetry publish -r gitlab -u "gitlab-ci-token" -p "${CI_JOB_TOKEN}"
+  only:
+    - tags
+  allow_failure: false
+
+package_testpypi:
+  stage: package_testpypi
+  before_script:
+    - pip install -U pip
+    - pip install poetry
+    - poetry config virtualenvs.in-project true
+    - poetry install
+  script:
+    - poetry build
+    - poetry config repositories.testpypi "https://test.pypi.org/legacy/"
+    - poetry publish -r testpypi -u "__token__" -p "${testpypi_api_token_hifis_surveyval}"
+  only:
+    - tags
+  allow_failure: false
+  needs:
+    - "package_gitlab"
+
+package_pypi:
+  stage: package_pypi
+  before_script:
+    - pip install -U pip
+    - pip install poetry
+    - poetry config virtualenvs.in-project true
+    - poetry install
+  script:
+    - poetry build
+    - poetry publish -u "__token__" -p "${pypi_api_token_hifis_surveyval}"
+  only:
+    - tags
+  allow_failure: false
+  needs:
+    - "package_testpypi"
+  when: manual

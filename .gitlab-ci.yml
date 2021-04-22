@@ -24,6 +24,9 @@ stages:
   - test
   - sqa
   - docs
+  - package_gitlab
+  - package_testpypi
+  - package_pypi
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
@@ -39,3 +42,4 @@ include:
   - local: .gitlab/ci/test.gitlab-ci.yml
   - local: .gitlab/ci/docs.gitlab-ci.yml
   - local: .gitlab/ci/sqa.gitlab-ci.yml
+  - local: .gitlab/ci/package.gitlab-ci.yml
