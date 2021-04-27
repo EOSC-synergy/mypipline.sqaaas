@@ -37,11 +37,12 @@ This project is used to develop analysis scripts for the HIFIS Software survey.
 ## Getting Started
 
 The project's documentation contains a section to help you
-[get started](TODO) as a developer or
-user of the analysis scripts.
+[get started](TODO) 
+as a developer or user of the analysis scripts.
 
 ## Installation
-To install the package locally, you can either use [poetry](https://python-poetry.org/)
+To install the package locally, you can either use 
+[poetry](https://python-poetry.org/)
 or `pip`.
 
 ### Using pip
@@ -50,7 +51,8 @@ or `pip`.
 pip install hifis-surveyval
 ```
 
-After the installation, you can use the tool from the command line with `hifis-surveyval --help`.
+After the installation, you can use the tool from the command line with 
+`hifis-surveyval --help`.
 
 ### Using poetry
 
@@ -60,9 +62,11 @@ cd hifis-surveyval
 poetry install --no-dev
 ```
 
-After the installation, you can use the tool from the command line with `poetry run hifis-surveyval --help`
+After the installation, you can use the tool from the command line with 
+`poetry run hifis-surveyval --help`
 The following documentation references the pip installation.
-You can use the same commands with a poetry installation, if you refix you commands with `poetry run COMMAND`.
+You can use the same commands with a poetry installation, if you prefix your 
+commands with `poetry run COMMAND`.
 
 ## Development
 If you want to actively contribute changes to the project, you are required to
@@ -73,7 +77,14 @@ Therefore, use below extended installation options.
 poetry install
 ```
 
-This installs some packages that are required for performing quality checks.
+Note: Please make sure that a _Python virtual environment_ is created
+beforehand in the project folder:
+
+```shell
+poetry env use python3
+```
+
+_Poetry_ installs some packages that are required for performing quality checks.
 Usually they are also performed via GitLab CI, but can also be executed locally.
 
 It is common practice to run some checks locally before pushing them online.
@@ -102,12 +113,16 @@ project and tell the program the path to that data file.
 Now you can do the following to start the survey analysis from the CLI:
 
 ```shell script
+hifis-surveyval init
 hifis-surveyval analyze data/<data_file_name>.csv
 ```
 
-It tells the program that you would like to do the analysis,
+It creates an initial configuration file containing all relevant configuration
+options and thereby tells the program when doing the analysis 
 where to find the analysis scripts, the _metadata_-file as well as 
 the _data_-file to be taken into account for the analysis.
+Be aware that these folders _scripts_, _metadata_ and _data_ need to exist.
+The output is then put into a folder _output_ if not specified differently.
 
 **Caution:** 
 Depending on the Operating System used an issue with the file 
@@ -123,10 +138,6 @@ The program accepts a couple of flags:
 
 1. Help flag
 2. Verbosity flag
-3. Scripts flag
-4. Names flag
-5. Output Folder flag
-6. Output Format flag
 
 #### Help flag
 
@@ -141,26 +152,14 @@ Usage: hifis-surveyval [OPTIONS] COMMAND [ARGS]...
   Analyze a given CSV file with a set of independent python scripts.
 
 Options:
-  -v, --verbose             Enable verbose output. Increase verbosity by
-                            setting this option up to 3 times.  [default: 0]
+  -v, --verbose  Enable verbose output. Increase verbosity by setting this
+                 option up to 3 times.  [default: 0]
 
-  -s, --scripts TEXT        Select the folder containing analysis scripts.
-                            [default: scripts]
-
-  -n, --names TEXT          Optionally select the specific script names
-                            contained in the scripts folder (while omitting
-                            file endings) which should be executed.
-
-  -o, --output-folder TEXT  Select the folder to put the generated output like
-                            plots into.  [default: output]
-
-  -f, --output-format TEXT  Designate output format. Supported values are:
-                            SCREEN, PDF, PNG, SVG.  [default: screen]
-
-  --help                    Show this message and exit.
+  --help         Show this message and exit.
 
 Commands:
   analyze  Read the given files into global data and metadata objects.
+  init     Create a default configuration in a file called hifis-surveyval.yml.
   version  Get the library version.
 ```
 
@@ -187,100 +186,66 @@ hifis-surveyval --verbose --verbose --verbose <COMMAND>
 hifis-surveyval -vvv <COMMAND>
 ```
 
-#### Scripts flag
-
-Beside verbosity there is a _scripts_-flag called `--scripts` or 
-`-s` for short:
-
-```shell script
-hifis-surveyval --scripts "scripts" <COMMAND>
-```
-```shell script
-hifis-surveyval -s "scripts" <COMMAND>
-```
-
-This will tell the program in which folder to look for the actual 
-analysis scripts.
-In case the _scripts_-flag is omitted it defaults to sub-folder `scripts/`.
-
-#### Names flag
-
-There is also a _names_-flag called `--names` or `-n` for short:
-
-```shell script
-hifis-surveyval --names "example_script_1" --names "example_script_2" <COMMAND>
-```
-```shell script
-hifis-surveyval -n "example_script_1" -n "example_script_2" <COMMAND>
-```
-
-This will tell the program which scripts in the scripts folder to execute.
-In case the _names_-flag is omitted it defaults to all scripts in the
-scripts folder.
-
-#### Output Folder flag
-
-The _output-folder_-flag called `--output-folder` or `-o` for short 
-is another option:
-
-```shell script
-hifis-surveyval --output-folder "output" <COMMAND>
-```
-```shell script
-hifis-surveyval -o "output" <COMMAND>
-```
-
-This will tell the program in which folder to put the generated output 
-like plots into.
-In case the _output-folder_-flag is omitted it defaults to sub-folder 
-`output/`.
-
-#### Output format flag
-
-The user is also able to let the application know in which output format the
-diagrams should be generated during the analysis. 
-For this purpose there is a flag called `--output-format` or `-f` for short.
-Allowed values to this flag are the following:
-* SCREEN
-* PDF
-* PNG
-* SVG
-
-On the CLI the actual call looks like this:
-
-```shell script
-hifis-surveyval --output-format PNG <COMMAND>
-```
-```shell script
-hifis-surveyval -f PNG <COMMAND>
-```
-
 ### Commands
 
-There are two different commands implemented which come with different
+There are three different commands implemented which come with different
 flags and parameters:
 
 1. Command _version_
-2. Command _analyze_
+2. Command _init_
+3. Command _analyze_
 
 #### Command _version_
  
-The `version` command outputs the version number of 
-this CLI-program like so:
+The `version` command outputs the version number of this CLI-program like so:
 
 ```shell script
 hifis-surveyval version
-0.0.1
 ```
+
+#### Command _init_
+
+Before you are ready to start the analysis you need to create the
+configuration file that is by default named _hifis-surveyval.yml_.
+You can do that initially by issuing the _init_ command:
+
+```shell script
+hifis-surveyval init
+```
+
+This file contains information of the following type:
+
+```
+METADATA: metadata/meta.yml
+OUTPUT_FOLDER: output
+OUTPUT_FORMAT: PNG
+SCRIPT_FOLDER: scripts
+SCRIPT_NAMES: []
+```
+
+First of all, each analysis needs metadata about the questions asked in the
+survey and answers that participants may give.
+This metadata file is by default located in a folder called _metadata_.
+
+Second, you may specify the output folder which is named _output_ by default.
+
+Third, you may prefer a specific output format like _PNG_, _JPEG_, _SVG_ or 
+_SCREEN_.
+The default value is _PNG_.
+Note: Be aware that other output formats may be created, which depends largely
+upon the implementation of the analysis scripts.
+
+Fourth, you may specify the folder which contains the analysis scripts, which
+is the _scripts_ folder by default.
+
+Finally, you may select a subset of the analysis scripts available as a list
+that ought to be executed.
+This list is empty by default, which means that all scripts are executed.
 
 #### Command _analyze_
 
 The more interesting command is the `analyze` command
-which comes with a _metadata_-flag `--metadata` or `-m` for short and 
-a _data_-parameter.
-In case the _metadata_-flag is omitted it assumes the following
-path to the metadata file: 
-`metadata/HIFIS_Software_Survey_2020_Questions.yml`.
+which comes with a _data_-parameter.
 The _data_-parameter can _not_ be omitted and need to be given explicitly
 in order to be able to start the analysis.
 This is an example of how to do the analysis:
@@ -294,11 +259,11 @@ hifis-surveyval analyze data/<data_file_name>.csv
 ### Essential Criteria for Developing Own Analysis Scripts
 
 As you might have read in the previous sections the actual analysis scripts 
-reside in a specific folder called `scripts/`.
+reside in a specific folder called `scripts`.
 All scripts in that folder will be automatically discovered by the package 
 `hifis-surveyval` when running the analysis.
 In order that the program recognizes the scripts in that folder as
-analysis scripts they need to fulfil the following two criteria:
+analysis scripts they need to fulfill the following two criteria:
 
 1. The filename need to end on `.py`.
 2. The file need to contain a function called `run` without any parameters.
@@ -316,7 +281,7 @@ def run():
 ```
 
 If both criteria are satisfied the program will execute the `run`-functions
-of the analysis scripts in an arbitrary sequence.
+of the analysis scripts in an arbitrary order.
 
 ### File-System Structure of Core Component
 
@@ -325,45 +290,29 @@ $ tree hifis_surveyval/
 hifis_surveyval/
 ├── answer.py
 ├── cli.py
+├── core
+│   ├── environment.py
+│   ├── __init__.py
+│   └── settings.py
 ├── data.py
 ├── dispatch.py
 ├── globals.py
+├── __init__.py
 ├── metadata.py
+├── plot.py
 ├── question.py
-├── settings.py
-└── version.py
+└── util.py
 ```
-
-### Files and Classes Explained
-
-**ToDo**: This section need to be extended to all files and classes
-found in package `hifis_surveyval`.
-
-#### Classes to Represent Questions
-
-File `question.py` contains the following classes:
-- `AbstractQuestion`: Abstract class providing properties of a question 
-like `id` and `text`.
-- `Question`: Non-abstract class inheriting from abstract-base-class
-`AbstractQuestion`. It represents a question with associated answers.
-- `QuestionCollection`: Non-abstract class inheriting from abstract-base-class
-`AbstractQuestion`. It represents a question with associated sub-questions.
-
-#### Class to Represent Answers
-
-File `answer.py` contains class `Answer`.
-This class provides properties of an answer like `id` and `text`.
 
 ## Resources
 
-Below are some handy resource links.
+Below are some handy resource links:
 
 * [Project Documentation](TODO)
 * [Click](https://click.palletsprojects.com/en/7.x) is a Python package for creating beautiful command line interfaces in a composable way with as little code as necessary.
 * [Sphinx](http://www.sphinx-doc.org/en/master/) is a tool that makes it easy to create intelligent and beautiful documentation, written by Geog Brandl and licnsed under the BSD license.
 * [pytest](https://docs.pytest.org/en/latest/) helps you write better programs.
 * [GNU Make](https://www.gnu.org/software/make/) is a tool which controls the generation of executables and other non-source files of a program from the program's source files.
-
 
 ## License
 
