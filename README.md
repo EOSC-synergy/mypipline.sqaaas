@@ -28,24 +28,27 @@ This project is used to develop analysis scripts for the HIFIS Software survey.
 
 * [Installation](#installation)
 * [Getting Started](#getting-started)
-* [Development](#development)
 * [Start Analysis from Command-Line-Interface](#start-analysis-from-command-line-interface)
 * [Contribute with Own Analysis Scripts](#contribute-with-own-analysis-scripts)
 * [Resources](#resources)
 * [License](#license)
+* [Author Information](#author-information)
+* [Contributors](#contributors)
 
 ## Getting Started
 
-The project's documentation contains a section to help you
-[get started](TODO) 
-as a developer or user of the analysis scripts.
+The project's documentation contains a section to help you as a 
+[user of the analysis scripts](#getting-for-users) 
+to run the analysis scripts or as a 
+[developer of the framework](#getting-started-for-developers)
+to set up the development environment.
 
-## Installation
-To install the package locally, you can either use 
-[poetry](https://python-poetry.org/)
-or `pip`.
+### Getting Started for Users
 
-### Using pip
+#### Installation
+
+To install the package locally, you can use 
+[Pip](https://pip.pypa.io/en/stable/).
 
 ```shell
 pip install hifis-surveyval
@@ -54,37 +57,28 @@ pip install hifis-surveyval
 After the installation, you can use the tool from the command line with 
 `hifis-surveyval --help`.
 
-### Using poetry
+### Getting Started for Developers
+
+#### Installation
+
+To install the package locally, you can use 
+[Poetry](https://python-poetry.org/).
+
+#### Using Poetry
+
+If you want to actively contribute changes to the project, you are required to
+also install the development packages alongside the framework.
 
 ```shell
-git clone $PATH_TO_THIS_PROJECT
+git clone https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval.git
 cd hifis-surveyval
-poetry install --no-dev
+poetry install
 ```
 
 After the installation, you can use the tool from the command line with 
 `poetry run hifis-surveyval --help`
-The following documentation references the pip installation.
-You can use the same commands with a poetry installation, if you prefix your 
-commands with `poetry run COMMAND`.
 
-## Development
-If you want to actively contribute changes to the project, you are required to
-also install the development packages.
-Therefore, use below extended installation options.
-
-```shell
-poetry install
-```
-
-Note: Please make sure that a _Python virtual environment_ is created
-beforehand in the project folder:
-
-```shell
-poetry env use python3
-```
-
-_Poetry_ installs some packages that are required for performing quality checks.
+Poetry installs some packages that are required for performing quality checks.
 Usually they are also performed via GitLab CI, but can also be executed locally.
 
 It is common practice to run some checks locally before pushing them online.
@@ -95,6 +89,10 @@ $ isort -rc .
 $ make lint
 ```
 
+The following documentation references the pip installation.
+You can use the same commands with a poetry installation, if you prefix your 
+commands with `poetry run COMMAND`.
+
 ## Start Analysis from Command-Line-Interface
 
 The survey analysis package is a program to be executed on the
@@ -102,27 +100,27 @@ Command-Line-Interface (CLI).
 
 ### Quick Start Example: Run Analysis
 
-In order to run the survey analysis you need to copy the data-CSV-file 
-for example from the 
+Due to sensible defaults of the project's configurations you need to have the 
+analysis scripts as well as metadata and data files in certain locations
+in order to run the survey analysis.
+Please put your analysis scripts into a sub-folder called _scripts_.
+Make sure that the file _meta.yml_ is put into sub-folder _metadata_.
+Finally, copy the data-CSV-file for example from the 
 [wiki page](https://gitlab.hzdr.de/hifis/survey-about-current-development-practice/-/wikis/home) 
 of the associated GitLab project 
 [Survey about current Development Practice](https://gitlab.hzdr.de/hifis/survey-about-current-development-practice)
-into a central location like the [data/](data/) sub-folder of your local python 
-project and tell the program the path to that data file.
+into a central location like a _data_ sub-folder and tell the program the 
+path to that data file.
 
 Now you can do the following to start the survey analysis from the CLI:
 
 ```shell script
-hifis-surveyval init
 hifis-surveyval analyze data/<data_file_name>.csv
 ```
 
-It creates an initial configuration file containing all relevant configuration
-options and thereby tells the program when doing the analysis 
-where to find the analysis scripts, the _metadata_-file as well as 
-the _data_-file to be taken into account for the analysis.
-Be aware that these folders _scripts_, _metadata_ and _data_ need to exist.
-The output is then put into a folder _output_ if not specified differently.
+The output is then put into a sub-folder within the folder _output_ 
+which is named after the stamp of the current date-time if not specified 
+differently.
 
 **Caution:** 
 Depending on the Operating System used an issue with the file 
@@ -134,7 +132,7 @@ the survey analysis.
 
 ### Flags
 
-The program accepts a couple of flags:
+The program accepts two flags:
 
 1. Help flag
 2. Verbosity flag
@@ -147,21 +145,11 @@ It outputs a so-called _Usage_-message to the CLI:
 
 ```shell script
 $ hifis-surveyval --help
-Usage: hifis-surveyval [OPTIONS] COMMAND [ARGS]...
-
-  Analyze a given CSV file with a set of independent python scripts.
-
-Options:
-  -v, --verbose  Enable verbose output. Increase verbosity by setting this
-                 option up to 3 times.  [default: 0]
-
-  --help         Show this message and exit.
-
-Commands:
-  analyze  Read the given files into global data and metadata objects.
-  init     Create a default configuration in a file called hifis-surveyval.yml.
-  version  Get the library version.
 ```
+
+Please issue this command on the CLI and read the detailed 
+_Usage_-message before continuing with reading the documentation
+of the _Usage_-message here.
 
 #### Verbosity flag
 
@@ -188,7 +176,7 @@ hifis-surveyval -vvv <COMMAND>
 
 ### Commands
 
-There are three different commands implemented which come with different
+There are three different commands implemented which come with its own set of
 flags and parameters:
 
 1. Command _version_
@@ -205,15 +193,16 @@ hifis-surveyval version
 
 #### Command _init_
 
-Before you are ready to start the analysis you need to create the
-configuration file that is by default named _hifis-surveyval.yml_.
-You can do that initially by issuing the _init_ command:
+Before you start the analysis you may want to change the defaults of the
+configuration variables.
+In order to do so, you can create a configuration file that is named 
+_hifis-surveyval.yml_ by issuing the _init_ command:
 
 ```shell script
 hifis-surveyval init
 ```
 
-This file contains information of the following type:
+This file contains the following information:
 
 ```
 METADATA: metadata/meta.yml
@@ -225,22 +214,23 @@ SCRIPT_NAMES: []
 
 First of all, each analysis needs metadata about the questions asked in the
 survey and answers that participants may give.
-This metadata file is by default located in a folder called _metadata_.
+This metadata file is by default located in a folder called _metadata_
+and named _meta.yml_.
 
 Second, you may specify the output folder which is named _output_ by default.
 
-Third, you may prefer a specific output format like _PNG_, _JPEG_, _SVG_ or 
+Third, you may prefer a specific output format like _PDF_, _PNG_, _SVG_ or 
 _SCREEN_.
 The default value is _PNG_.
-Note: Be aware that other output formats may be created, which depends largely
-upon the implementation of the analysis scripts.
+Note: Be aware that other output formats like text or markdown files may be 
+created, which depends largely upon the implementation of the analysis scripts.
 
 Fourth, you may specify the folder which contains the analysis scripts, which
 is the _scripts_ folder by default.
 
 Finally, you may select a subset of the analysis scripts available as a list
 that ought to be executed.
-This list is empty by default, which means that all scripts are executed.
+This list is empty by default, which means, all scripts are executed.
 
 #### Command _analyze_
 
@@ -256,7 +246,7 @@ hifis-surveyval analyze data/<data_file_name>.csv
 
 ## Contribute with Own Analysis Scripts
 
-### Essential Criteria for Developing Own Analysis Scripts
+### Essential Requirements for Developing Own Analysis Scripts
 
 As you might have read in the previous sections the actual analysis scripts 
 reside in a specific folder called `scripts`.
@@ -280,10 +270,10 @@ def run():
     print("Example Script")
 ```
 
-If both criteria are satisfied the program will execute the `run`-functions
+If both requirements are satisfied the program will execute the `run`-functions
 of the analysis scripts in an arbitrary order.
 
-### File-System Structure of Core Component
+### File-System Structure of the Core Component
 
 ```shell script
 $ tree hifis_surveyval/
@@ -324,3 +314,15 @@ This work is licensed under the following license(s):
 Please see the individual files for more accurate information.
 
 > **Hint:** We provided the copyright and license information in accordance to the [REUSE Specification 3.0](https://reuse.software/spec/).
+
+## Author Information
+
+_HIFIS-Surveyval_ was created by 
+[HIFIS Software Services](https://software.hifis.net/).
+
+## Contributors
+
+We would like to thank and give credits to the following contributors of this
+project:
+
+* Be the first to be named here!
