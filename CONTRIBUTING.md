@@ -66,8 +66,9 @@ Please feel free to support the project by providing automated test cases.
 
 ## How are Contributors Given Credit for Their Valuable Work?
 
-Please add yourself to the list of contributors via a merge request if you made
-significant contributions to this project.
+Please add yourself to the list of contributors in file 
+[README.md](README.md#contributors) 
+via a merge request if you made significant contributions to this project.
 Significant contributions are done by suggesting merge requests that fix
 bugs or add features to the project.
 Since all other contributions are welcome and may be significant as well 
