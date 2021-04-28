@@ -31,9 +31,9 @@ This project is used to develop analysis scripts for the HIFIS Software survey.
 * [Start Analysis from Command-Line-Interface](#start-analysis-from-command-line-interface)
 * [Contribute with Own Analysis Scripts](#contribute-with-own-analysis-scripts)
 * [Resources](#resources)
-* [License](#license)
 * [Author Information](#author-information)
 * [Contributors](#contributors)
+* [License](#license)
 
 ## Getting Started
 
@@ -304,17 +304,6 @@ Below are some handy resource links:
 * [pytest](https://docs.pytest.org/en/latest/) helps you write better programs.
 * [GNU Make](https://www.gnu.org/software/make/) is a tool which controls the generation of executables and other non-source files of a program from the program's source files.
 
-## License
-
-Copyright © 2021 HIFIS Software <support@hifis.net>
-
-This work is licensed under the following license(s):
-* Everything else is licensed under [GPL-3.0-or-later](LICENSES/GPL-3.0-or-later.txt)
-
-Please see the individual files for more accurate information.
-
-> **Hint:** We provided the copyright and license information in accordance to the [REUSE Specification 3.0](https://reuse.software/spec/).
-
 ## Author Information
 
 _HIFIS-Surveyval_ was created by 
@@ -326,3 +315,14 @@ We would like to thank and give credits to the following contributors of this
 project:
 
 * Be the first to be named here!
+
+## License
+
+Copyright © 2021 HIFIS Software <support@hifis.net>
+
+This work is licensed under the following license(s):
+* Everything else is licensed under [GPL-3.0-or-later](LICENSES/GPL-3.0-or-later.txt)
+
+Please see the individual files for more accurate information.
+
+> **Hint:** We provided the copyright and license information in accordance to the [REUSE Specification 3.0](https://reuse.software/spec/).
