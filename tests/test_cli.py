@@ -29,16 +29,39 @@
 This is the test module for the project's command-line interface (CLI)
 module.
 """
+import os
+import shutil
+from pathlib import Path
+
 import pkg_resources
+import pytest
 
 # fmt: on
 from click.testing import CliRunner, Result
 
 # fmt: off
-import hifis_surveyval.cli as cli
+from hifis_surveyval import cli
+from hifis_surveyval.core.settings import Settings
 
 # To learn more about testing Click applications, visit the link below.
 # http://click.pocoo.org/5/testing/
+
+@pytest.fixture(scope='function')
+def settings():
+    settings: Settings = Settings()
+    shutil.rmtree(settings.SCRIPT_FOLDER, ignore_errors=True)
+    try:
+        os.remove(settings.CONFIG_FILENAME)
+    except FileNotFoundError:
+        pass
+
+    yield settings
+
+    shutil.rmtree(settings.SCRIPT_FOLDER, ignore_errors=True)
+    try:
+        os.remove(settings.CONFIG_FILENAME)
+    except FileNotFoundError:
+        pass
 
 
 def test_version_displays_library_version():
@@ -49,7 +72,7 @@ def test_version_displays_library_version():
     runner: CliRunner = CliRunner()
     result: Result = runner.invoke(cli.cli, ["version"])
     assert (
-        pkg_resources.require("hifis_surveyval")[0].version in result.output.strip()
+            pkg_resources.require("hifis_surveyval")[0].version in result.output.strip()
     ), "Version number should match library version."
 
 
@@ -61,5 +84,46 @@ def test_verbose_output():
     runner: CliRunner = CliRunner()
     result: Result = runner.invoke(cli.cli, ["-v", "version"])
     assert (
-        "Verbose" in result.output.strip()
+            "Verbose" in result.output.strip()
     ), "Verbose logging should be indicated in output."
+
+
+def test_init_config(settings):
+    """
+    Arrange/Act: Run the `init -c` subcommand.
+    Assert: The default config file is created.
+    """
+    runner: CliRunner = CliRunner()
+    result: Result = runner.invoke(cli.cli, ["init", "-c"])
+    assert (Path(settings.CONFIG_FILENAME).exists()), \
+        "The default config file should be created at default path."
+
+
+def test_init_example_script(settings):
+    """
+    Arrange/Act: Run the `init -s` subcommand.
+    Assert: The default script folder is created.
+    Assert: The example script file is created.
+    """
+    runner: CliRunner = CliRunner()
+    result: Result = runner.invoke(cli.cli, ["init", "-s"])
+    assert (Path(settings.SCRIPT_FOLDER).is_dir()), \
+        "The default script folder should be created at default path."
+    assert (Path(f"{settings.SCRIPT_FOLDER}/example_script.py").exists()), \
+        "The default config file should be created at default path."
+
+def test_init(settings):
+    """
+    Arrange/Act: Run the `init` subcommand.
+    Assert: The default config file is created.
+    Assert: The default script folder is created.
+    Assert: The example script file is created.
+    """
+    runner: CliRunner = CliRunner()
+    result: Result = runner.invoke(cli.cli, ["init"])
+    assert (Path(settings.CONFIG_FILENAME).exists()), \
+        "The default config file should be created at default path."
+    assert (Path(settings.SCRIPT_FOLDER).is_dir()), \
+        "The default script folder should be created at default path."
+    assert (Path(f"{settings.SCRIPT_FOLDER}/example_script.py").exists()), \
+        "The default config file should be created at default path."

@@ -32,71 +32,21 @@ It provides:
 
 import logging
 from datetime import datetime
-from enum import Enum, auto, unique
 from pathlib import Path
 from typing import Any, Dict, List, Set
 
 import yaml
 from pydantic import BaseSettings, validator
 
-config_filename = Path("hifis-surveyval.yml")
+from hifis_surveyval.plotting.supported_output_format import \
+    SupportedOutputFormat
 
 
-@unique
-class OutputFormat(Enum):
-    """An Abstraction of the supported output formats for generated images."""
+class SystemSettings(BaseSettings):
+    """Settings, that are not loaded from file."""
 
-    SCREEN = auto()
-    PDF = auto()
-    PNG = auto()
-    SVG = auto()
-
-    @staticmethod
-    def list_supported() -> Set:
-        """Generate a set listing the supported output formats."""
-        return {value.name for value in OutputFormat}
-
-
-class FileSettings(BaseSettings):
-    """Settings, that the user can change."""
-
-    # Path to metadata
-    METADATA: Path = Path("metadata/meta.yml")
-    # Path in which modules to be executed are located which defaults
-    # to "scripts" folder.
-    SCRIPT_FOLDER: Path = Path("scripts")
-
-    # List of selected module names to be executed which defaults to
-    # an empty list for all modules in the module folder.
-    SCRIPT_NAMES: List[str] = []
-
-    # The Format in which the data should be output
-    OUTPUT_FORMAT: Any = OutputFormat.PNG
-
-    @validator("OUTPUT_FORMAT", pre=True)
-    def set_output_format(cls, to_validate) -> OutputFormat:
-        """Parse format to enum object."""
-        if isinstance(to_validate, OutputFormat):
-            return to_validate
-        for output_format in OutputFormat:
-            if to_validate == output_format.name:
-                return output_format
-        raise ValueError(
-            f"Wrong output format. Only {OutputFormat.list_supported()} are implemented"
-        )
-
-    # Folder, into which the output file goes
-    # if the output format is not screen
-    OUTPUT_FOLDER: Path = Path("output")
-
-    class Config:
-        """Subclass for specification."""
-
-        case_sensitive = True
-
-
-class Settings(FileSettings):
-    """Settings, that are either static or can be changed via the cli interface."""
+    # Path to config Filename
+    CONFIG_FILENAME: Path = Path("hifis-surveyval.yml")
 
     VERBOSITY: int = logging.NOTSET
 
@@ -105,8 +55,16 @@ class Settings(FileSettings):
     RUN_TIMESTAMP: str = None
 
     @validator("RUN_TIMESTAMP", pre=True)
-    def set_timestamp(cls, to_validate) -> str:
-        """Get the current datetime."""
+    def set_timestamp(cls, to_validate: str) -> str:
+        """
+        Get the current datetime.
+
+        Args:
+            to_validate (str): Date-time string to be validated.
+
+        Returns:
+            str: Date-time string in a specific format.
+        """
         return datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     # Path to sub-folder which holds all output files of a single
@@ -114,8 +72,18 @@ class Settings(FileSettings):
     ANALYSIS_OUTPUT_PATH: Path = None
 
     @validator("ANALYSIS_OUTPUT_PATH")
-    def assemble_output_path(cls, to_validate, values: Dict[str, Any]) -> Path:
-        """Assemble path from user settings and datetime."""
+    def assemble_output_path(cls, to_validate: str, values: Dict[str, Any]) \
+            -> Path:
+        """
+        Assemble path from user settings and datetime.
+
+        Args:
+            to_validate (str): Analysis output path as string to be validated.
+            values (Dict[str, Any]): Parts of the analysis output path to be
+                                     concatenated as an absolute path.
+        Returns:
+            Path: Path to the output folder of the an analysis run.
+        """
         return values.get("OUTPUT_FOLDER") / values.get("RUN_TIMESTAMP")
 
     # Using a set for true_values and false_values to avoid duplicates and
@@ -133,38 +101,139 @@ class Settings(FileSettings):
     """
 
     @validator("FALSE_VALUES", "TRUE_VALUES", pre=True)
-    def case_insensitive_values(cls, to_validate) -> Set:
-        """Extend list of values to match all cases."""
+    def case_insensitive_values(cls, to_validate: Set[str]) -> Set:
+        """
+        Extend list of values to match all cases.
+
+        Args:
+            to_validate (str): Analysis output path as string to be validated.
+
+        Returns:
+            Set: Set of false and true values accepted as boolean values in
+                 the data.
+        """
         additional_lower: Set[str] = set(map(str.lower, to_validate))
         additional_upper: Set[str] = set(map(str.upper, to_validate))
         to_validate.update(additional_lower.union(additional_upper))
         return to_validate
 
 
-def create_config_file():
-    """Create a file to store the config."""
-    default_settings = Settings()
-    config_dict = {}
-    for key in FileSettings.__fields__:
-        value = default_settings.__getattribute__(key)
-        if isinstance(value, OutputFormat):
-            config_dict[key] = value.name
-        elif isinstance(value, Path):
-            config_dict[key] = str(value)
+class FileSettings(BaseSettings):
+    """Settings, that the user can change."""
+
+    # Path to metadata
+    METADATA: Path = Path("metadata/meta.yml")
+
+    # Path in which modules to be executed are located which defaults
+    # to "scripts" folder.
+    SCRIPT_FOLDER: Path = Path("scripts")
+
+    # List of selected module names to be executed which defaults to
+    # an empty list for all modules in the module folder.
+    SCRIPT_NAMES: List[str] = []
+
+    # The Format in which the data should be output
+    OUTPUT_FORMAT: SupportedOutputFormat = SupportedOutputFormat.SCREEN
+
+    # Folder, into which the output file goes
+    # if the output format is not screen
+    OUTPUT_FOLDER: Path = Path("output")
+
+    class Config:
+        """
+        Subclass for specification.
+
+        See https://pydantic-docs.helpmanual.io/usage/model_config/
+        for details.
+        """
+
+        case_sensitive = True
+
+
+class Settings(SystemSettings, FileSettings):
+    """Merge two sub setting types."""
+
+    def create_default_config_file(self) -> None:
+        """Create a file to store the config."""
+        config_dict = {}
+        for key in FileSettings.__fields__:
+            value = self.__getattribute__(key)
+            if isinstance(value, Path) or \
+               isinstance(value, SupportedOutputFormat):
+                config_dict[key] = str(value)
+            else:
+                config_dict[key] = value
+
+        with open(self.CONFIG_FILENAME, "w") as config_file:
+            yaml.dump(config_dict, config_file)
+
+    def set_verbosity(self, verbose_count: int) -> None:
+        """
+        Interpret the verbosity option count.
+
+        Set the log levels accordingly.
+        The used log level is also stored in the settings.
+
+        Args:
+            verbose_count (int): The amount of verbose option triggers.
+        """
+        verbosity_options: List[int] = [
+            logging.ERROR,
+            logging.WARNING,
+            logging.INFO,
+            logging.DEBUG,
+        ]
+
+        max_index: int = len(verbosity_options) - 1
+
+        # Clamp verbose_count to accepted values
+        # Note that it shall not be possible to unset the verbosity.
+        option_index: int = (
+            0
+            if verbose_count < 0
+            else max_index
+            if verbose_count > max_index
+            else verbose_count
+        )
+
+        new_level: int = verbosity_options[option_index]
+
+        logging.basicConfig(
+            level=new_level,
+            format="%(asctime)s "
+            "[%(levelname)-8s] "
+            "%(module)s.%(funcName)s(): "
+            "%(message)s",
+        )
+
+        self.VERBOSITY = new_level
+
+    def load_config_file(self) -> None:
+        """Return an instance of Settings."""
+        # if config file exists, load settings from it, otherwise return
+        # default
+        if Path.is_file(self.CONFIG_FILENAME):
+            logging.debug(f"Loading '{self.CONFIG_FILENAME}' as config.")
+            with open(self.CONFIG_FILENAME, "r") as config_file:
+                config_dict = yaml.load(config_file, Loader=yaml.FullLoader)
+            logging.debug(f"Parsing '{config_dict}' as config.")
+            for key in config_dict:
+                value = config_dict[key]
+                logging.debug(f"handling '{key}:{value}'")
+                # cast as type, to preserve the type.
+                # otherwise paths are getting replaced with strings
+                setting_type: type = type(self.__getattribute__(key))
+                logging.debug(f"type is '{setting_type}'")
+                if setting_type == SupportedOutputFormat:
+                    self.__setattr__(key,
+                                     SupportedOutputFormat.from_str(value))
+                else:
+                    self.__setattr__(key, setting_type(value))
+
+            # because assembling the output path is done during initialization,
+            # we need to rerun it
+            self.ANALYSIS_OUTPUT_PATH = SystemSettings.assemble_output_path(
+                self.ANALYSIS_OUTPUT_PATH, self.__dict__
+            )
         else:
-            config_dict[key] = value
-
-    with open(config_filename, "w") as config_file:
-        yaml.dump(config_dict, config_file)
-
-
-def get_settings() -> Settings:
-    """Return an instance of Settingss."""
-    settings: Settings = Settings()
-
-    if Path.is_file(config_filename):
-        with open(config_filename, "r") as config_file:
-            config = yaml.load(config_file, Loader=yaml.FullLoader)
-        settings = Settings(**config)
-
-    return settings
+            logging.debug("No config file present. Keeping default values")

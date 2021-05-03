@@ -21,7 +21,7 @@
 """
 This module allows discovery and dispatch of analysis functions.
 
-.. currentmodule:: hifis_surveyval.dispatch
+.. currentmodule:: hifis_surveyval.core.dispatch
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import importlib.util
@@ -29,6 +29,8 @@ import logging
 import traceback
 from pathlib import Path
 from typing import List
+
+from hifis_surveyval.hifis_surveyval import HIFISSurveyval
 
 
 class Dispatcher(object):
@@ -39,33 +41,42 @@ class Dispatcher(object):
     module names to be given at initialization.
     """
 
-    def __init__(self, module_folder: Path, module_names: List[str]):
+    def __init__(self, surveyval: HIFISSurveyval) -> None:
         """
         Initialize the Dispatcher.
 
         Args:
-            module_folder: The path to a directory containing loadable modules.
-                If the given path does not exist or is not a directory a
-                ValueError will be thrown.
-            module_names: A list of module names (without file ending)
-                within module folder to be executed.
-                If the selected module does not exist in the module directory
-                a ValueError will be thrown.
+            surveyval (HIFISSurveyval): Passing HIFISSurveyval object in in
+                                        order to pass it through to
+                                        particular analysis scripts.
         """
-        if not module_folder.exists():
-            raise ValueError("Module folder should exist.")
-        if not module_folder.is_dir():
-            raise ValueError("Module folder should be a directory.")
-
-        self.module_folder: Path = module_folder
-        self.module_names: List[str] = module_names
+        self.surveyval: HIFISSurveyval = surveyval
+        self.module_folder: Path = self.surveyval.settings.SCRIPT_FOLDER
+        self.module_names: List[str] = self.surveyval.settings.SCRIPT_NAMES
         self.module_name_paths: List[Path] = []
         self._discovered_modules: List[str] = []
+
+        self.__validate_config()
+
+    def __validate_config(self) -> None:
+        """
+        Check if paths and modules exist.
+
+        Raises:
+            ValueError: Exception thrown if script folder does not exist.
+            ValueError: Exception thrown if script folder is not a directory.
+            ValueError: Exception thrown if script is not found.
+        """
+        if not self.module_folder.exists():
+            raise ValueError("Module folder should exist.")
+        if not self.module_folder.is_dir():
+            raise ValueError("Module folder should be a directory.")
 
         # Check that all selected modules exist in module folder.
         if self.module_names:
             for module_name in self.module_names:
-                module_path: Path = Path(module_folder, f"{module_name}.py")
+                module_path: Path = Path(self.module_folder,
+                                         f"{module_name}.py")
                 if not module_path.exists():
                     raise ValueError(
                         f"Module {module_name} not found in " f"module folder."
@@ -89,7 +100,6 @@ class Dispatcher(object):
                 and name_path.suffix == ".py"
                 and not name_path.stem == "__init__"
             ):
-
                 logging.info(f"Discovered module {name_path.stem}.")
                 self._discovered_modules.append(name_path.stem)
 
@@ -117,8 +127,12 @@ class Dispatcher(object):
         the console.
 
         Args:
-            module_name: The name of the module, without the .py ending
+            module_name (str): The name of the module, without the .py ending
 
+        Raises:
+            ImportError: Exception thrown if script could not be loaded.
+            AttributeError: Exception thrown if run method could not be
+                            executed.
         """
         # TODO if the module_name has a .py ending, remove it beforehand
 
@@ -135,7 +149,7 @@ class Dispatcher(object):
             logging.error(f"Failed to load module {module_name}." f"{error}")
 
         try:
-            module.run()
+            module.run(hifis_surveyval=self.surveyval)
         except AttributeError as error:
             traceback.print_exc()
             logging.error(
@@ -143,4 +157,3 @@ class Dispatcher(object):
                 f"Error when calling run() - method: "
                 f"{error}."
             )
-            exit(1)

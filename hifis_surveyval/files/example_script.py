@@ -19,23 +19,15 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-This module provides the global definitions for the project.
+This is an example script for an analysis.
 
-.. currentmodule:: hifis_surveyval.globals
-.. moduleauthor:: HIFIS Software <software@hifis.net>
+It is a file payload of the package `hifis_surveyval`.
 """
-from typing import Dict
 
-from hifis_surveyval.core.settings import Settings
-from hifis_surveyval.data import DataContainer
-from hifis_surveyval.question import AbstractQuestion
+from hifis_surveyval.hifis_surveyval import HIFISSurveyval
 
-#: A global copy-on-read container for providing the survey data
-#: to the analysis functions
-dataContainer: DataContainer = DataContainer()
 
-#: The settings storage
-settings: Settings = Settings()
-
-#: All the survey questions and their associated answers
-survey_questions: Dict[str, AbstractQuestion] = {}
+def run(hifis_surveyval: HIFISSurveyval):
+    """Execute example script."""
+    for question in hifis_surveyval.survey_questions:
+        print(question)

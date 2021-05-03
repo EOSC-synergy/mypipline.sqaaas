@@ -24,15 +24,15 @@ This module provides the definitions for a data container.
 The container is meant to serve as the data source for the individual analysis
 functions.
 
-.. currentmodule:: hifis_surveyval.data
+.. currentmodule:: hifis_surveyval.data_container
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 
 from typing import Dict
 
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
-from hifis_surveyval.answer import AnswerType
+from hifis_surveyval.models.answer import AnswerType
 
 
 class DataContainer(object):
@@ -44,14 +44,16 @@ class DataContainer(object):
     The initial data frame used is empty.
     """
 
+    #: Name of the ID column
     ID_COLUMN_NAME: str = "id"
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Populate the data container with an empty Pandas data frame.
 
         The frame is supposed to be filled via set_raw_data().
         """
+        #: Property holding the raw data in a DataFrame.
         self._raw_data: DataFrame = DataFrame()
 
     @property
@@ -59,8 +61,11 @@ class DataContainer(object):
         """
         Check if the container holds any data.
 
-        This is considered to be the case if the stored data frame is empty.
-        returns: True, if the container is considered empty, False otherwise
+        This is considered to be the case if the stored data frame is empty or
+        the data has not been set yet.
+
+        Returns:
+            bool: True, if the container is considered empty, False otherwise.
         """
         return self._raw_data.empty
 
@@ -77,14 +82,21 @@ class DataContainer(object):
 
         The ID column will be set as index column for the data frame.
 
-        parameter: data_frame is the new frame to be stored in the container.
+        Args:
+            data_frame (DataFrame): data_frame is the new frame to be stored
+                                    in the container.
+
+        Raises:
+            RuntimeError: Exception thrown if raw data si about to be
+                          overridden.
         """
         if data_frame.empty:
             return
 
         if self.empty:
             self._raw_data = data_frame
-            self._raw_data.set_index(DataContainer.ID_COLUMN_NAME, inplace=True)
+            self._raw_data.set_index(DataContainer.ID_COLUMN_NAME,
+                                     inplace=True)
         else:
             raise RuntimeError("Do not re-assign the global data frame")
 
@@ -94,7 +106,9 @@ class DataContainer(object):
         Provide a deep copy of the whole raw data frame.
 
         It is recommended to cache this copy as long as it is used.
-        returns: A copy of the complete Pandas raw data frame.
+
+        Returns:
+            DataFrame: A copy of the complete Pandas raw data frame.
         """
         return self._raw_data.copy(deep=True)
 
@@ -103,21 +117,24 @@ class DataContainer(object):
         Obtain the data for each participant for a given question.
 
         Args:
-            question_id: The string used to identify the question.
+            question_id (str): The string used to identify the question.
 
         Returns:
-            An association from participant's ID to the answer the participant
-            gave.
-            The result may still contain "N/A" or "nan".
+            Dict[str, AnswerType]: An association from participant's ID to the
+                                   answer the participant gave.
+                                   The result may still contain "N/A" or "nan".
+
+        Raises:
+            ValueError: Exception thrown if given question ID is not valid.
         """
         if (
             question_id == DataContainer.ID_COLUMN_NAME
-            or question_id not in self._raw_data
+            or question_id not in self._raw_data.columns
         ):
             raise ValueError(f"{question_id} is not a valid question ID")
 
         per_participant_data: Dict[str, AnswerType] = {}
-        column = self._raw_data[question_id]
+        column: Series = self._raw_data[question_id]
         for participant in self._raw_data.index:
             per_participant_data[participant] = column[participant]
 

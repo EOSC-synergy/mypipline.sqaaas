@@ -96,3 +96,8 @@ ENV/
 # SQA files
 meta/
 .reuse/
+
+# test files
+analysis/
+hifis-surveyval.yml
+scripts/

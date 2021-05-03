@@ -25,7 +25,7 @@ AbstractQuestion models the baseline for all questions which specialize into
 * QuestionCollection for questions that contain subordinate questions
 * Question for actual questions with associated answers by participants
 
-.. currentmodule:: hifis_surveyval.question
+.. currentmodule:: hifis_surveyval.models.question
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import logging
@@ -36,7 +36,7 @@ from typing import Dict, List, Optional, Tuple
 import numpy
 from pandas import DataFrame, Series
 
-from hifis_surveyval.answer import Answer, AnswerType
+from hifis_surveyval.models.answer import Answer, AnswerType
 
 
 class AbstractQuestion(ABC):
@@ -48,25 +48,36 @@ class AbstractQuestion(ABC):
     it as provided by the survey and stored in the metadata.
     """
 
-    def __init__(self, question_id: str, question_text: str):
+    def __init__(self, question_id: str, question_text: str) -> None:
         """
         Initialize a new abstract question by storing the common metadata.
 
         Args:
-            question_id:    The ID assigned to the question by the survey
-            question_text: The question text as shown to the user in the survey
+            question_id (str): The ID assigned to the question by the survey.
+            question_text (str): The question text as shown to the user in the
+                                 survey.
         """
         self._id = question_id
         self._text = question_text
 
     @property
     def id(self) -> str:
-        """Get the questions ID under which it was stored in the survey."""
+        """
+        Get the questions ID under which it was stored in the survey.
+
+        Returns:
+            str: Question ID.
+        """
         return self._id
 
     @property
     def text(self):
-        """Get the question text displayed in the survey."""
+        """
+        Get the question text displayed in the survey.
+
+        Returns:
+            str: Question text.
+        """
         return self._text
 
     @property
@@ -77,8 +88,8 @@ class AbstractQuestion(ABC):
         Answers can only be provided to questions that have no sub-questions.
 
         Returns:
-            False by default, True in the case of nested questions that do have
-            sub-questions.
+           bool: False by default, True in the case of nested questions that
+                 do have sub-questions.
         """
         return False
 
@@ -88,8 +99,8 @@ class AbstractQuestion(ABC):
         Provide a unified flat representation of the questions structure.
 
         Returns:
-            A list either containing the question itself or all concrete
-            subquestions.
+            List[Question]: A list either containing the question itself or
+                            all concrete sub-questions.
         """
         pass
 
@@ -112,16 +123,21 @@ class Question(AbstractQuestion):
         question_text: str,
         predefined_answers: List[Answer],
         answers_data_type: type = str,
-    ):
+    ) -> None:
         """
         Initialize a new Question with the given metadata.
 
         Args:
-            question_id:        A unique string representing the question
-            question_text:      The text of the question in the form
-            predefined_answers: The answer options provided by the form
-            answers_data_type:  The type of answers given by participants
-                                (str [default], bool, int, float)
+            question_id (str): A unique string representing the question.
+            question_text (str): The text of the question in the form.
+            predefined_answers (List[Answer]): The answer options provided by
+                                               the form.
+            answers_data_type (type): The type of answers given by participants
+                                      (str [default], bool, int, float).
+
+        Raises:
+            ValueError: Exception thrown if data type is not given.
+            TypeError: Exception thrown if data types do not match.
         """
         if answers_data_type is None:
             raise ValueError(
@@ -146,7 +162,12 @@ class Question(AbstractQuestion):
         self._data_type: type = answers_data_type
 
     def __str__(self) -> str:
-        """Generate a string representation of the question."""
+        """
+        Generate a string representation of the question.
+
+        Returns:
+            str: String representation of the question.
+        """
         return (
             f"{self.id}: {self.text} "
             f"({len(self._predefined_answers)} predefined answers)"
@@ -162,7 +183,7 @@ class Question(AbstractQuestion):
         int, float.
 
         Returns:
-            The type of data to this question.
+            type: The type of data to this question.
         """
         return self._data_type
 
@@ -175,7 +196,8 @@ class Question(AbstractQuestion):
         either shows up in the given answers or not.
 
         Returns:
-            A list of answers that were pre-defined and could be chosen.
+            List[Answer]: A list of answers that were pre-defined and could
+                          be chosen.
         """
         return self._predefined_answers
 
@@ -191,7 +213,8 @@ class Question(AbstractQuestion):
         were selected by the user are contained here.
 
         Returns:
-            A association of participants by ID with their given answers.
+            Dict[str, List[Answer]]: A association of participants by ID with
+                                     their given answers.
         """
         return self._given_answers
 
@@ -205,13 +228,18 @@ class Question(AbstractQuestion):
         only register answers that contain actual data via this function.
 
         Args:
-            participant_id: The identifier for the participant that is being
-                            processed
-            answer_data:    The text associated with the answer as given by the
-                            participant.
-                            Its type should match the question data type
+            participant_id (str): The identifier for the participant that is
+                                  being processed.
+            answer_data (Optional[AnswerType): The text associated with the
+                                               answer as given by the
+                                               participant. Its type should
+                                               match the question data type.
+
+        Raises:
+            TypeError: Exception thrown if data types do not match.
         """
-        if not type(answer_data) == self._data_type and answer_data is not None:
+        if not type(answer_data) == self._data_type and \
+                answer_data is not None:
             raise TypeError(
                 f"Answer data type did not match question type. "
                 f"Answer was {answer_data} "
@@ -257,29 +285,37 @@ class Question(AbstractQuestion):
         are set or the result will be empty.
 
         Args:
-            include_predefined: Select answers that were predefined by
-                                the question form (i.e. not free-text answers)
-            include_free_text: Select answers that were not pre-defined by
-                                the question form
-            participant_id:     Select answers for the given participant IDs.
-                                If this is None (default), all participants are
-                                selected
-            contains_text:      Specifies a text that must be included in the
-                                answer text. The comparison is case-insensitive
-                                If this is None (default) no check will be
-                                performed regarding the content
+            include_predefined (bool): Select answers that were predefined by
+                                       the question form (i.e. not free-text
+                                       answers).
+            include_free_text (bool): Select answers that were not pre-defined
+                                      by the question form.
+            participant_id (Optional[List[str]]): Select answers for the
+                                                  given participant IDs.
+                                                  If this is None (default),
+                                                  all participants are
+                                                  selected.
+            contains_text (Optional[str]): Specifies a text that must be
+                                           included in the answer text.
+                                           The comparison is case-insensitive.
+                                           If this is None (default) no check
+                                           will be performed regarding the
+                                           content.
 
         Returns:
-            An association of participant IDs to the filtered answers from
-            these participants. Only participants for which answers were found
-            after filtering are included in the results.
+            Dict[str, List[Answer]]: An association of participant IDs to the
+                                     filtered answers from these participants.
+                                     Only participants for which answers were
+                                     found after filtering are included in the
+                                     results.
         """
         assert include_free_text or include_predefined
         # TODO throw a proper exception instead
         # If neither was chosen, the result of the function will be empty...duh
 
         participants: List[str] = (
-            list(participant_id) if participant_id else list(self._given_answers.keys())
+            list(participant_id) if participant_id
+            else list(self._given_answers.keys())
         )
 
         results: Dict[str, List[Answer]] = {}
@@ -301,7 +337,8 @@ class Question(AbstractQuestion):
                     or (include_free_text and not was_predefined)
                 ):
                     logging.debug(
-                        f"Filter: Excluding {answer} (Pre-defined/Free Text Rules)"
+                        f"Filter: Excluding {answer} "
+                        f"(Pre-defined/Free Text Rules)"
                     )
                     continue  # will not be selected, skip to next answer
 
@@ -310,7 +347,8 @@ class Question(AbstractQuestion):
                     required_text: str = contains_text.lower()
                     searched_text: str = answer.text.lower()
                     if required_text not in searched_text:
-                        logging.debug(f"Filter: Excluding {answer} " f"(Content Rules)")
+                        logging.debug(f"Filter: Excluding {answer} "
+                                      f"(Content Rules)")
                         continue  # will not be selected, skip to next answer
                 selected_answers.append(answer)
             if selected_answers:
@@ -323,8 +361,9 @@ class Question(AbstractQuestion):
         Group the given answers of a question.
 
         Returns:
-            An association between the possible answers and a list of the
-            participant IDs who selected that answer.
+            Dict[Answer, List[str]]: An association between the possible
+                                     answers and a list of the participant IDs
+                                     who selected that answer.
         """
         results: Dict[Answer, List[str]] = defaultdict(list)
         nan_answer: Answer = Answer("Free Text", "nan")
@@ -341,7 +380,7 @@ class Question(AbstractQuestion):
         Provide a flattened list representation of the question.
 
         Returns:
-            A list containing the question itself
+            List[Question]: A list containing the question itself.
         """
         return [self]
 
@@ -356,22 +395,27 @@ class Question(AbstractQuestion):
         be able to process the given answers depending on this data type
         (e.g. removing invalid data like NaN from the pandas series).
         If for a given Question more than one answer is provided per
-        participant, the data is not univariate and therefor the result may be
-        unexpected by omitting answers from the provided data.
+        participant, the data is not uni-variate and therefore the result may
+        be unexpected by omitting answers from the provided data.
 
         Args:
-            filter_invalid:     Whether to remove invalid data entries.
-                                Will remove data entries considered invalid by
-                                pandas if set to True, which is the default.
-
-            use_short_answer:   Use the short version of the answer instead of
-                                the raw data, if available.
-                                Especially useful if the answer would generate
-                                very long labels. Default is False.
+            filter_invalid (bool): Whether to remove invalid data entries.
+                                   Will remove data entries considered invalid
+                                   by pandas if set to True, which is the
+                                   default.
+            use_short_answer (bool): Use the short version of the answer
+                                     instead of the raw data, if available.
+                                     Especially useful if the answer would
+                                     generate very long labels.
+                                     Default is False.
 
         Returns:
-            A new pandas series from the given answers, with participant IDs as
-            index.
+            Series: A new pandas series from the given answers, with
+                    participant IDs as index.
+
+        Raises:
+            ValueError: Exception thrown if multi-variate data is at hand
+                        which can not be converted into a Series.
         """
         question_answers: List[AnswerType] = []
 
@@ -384,7 +428,8 @@ class Question(AbstractQuestion):
             # (0) Assume univariate data, only take first element
             # Should not have multiple elements
             if len(self._given_answers[participant_id]) > 1:  # See Note (0)
-                raise ValueError("Multivariate data can not be converted to series")
+                raise ValueError("Multivariate data can not be "
+                                 "converted to series")
 
             answer = self.given_answers[participant_id][0]  # See Note (0)
 
@@ -423,53 +468,59 @@ class Question(AbstractQuestion):
         the way.
 
         Args:
-            relative_values:    Instead of absolute counts fill the
-                                cells with their relative contribution
-                                to the column total. Defaults to False.
-
-            filter_invalid:     Whether to remove the NaN / None value count.
-                                Defaults to True.
-
-            use_short_answer:   Use the short version of the answer instead of
-                                the raw data, if available.
-                                Especially useful if the answer would generate
-                                very long labels. Default is False.
+            relative_values (bool): Instead of absolute counts fill the
+                                    cells with their relative contribution
+                                    to the column total. Defaults to False.
+            filter_invalid (bool): Whether to remove the NaN / None value
+                                   count. Defaults to True.
+            use_short_answer (bool): Use the short version of the answer
+                                     instead of the raw data, if available.
+                                     Especially useful if the answer would
+                                     generate very long labels.
+                                     Default is False.
 
         Returns:
-            A series containing the count per answer.
+            Series: A series containing the count per answer.
         """
         as_series = self.as_series(
             filter_invalid=filter_invalid, use_short_answer=use_short_answer
         )
 
-        return as_series.value_counts(normalize=relative_values, dropna=filter_invalid)
+        return as_series.value_counts(normalize=relative_values,
+                                      dropna=filter_invalid)
 
 
 class QuestionCollection(AbstractQuestion):
     """
-    QuestionCollections model questions that split up into subquestions.
+    QuestionCollections model questions that split up into sub-questions.
 
     This kind of question has no answers by itself. These are to be found in
-    the according subquestions.
+    the according sub-questions.
     """
 
     def __init__(
-        self, question_id: str, question_text: str, subquestions: List[Question]
-    ):
+        self, question_id: str, question_text: str,
+        subquestions: List[Question]
+    ) -> None:
         """
         Initialize a question that contains sub-questions.
 
         Args:
-            question_id:        A unique string representing the question
-            question_text:      The text of the question in the form
-            subquestions:       A list of concrete questions nested under this
-                                object
+            question_id (str): A unique string representing the question.
+            question_text (str): The text of the question in the form.
+            subquestions (List[Question]): A list of concrete questions nested
+                                           under this object.
         """
         super().__init__(question_id, question_text)
         self._subquestions: List[Question] = subquestions
 
     def __str__(self) -> str:
-        """Generate a string representation of the question collection."""
+        """
+        Generate a string representation of the question collection.
+
+        Returns:
+            str: String representation of the question collection.
+        """
         included_questions_text: str = ""
 
         for included_question in self._subquestions:
@@ -477,26 +528,28 @@ class QuestionCollection(AbstractQuestion):
 
         return (
             f"{self.id}: {self.text} "
-            f"({len(self._subquestions)} nested questions)" + included_questions_text
+            f"({len(self._subquestions)} nested questions)"
+            + included_questions_text
         )
 
     @property
     def has_subquestions(self) -> bool:
         """
-        Check if subquestions have been set for this question.
+        Check if sub-questions have been set for this question.
 
         Returns:
-            True, if subquestions were provided, False otherwise.
+            bool: True, if sub-questions were provided, False otherwise.
         """
         return bool(self._subquestions)
 
     @property
     def subquestions(self) -> List[Question]:
         """
-        Get the subquestions that were defined for this question.
+        Get the sub-questions that were defined for this question.
 
         Returns:
-            A list containing all the subquestions that were nested.
+            List[Question]: A list containing all the sub-questions that were
+                            nested.
         """
         return self._subquestions
 
@@ -505,7 +558,7 @@ class QuestionCollection(AbstractQuestion):
         Provide a flattened list representation of the question collection.
 
         Returns:
-            A list containing all the subquestions
+            List[Question]: A list containing all the sub-questions.
         """
         return self._subquestions
 
@@ -529,8 +582,8 @@ class QuestionCollection(AbstractQuestion):
         The type of the generated question will be str.
 
         Returns:
-            A Question subsuming the answers given in the sub-questions of the
-            collection.
+            Question: A Question subsuming the answers given in the
+                      sub-questions of the collection.
         """
         predefined_answers: List[Answer] = []
         given_answers: List[Tuple[str, str]] = []
@@ -584,14 +637,15 @@ class QuestionCollection(AbstractQuestion):
         The resulting dataframe may contain NaN-values as a result.
 
         Args:
-            question_text_as_id:    Indicates whether to use the text of the
-                                    sub-question as column names of the data
-                                    frame, instead of the sub-question ids.
-                                    Defaults to False.
+            question_text_as_id (bool): Indicates whether to use the text of
+                                        the sub-question as column names of
+                                        the data frame, instead of the
+                                        sub-question ids.
+                                        Defaults to False.
 
         Returns:
-            A data frame containing the answer data with sub-questions as
-            columns and participant ids as indices.
+            DataFrame: A data frame containing the answer data with
+                       sub-questions as columns and participant ids as indices.
         """
         collected_data: Dict[str, Series] = {}
         for question in self._subquestions:

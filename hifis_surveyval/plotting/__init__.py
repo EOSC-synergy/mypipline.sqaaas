@@ -1,4 +1,3 @@
-<!--
 # hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
@@ -18,30 +17,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
--->
 
-# Changelog
+"""
+This package provides plotting functionalities.
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-Group your changes into these categories:
-
-`Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
-
-## Unreleased
-
-### Added
-- ABC for plotters
-- matplotlib plotter
-- printer module
-- data payload for example scripts
-
-### Changed
-- internal structure
-- interface to the analysis scripts
-
-### Fixed
-- internal data handling
+.. currentmodule:: hifis_surveyval.plotting
+.. moduleauthor:: HIFIS Software <software@hifis.net>
+"""

@@ -18,8 +18,31 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-METADATA: ../analysis/metadata/Survey_XYZ.yml
-OUTPUT_FOLDER: output
-OUTPUT_FORMAT: PNG
-SCRIPT_FOLDER: ../analysis/scripts
-SCRIPT_NAMES: []
+"""
+This module provides a framework for plotters.
+
+.. currentmodule:: hifis_surveyval.plotting.plotter
+.. moduleauthor:: HIFIS Software <software@hifis.net>
+"""
+
+from abc import ABC
+from pathlib import Path
+
+from hifis_surveyval.plotting.supported_output_format import \
+    SupportedOutputFormat
+
+
+class Plotter(ABC):
+    """Base class to derive plotters from."""
+
+    def __init__(self, output_format: SupportedOutputFormat,
+                 output_path: Path) -> None:
+        """
+        Initialize a plotter.
+
+        Args:
+            output_format (SupportedOutputFormat): Supported output format.
+            output_path (Path): Path to the output folder.
+        """
+        self.OUTPUT_FORMAT: SupportedOutputFormat = output_format
+        self.ANALYSIS_OUTPUT_PATH: Path = output_path

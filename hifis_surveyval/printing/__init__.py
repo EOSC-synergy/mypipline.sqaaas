@@ -19,29 +19,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-This module provides the functions to set up the environment.
+This package provides printing functionalities.
 
-It adds the script folder to PATH and creates required folders.
-
-.. currentmodule:: hifis_surveyval.core.environment
+.. currentmodule:: hifis_surveyval.printing
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
-import sys
-
-from hifis_surveyval.globals import settings
-
-
-def prepare_environment() -> None:
-    """
-    Prepare the runtime environment.
-
-    * setting sys path to load scripts
-    * creating output folder to save images
-    """
-    # set syspath to later on load scripts
-    sys.path.insert(0, settings.SCRIPT_FOLDER)
-
-    # create folder to output the results
-    if settings.ANALYSIS_OUTPUT_PATH is not None:
-        if not settings.ANALYSIS_OUTPUT_PATH.exists():
-            settings.ANALYSIS_OUTPUT_PATH.mkdir(parents=True)

@@ -20,7 +20,7 @@
 
 [tool.poetry]
 name = "hifis-surveyval"
-version = "0.3.0"
+version = "0.4.0"
 description = "This project is used to develop analysis scripts for the HIFIS Software survey."
 license = "GPL-3.0-or-later"
 authors = ["HIFIS Software <software@hifis.net>"]
@@ -37,7 +37,7 @@ classifiers = [
 packages = [
     {include = "hifis_surveyval", from = "."}
 ]
-include = ["LICENSE", "docs/build/html/**/*.*"]
+include = ["LICENSES", "docs/build/html/**/*.*", "hifis_surveyval/files/**/*"]
 
 [tool.poetry.scripts]
 hifis-surveyval = "hifis_surveyval.cli:cli"
@@ -51,6 +51,7 @@ pandas = ">=1.0.1"
 pyyaml = ">=5.3.1"
 pydantic = "^1.8.1"
 python-dotenv = "^0.17.0"
+tabulate = "^0.8.9"
 
 [tool.poetry.dev-dependencies]
 flake8-docstrings = ">=1.5.0"
@@ -82,3 +83,9 @@ filterwarnings = ["ignore::DeprecationWarning", "ignore::UserWarning"]
 flake8-docstrings = ["+*"]
 pycodestyle = ["+*", "-W503"]
 pyflakes = ["+*"]
+
+[tool.flakehell]
+max_line_length = 79
+
+[tool.isort]
+line_length = 79
