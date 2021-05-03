@@ -28,15 +28,17 @@ This module provides a framework for plotters.
 from abc import ABC
 from pathlib import Path
 
-from hifis_surveyval.plotting.supported_output_format import \
-    SupportedOutputFormat
+from hifis_surveyval.plotting.supported_output_format import (
+    SupportedOutputFormat,
+)
 
 
 class Plotter(ABC):
     """Base class to derive plotters from."""
 
-    def __init__(self, output_format: SupportedOutputFormat,
-                 output_path: Path) -> None:
+    def __init__(
+        self, output_format: SupportedOutputFormat, output_path: Path
+    ) -> None:
         """
         Initialize a plotter.
 

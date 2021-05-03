@@ -238,8 +238,10 @@ class Question(AbstractQuestion):
         Raises:
             TypeError: Exception thrown if data types do not match.
         """
-        if not type(answer_data) == self._data_type and \
-                answer_data is not None:
+        if (
+            not type(answer_data) == self._data_type
+            and answer_data is not None
+        ):
             raise TypeError(
                 f"Answer data type did not match question type. "
                 f"Answer was {answer_data} "
@@ -314,7 +316,8 @@ class Question(AbstractQuestion):
         # If neither was chosen, the result of the function will be empty...duh
 
         participants: List[str] = (
-            list(participant_id) if participant_id
+            list(participant_id)
+            if participant_id
             else list(self._given_answers.keys())
         )
 
@@ -347,8 +350,9 @@ class Question(AbstractQuestion):
                     required_text: str = contains_text.lower()
                     searched_text: str = answer.text.lower()
                     if required_text not in searched_text:
-                        logging.debug(f"Filter: Excluding {answer} "
-                                      f"(Content Rules)")
+                        logging.debug(
+                            f"Filter: Excluding {answer} " f"(Content Rules)"
+                        )
                         continue  # will not be selected, skip to next answer
                 selected_answers.append(answer)
             if selected_answers:
@@ -428,8 +432,9 @@ class Question(AbstractQuestion):
             # (0) Assume univariate data, only take first element
             # Should not have multiple elements
             if len(self._given_answers[participant_id]) > 1:  # See Note (0)
-                raise ValueError("Multivariate data can not be "
-                                 "converted to series")
+                raise ValueError(
+                    "Multivariate data can not be " "converted to series"
+                )
 
             answer = self.given_answers[participant_id][0]  # See Note (0)
 
@@ -486,8 +491,9 @@ class Question(AbstractQuestion):
             filter_invalid=filter_invalid, use_short_answer=use_short_answer
         )
 
-        return as_series.value_counts(normalize=relative_values,
-                                      dropna=filter_invalid)
+        return as_series.value_counts(
+            normalize=relative_values, dropna=filter_invalid
+        )
 
 
 class QuestionCollection(AbstractQuestion):
@@ -499,8 +505,10 @@ class QuestionCollection(AbstractQuestion):
     """
 
     def __init__(
-        self, question_id: str, question_text: str,
-        subquestions: List[Question]
+        self,
+        question_id: str,
+        question_text: str,
+        subquestions: List[Question],
     ) -> None:
         """
         Initialize a question that contains sub-questions.

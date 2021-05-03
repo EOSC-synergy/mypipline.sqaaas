@@ -22,12 +22,7 @@
 
 # -*- coding: utf-8 -*-
 
-"""
-.. currentmodule:: test_example
-.. moduleauthor:: HIFIS Software <software@hifis.net>
-
-This is a sample test module.
-"""
+"""This is a sample test module."""
 
 import pytest
 
@@ -41,6 +36,7 @@ the current version numbers change.
 def test_import_getVersions_originalVersions():
     """
     Arrange: Load the primary module.
+
     Act: Retrieve the versions.
     Assert: Versions match the version numbers at the time of project creation.
     """
@@ -64,6 +60,7 @@ def test_import_getVersions_originalVersions():
 def test_ab_addSquares_equalsC(a, b, c):
     """
     Arrange: Acquire the first two parameters (a and b).
+
     Act: Add the squares of the first two parameters (a and b).
     Assert: The sum of the squares equals the third parameter (c).
 
@@ -71,8 +68,8 @@ def test_ab_addSquares_equalsC(a, b, c):
     :param b: the second parameter
     :param c: the result of adding the squares of a and b
     """
-    assert (
-        a * a + b * b == c,
-        "'c' should be the sum of the squares of 'a' and 'b'. "
-        "This is an example test and can be removed.",
+    assert a * a + b * b == c, (
+        "'c' should be the sum of the squares of 'a' "
+        "and 'b'. This is an example test and can be "
+        "removed."
     )

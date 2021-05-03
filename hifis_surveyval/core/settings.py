@@ -38,8 +38,9 @@ from typing import Any, Dict, List, Set
 import yaml
 from pydantic import BaseSettings, validator
 
-from hifis_surveyval.plotting.supported_output_format import \
-    SupportedOutputFormat
+from hifis_surveyval.plotting.supported_output_format import (
+    SupportedOutputFormat,
+)
 
 
 class SystemSettings(BaseSettings):
@@ -72,8 +73,9 @@ class SystemSettings(BaseSettings):
     ANALYSIS_OUTPUT_PATH: Path = None
 
     @validator("ANALYSIS_OUTPUT_PATH")
-    def assemble_output_path(cls, to_validate: str, values: Dict[str, Any]) \
-            -> Path:
+    def assemble_output_path(
+        cls, to_validate: str, values: Dict[str, Any]
+    ) -> Path:
         """
         Assemble path from user settings and datetime.
 
@@ -158,8 +160,9 @@ class Settings(SystemSettings, FileSettings):
         config_dict = {}
         for key in FileSettings.__fields__:
             value = self.__getattribute__(key)
-            if isinstance(value, Path) or \
-               isinstance(value, SupportedOutputFormat):
+            if isinstance(value, Path) or isinstance(
+                value, SupportedOutputFormat
+            ):
                 config_dict[key] = str(value)
             else:
                 config_dict[key] = value
@@ -225,8 +228,9 @@ class Settings(SystemSettings, FileSettings):
                 setting_type: type = type(self.__getattribute__(key))
                 logging.debug(f"type is '{setting_type}'")
                 if setting_type == SupportedOutputFormat:
-                    self.__setattr__(key,
-                                     SupportedOutputFormat.from_str(value))
+                    self.__setattr__(
+                        key, SupportedOutputFormat.from_str(value)
+                    )
                 else:
                     self.__setattr__(key, setting_type(value))
 

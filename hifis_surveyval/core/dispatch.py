@@ -75,8 +75,9 @@ class Dispatcher(object):
         # Check that all selected modules exist in module folder.
         if self.module_names:
             for module_name in self.module_names:
-                module_path: Path = Path(self.module_folder,
-                                         f"{module_name}.py")
+                module_path: Path = Path(
+                    self.module_folder, f"{module_name}.py"
+                )
                 if not module_path.exists():
                     raise ValueError(
                         f"Module {module_name} not found in " f"module folder."

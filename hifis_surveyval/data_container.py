@@ -95,8 +95,9 @@ class DataContainer(object):
 
         if self.empty:
             self._raw_data = data_frame
-            self._raw_data.set_index(DataContainer.ID_COLUMN_NAME,
-                                     inplace=True)
+            self._raw_data.set_index(
+                DataContainer.ID_COLUMN_NAME, inplace=True
+            )
         else:
             raise RuntimeError("Do not re-assign the global data frame")
 

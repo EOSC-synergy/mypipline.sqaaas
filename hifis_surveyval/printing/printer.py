@@ -48,8 +48,9 @@ class Printer:
         pp.pprint(to_print)
 
     @classmethod
-    def print_table(cls, table: List[Union[List, Dict]],
-                    table_headers: List) -> None:
+    def print_table(
+        cls, table: List[Union[List, Dict]], table_headers: List
+    ) -> None:
         """
         Print a list of lists as ascii table.
 

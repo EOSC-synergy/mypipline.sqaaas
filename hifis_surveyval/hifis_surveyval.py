@@ -122,8 +122,11 @@ class HIFISSurveyval:
             data_source=self.dataContainer
         )
         try:
-            self.survey_questions = metadata_handler.\
-                construct_questions_from_metadata(self.settings.METADATA)
+            self.survey_questions = (
+                metadata_handler.construct_questions_from_metadata(
+                    self.settings.METADATA
+                )
+            )
 
             # When debugging, print all parsed Questions
             if self.settings.VERBOSITY == logging.DEBUG:
@@ -136,8 +139,9 @@ class HIFISSurveyval:
             logging.error("Could not parse the metadata file as YAML.")
             exit(1)
 
-    def question_ids_to_dataframe(self, question_ids: Set[str] = set()) \
-            -> DataFrame:
+    def question_ids_to_dataframe(
+        self, question_ids: Set[str] = set()
+    ) -> DataFrame:
         """
         Combine multiple questions into a single pandas DataFrame.
 
@@ -160,8 +164,7 @@ class HIFISSurveyval:
 
         for question_id in question_ids:
             try:
-                question: AbstractQuestion = \
-                    self.survey_questions[question_id]
+                question: AbstractQuestion = self.survey_questions[question_id]
                 item: List[Question]
                 for item in question.flatten():
                     questions.add(item)

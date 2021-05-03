@@ -26,5 +26,30 @@ test:
     - poetry install
   stage: test
   script:
-    - poetry run make quicktest
-  dependencies: []
+    - make test
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - ".gitlab/ci/test.gitlab-ci.yml"
+        - "hifis_surveyval/**/*"
+        - "tests/**/*"
+        - ".gitlab-ci.yml"
+        - "Makefile"
+        - "poetry.lock"
+        - "pyproject.toml"
+
+check_links:
+    stage: test
+    image: ruby:2.7.2-slim-buster
+    before_script:
+        - gem install awesome_bot
+    script:
+        - awesome_bot --allow-redirect --allow-dupe `find . -name "*.md"`
+        - awesome_bot --allow-redirect --allow-dupe `find . -name "*.rst"`
+    rules:
+      - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+        changes:
+          - "**/*.md"
+          - "**/*.rst"
+          - ".gitlab/ci/test.gitlab-ci.yml"
+          - ".gitlab-ci.yml"

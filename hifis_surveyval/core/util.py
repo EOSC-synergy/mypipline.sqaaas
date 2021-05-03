@@ -34,8 +34,11 @@ from pandas import DataFrame, Series, concat
 
 from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.models.answer import Answer
-from hifis_surveyval.models.question import (AbstractQuestion, Question,
-                                             QuestionCollection)
+from hifis_surveyval.models.question import (
+    AbstractQuestion,
+    Question,
+    QuestionCollection,
+)
 
 
 def filter_and_group(
@@ -153,8 +156,9 @@ def dataframe_value_counts(
     """
     new_frame: DataFrame = DataFrame(
         [
-            dataframe[column].value_counts(normalize=relative_values,
-                                           dropna=drop_nans)
+            dataframe[column].value_counts(
+                normalize=relative_values, dropna=drop_nans
+            )
             for column in dataframe.columns
         ]
     )

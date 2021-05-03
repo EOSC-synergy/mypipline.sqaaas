@@ -18,20 +18,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-lint:
+build:package:
+  stage: build
   before_script:
     - pip install -U pip
     - pip install poetry
     - poetry config virtualenvs.in-project true
     - poetry install
-  stage: test
   script:
-    - make lint
+    - make package
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - ".gitlab/ci/lint.gitlab-ci.yml"
-        - "hifis_surveyval/**/*.py"
+    - changes:
+        - ".gitlab/ci/build.gitlab-ci.yml"
+        - "docs/**/*"
+        - "hifis_surveyval/**/*"
+        - "tests/**/*"
         - ".gitlab-ci.yml"
         - "Makefile"
+        - "poetry.lock"
         - "pyproject.toml"
+  artifacts:
+    paths:
+      - dist
+      - docs/build

@@ -32,8 +32,9 @@ Unit tests for class Metadata.
 """
 
 
-# from hifis_surveyval.metadata import Metadata
 import pytest
+
+from hifis_surveyval.core.metadata import MetaDataHandler
 
 
 @pytest.mark.skip("UUT has changed, test needs to be updated.")
@@ -52,7 +53,7 @@ class TestMetadata(object):
         Test fixture initializes the metadata object before each test case
         method is executed.
         """
-        self.metadata = Metadata()
+        self.metadata = MetaDataHandler()
 
     def teardown_method(self):
         """
@@ -73,7 +74,7 @@ class TestMetadata(object):
         filename_yaml: str = "tests/fixtures/metadata_one_entry.yml"
         self.metadata.set_metadata_yaml_filename(filename_yaml)
         self.metadata.load_metadata_from_yaml_file()
-        expected_metadata: typ.Dict[str] = {
+        expected_metadata: type.Dict[str] = {
             "question": "My question is ... ?",
             "sub-items": {
                 "SQ001": {
@@ -85,9 +86,9 @@ class TestMetadata(object):
             "type": "Multiple-Choice",
         }
         id_key: str = "G1234"
-        actual_metadata: typ.Dict[str] = self.metadata.get_metadata_dict_by_id_key(
-            id_key
-        )
+        actual_metadata: type.Dict[
+            str
+        ] = self.metadata.get_metadata_dict_by_id_key(id_key)
         assert (
             actual_metadata["sub-items"]["SQ001"]["answers"]["A1"]
             == expected_metadata["sub-items"]["SQ001"]["answers"]["A1"]

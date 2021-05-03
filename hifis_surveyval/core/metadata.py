@@ -41,8 +41,11 @@ import yaml
 
 from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.models.answer import Answer, AnswerType, ValidAnswerTypes
-from hifis_surveyval.models.question import (AbstractQuestion, Question,
-                                             QuestionCollection)
+from hifis_surveyval.models.question import (
+    AbstractQuestion,
+    Question,
+    QuestionCollection,
+)
 
 # The YAML dictionary has a recursive type
 YamlDict = Dict[str, Optional[Union[str, "YamlDict"]]]
@@ -72,8 +75,9 @@ class MetaDataHandler:
         self.survey_questions: Dict[str, AbstractQuestion] = {}
 
     @classmethod
-    def parse_answer(cls, content: YamlDict, question_data_type: type = str) \
-            -> Answer:
+    def parse_answer(
+        cls, content: YamlDict, question_data_type: type = str
+    ) -> Answer:
         """
         Parse an Answer object from YAML.
 
@@ -93,8 +97,9 @@ class MetaDataHandler:
         answer_short_text: Optional[str] = (
             content[KEYWORD_SHORT] if KEYWORD_SHORT in content else None
         )
-        return Answer(answer_id, answer_text, answer_short_text,
-                      question_data_type)
+        return Answer(
+            answer_id, answer_text, answer_short_text, question_data_type
+        )
 
     def parse_question(
         self, content: YamlDict, collection_id: Optional[str] = None
@@ -150,8 +155,9 @@ class MetaDataHandler:
         if KEYWORD_ANSWERS in content and content[KEYWORD_ANSWERS]:
             answer_yaml: YamlDict
             for answer_yaml in content[KEYWORD_ANSWERS]:
-                new_answer: Answer = self.parse_answer(answer_yaml,
-                                                       question_data_type)
+                new_answer: Answer = self.parse_answer(
+                    answer_yaml, question_data_type
+                )
                 predefined_answers.append(new_answer)
 
         new_question: Question = Question(
@@ -192,8 +198,9 @@ class MetaDataHandler:
         # Put the newly parsed object into the global dictionary
         self.survey_questions[collection_id] = new_collection
 
-    def construct_questions_from_metadata(self, metadata_file: Path) \
-            -> Dict[str, AbstractQuestion]:
+    def construct_questions_from_metadata(
+        self, metadata_file: Path
+    ) -> Dict[str, AbstractQuestion]:
         """
         Load metadata from given YAML file.
 
@@ -268,8 +275,9 @@ class MetaDataHandler:
             if question.has_subquestions:
                 continue  # collections have no answers
 
-            answers: Dict[str, AnswerType] = \
-                self.data_source.data_for_question(question_id)
+            answers: Dict[
+                str, AnswerType
+            ] = self.data_source.data_for_question(question_id)
 
             participant_id: str
             answer_data: AnswerType
@@ -286,8 +294,9 @@ class MetaDataHandler:
                 if question.data_type is bool:
                     try:
                         if answer_data is not numpy.NaN:
-                            question.add_given_answer(participant_id,
-                                                      bool(answer_data))
+                            question.add_given_answer(
+                                participant_id, bool(answer_data)
+                            )
                         else:
                             # numpy.nan is not a valid bool, replace by None
                             question.add_given_answer(participant_id, None)
@@ -302,8 +311,9 @@ class MetaDataHandler:
 
                 elif question.data_type is float:
                     try:
-                        question.add_given_answer(participant_id,
-                                                  float(answer_data))
+                        question.add_given_answer(
+                            participant_id, float(answer_data)
+                        )
                     except ValueError:
                         logging.warning(
                             f"Could not parse answer to type 'float' for "
@@ -315,8 +325,9 @@ class MetaDataHandler:
                 elif question.data_type is int:
                     try:
                         if answer_data is not numpy.NaN:
-                            question.add_given_answer(participant_id,
-                                                      int(answer_data))
+                            question.add_given_answer(
+                                participant_id, int(answer_data)
+                            )
                         else:
                             # numpy.nan is not a valid int, replace by None
                             question.add_given_answer(participant_id, None)
@@ -335,7 +346,8 @@ class MetaDataHandler:
                     # TODO: Check for hacks/workarounds that filtered "nan"
                     #       strings
                     if answer_data is not numpy.NaN:
-                        question.add_given_answer(participant_id,
-                                                  str(answer_data))
+                        question.add_given_answer(
+                            participant_id, str(answer_data)
+                        )
                     else:
                         question.add_given_answer(participant_id, None)

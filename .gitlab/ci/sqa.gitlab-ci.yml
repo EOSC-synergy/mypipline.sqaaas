@@ -19,7 +19,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 sqa:dev:
-  stage: sqa
+  stage: test
   image:
     name: "git.gfz-potsdam.de:5000/id2/software/services/fair/software-quality-assurance/software-quality-assurance:latest"
     entrypoint: [""]
@@ -27,12 +27,19 @@ sqa:dev:
     - internal
   script:
     - sqa --repository_dir "$CI_PROJECT_DIR" -ol cli run -r -lli -lla -la -c
-  except:
-    refs:
-      - master
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - ".gitlab/ci/sqa.gitlab-ci.yml"
+        - ".sqa/**/*"
+        - "hifis_surveyval/**/*"
+        - "LICENSES/**/*"
+        - ".gitlab-ci.yml"
+        - "poetry.lock"
+        - "pyproject.toml"
 
 sqa:production:
-  stage: sqa
+  stage: test
   image:
     name: "git.gfz-potsdam.de:5000/id2/software/services/fair/software-quality-assurance/software-quality-assurance:latest"
     entrypoint: [""]
@@ -40,9 +47,8 @@ sqa:production:
     - internal
   script:
     - sqa --repository_dir "$CI_PROJECT_DIR" run -r -lli -lla -la -c
-  only:
-    refs:
-      - master
+  rules:
+      - if: '$CI_COMMIT_BRANCH == "master"'
   artifacts:
     paths:
       - "QUALITY.md"

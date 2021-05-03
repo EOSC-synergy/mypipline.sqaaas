@@ -19,17 +19,21 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 pages:
-  before_script:
-    - pip install -U pip
-    - pip install poetry
-    - poetry config virtualenvs.in-project true
-    - poetry install
   stage: docs
   script:
-    - poetry run make docs
-  after_script:
     - mkdir public
     - mv docs/build/html/* public/
   artifacts:
     paths:
       - public
+  rules:
+    - if: "$CI_COMMIT_TAG"
+      changes:
+        - ".gitlab/ci/docs.gitlab-ci.yml"
+        - "docs/**/*"
+        - "hifis_surveyval/**/*"
+        - "tests/**/*"
+        - ".gitlab-ci.yml"
+        - "Makefile"
+        - "poetry.lock"
+        - "pyproject.toml"

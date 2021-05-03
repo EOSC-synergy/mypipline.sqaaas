@@ -42,8 +42,9 @@ from matplotlib.colors import Colormap, ListedColormap
 from pandas import DataFrame
 
 from hifis_surveyval.plotting.plotter import Plotter
-from hifis_surveyval.plotting.supported_output_format import \
-    SupportedOutputFormat
+from hifis_surveyval.plotting.supported_output_format import (
+    SupportedOutputFormat,
+)
 
 
 class MatplotlibPlotter(Plotter):
@@ -195,8 +196,10 @@ class MatplotlibPlotter(Plotter):
         # (If the colormap were larger one would have to do linear
         # interpolation to obtain the proper color.)
         colors = ListedColormap(
-            [base_color_map.colors[index]
-             for index in range(len(data_frame.columns))]
+            [
+                base_color_map.colors[index]
+                for index in range(len(data_frame.columns))
+            ]
         )
         # This new colormap is handed to the graph and used in the value labels
 
@@ -230,8 +233,10 @@ class MatplotlibPlotter(Plotter):
 
         if show_value_labels:
             self._add_bar_chart_value_labels(
-                data_frame, colors, plot_stacked,
-                round_value_labels_to_decimals
+                data_frame,
+                colors,
+                plot_stacked,
+                round_value_labels_to_decimals,
             )
 
         self._set_figure_size(len(data_frame.index) * 0.25, 5)
@@ -459,8 +464,9 @@ class MatplotlibPlotter(Plotter):
 
         # Create a new holder for the data frames to not manipulate the default
         # parameter
-        _data_frames: List[DataFrame] = \
+        _data_frames: List[DataFrame] = (
             data_frames.copy() if data_frames else []
+        )
 
         if (data_frame is not None) and (not data_frame.empty):
             _data_frames.append(data_frame.copy())
@@ -497,8 +503,10 @@ class MatplotlibPlotter(Plotter):
                 x_tick_labels.append(frame.columns[column_index])
                 column_frame = frame.iloc[:, column_index].dropna()
                 plot = axes.boxplot(
-                    column_frame, positions=[position], widths=0.5,
-                    patch_artist=True
+                    column_frame,
+                    positions=[position],
+                    widths=0.5,
+                    patch_artist=True,
                 )
 
                 # Fill the box background so the boxes overlay the grid lines
@@ -584,7 +592,8 @@ class MatplotlibPlotter(Plotter):
                 value = round(data_frame.iloc[i, j], value_label_decimals)
                 switch_color = bool(
                     (value < threshold)
-                    if invert_colors else (value > threshold)
+                    if invert_colors
+                    else (value > threshold)
                 )
                 axes.text(
                     j,
