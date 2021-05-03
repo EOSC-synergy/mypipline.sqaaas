@@ -28,6 +28,7 @@ test:
   script:
     - make test
   rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - ".gitlab/ci/test.gitlab-ci.yml"
@@ -47,6 +48,7 @@ check_links:
         - awesome_bot --allow-redirect --allow-dupe `find . -name "*.md"`
         - awesome_bot --allow-redirect --allow-dupe `find . -name "*.rst"`
     rules:
+      - if: '$CI_COMMIT_BRANCH == "master"'
       - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
         changes:
           - "**/*.md"
