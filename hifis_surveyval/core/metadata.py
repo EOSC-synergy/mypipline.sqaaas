@@ -26,9 +26,6 @@
 This module provides the definitions for survey metadata.
 
 Survey metadata given in a YAML file is transformed into a dictionary.
-
-.. currentmodule:: hifis_surveyval.core.metadata
-.. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 
 import logging
@@ -68,8 +65,8 @@ class MetaDataHandler:
         Initialize a MetaDataHandler.
 
         Args:
-            data_source (DataContainer): Data source is passed in as a
-                                         dependency.
+            data_source (DataContainer):
+                Data source is passed in as a dependency.
         """
         self.data_source: DataContainer = data_source
         self.survey_questions: Dict[str, AbstractQuestion] = {}
@@ -82,10 +79,10 @@ class MetaDataHandler:
         Parse an Answer object from YAML.
 
         Args:
-            content (YamlDict): The YAML representation as a dictionary.
-            question_data_type (type): The data type of an answer to a
-                                       question.
-
+            content (YamlDict):
+                The YAML representation as a dictionary.
+            question_data_type (type):
+                The data type of an answer to a question.
         Returns:
             Answer: A newly constructed Answer object.
         """
@@ -108,17 +105,16 @@ class MetaDataHandler:
         Parse a Question object from YAML.
 
         Args:
-            content (YamlDict): The YAML representation as a dictionary.
-            collection_id (Optional[str]): (Optional) If the question is part
-                                           of a question collection, this is
-                                           the ID of the collection as it will
-                                           be part of the question ID.
-                                           Otherwise, just default to None.
-
+            content (YamlDict):
+                The YAML representation as a dictionary.
+            collection_id (Optional[str]):
+                (Optional) If the question is part of a question collection,
+                this is the ID of the collection as it will be part of the
+                question ID. Otherwise, just default to None.
         Returns:
-            Question: A newly constructed Question object. It will
-                      automatically be added to survey_questions.
-
+            Question:
+                A newly constructed Question object. It will
+                automatically be added to survey_questions.
         Raises:
             ValueError: Exception thrown if data type of question could not
                         be parsed.
@@ -207,16 +203,17 @@ class MetaDataHandler:
         Given YAML file with metadata is loaded into a dictionary.
 
         Args:
-            metadata_file (Path): Path to the metadata file.
-
+            metadata_file (Path):
+                Path to the metadata file.
         Returns:
-            Dict[str, AbstractQuestion]: Dictionary of questions parsed
-                                         from the metadata file.
-
+            Dict[str, AbstractQuestion]:
+                Dictionary of questions parsed from the metadata file.
         Raises:
-            IOError: Will be raised if given YAML file could not be opened
-                     and loaded.
-            ValueError: Will be raised if the provided file does not exist.
+            IOError:
+                Will be raised if given YAML file could not be opened and
+                loaded.
+            ValueError:
+                Will be raised if the provided file does not exist.
         """
         raw_metadata: YamlDict = {}
 
@@ -259,10 +256,13 @@ class MetaDataHandler:
         by None.
 
         Raises:
-            ValueError: Exception thrown if data source is empty.
-            ValueError: Exception thrown if answer has not been answered.
-            ValueError: Exception thrown if data of an answer can not be
-                        casted to a particular data type.
+            ValueError:
+                Exception thrown if data source is empty.
+            ValueError:
+                Exception thrown if answer has not been answered.
+            ValueError:
+                Exception thrown if data of an answer can not be casted to
+                a particular data type.
         """
         if self.data_source.empty:
             raise ValueError(

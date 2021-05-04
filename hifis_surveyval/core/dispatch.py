@@ -18,12 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""
-This module allows discovery and dispatch of analysis functions.
-
-.. currentmodule:: hifis_surveyval.core.dispatch
-.. moduleauthor:: HIFIS Software <software@hifis.net>
-"""
+"""This module allows discovery and dispatch of analysis functions."""
 import importlib.util
 import logging
 import traceback
@@ -133,7 +128,7 @@ class Dispatcher(object):
         Raises:
             ImportError: Exception thrown if script could not be loaded.
             AttributeError: Exception thrown if run method could not be
-                            executed.
+            executed.
         """
         # TODO if the module_name has a .py ending, remove it beforehand
 

@@ -18,9 +18,4 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""
-Provides data models used in this program.
-
-.. currentmodule:: hifis_surveyval.models
-.. moduleauthor:: HIFIS Software <software@hifis.net>
-"""
+"""Provides data models used in this program."""

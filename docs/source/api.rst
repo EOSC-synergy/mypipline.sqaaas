@@ -26,7 +26,7 @@
 API Documentation
 =================
 
-.. automodule:: hifis_surveyval
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. toctree::
+   :maxdepth: 4
+
+   hifis_surveyval

@@ -35,13 +35,7 @@ from unittest.mock import MagicMock
 
 import pkg_resources
 
-# Determine the absolute path to the directory containing the python modules.
-_pysrc = os.path.abspath(
-    os.path.join(os.path.abspath(__file__), "..", "..", "..")
-)
-
-# Insert it into the path.
-sys.path.insert(0, _pysrc)
+sys.path.insert(0, os.path.abspath("../.."))
 
 
 # -- Document __init__ methods by default. --------------------------------
@@ -92,6 +86,8 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
+    "sphinx_click",
+    "recommonmark",
 ]
 
 # Add any paths that contain templates here, relative to this directory.

@@ -25,9 +25,6 @@ It provides:
 * settings classes
 * getter for settings
 * an export function to create a file
-
-.. currentmodule:: hifis_surveyval.core.settings
-.. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 
 import logging
@@ -80,9 +77,11 @@ class SystemSettings(BaseSettings):
         Assemble path from user settings and datetime.
 
         Args:
-            to_validate (str): Analysis output path as string to be validated.
-            values (Dict[str, Any]): Parts of the analysis output path to be
-                                     concatenated as an absolute path.
+            to_validate (str):
+                Analysis output path as string to be validated.
+            values (Dict[str, Any]):
+                Parts of the analysis output path to be
+                concatenated as an absolute path.
         Returns:
             Path: Path to the output folder of the an analysis run.
         """

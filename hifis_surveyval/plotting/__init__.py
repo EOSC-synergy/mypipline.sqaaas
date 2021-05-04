@@ -18,9 +18,4 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""
-This package provides plotting functionalities.
-
-.. currentmodule:: hifis_surveyval.plotting
-.. moduleauthor:: HIFIS Software <software@hifis.net>
-"""
+"""This package provides plotting functionalities."""

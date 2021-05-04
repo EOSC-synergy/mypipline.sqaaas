@@ -38,6 +38,7 @@ coverage: lint
 	poetry run py.test --cov-report html --cov=$(PROJ_SLUG) tests/
 
 docs: coverage
+	poetry run sphinx-apidoc -o ./docs/source hifis_surveyval
 	cd docs && poetry run make html
 
 package: clean docs
@@ -46,7 +47,9 @@ package: clean docs
 clean :
 	rm -rf dist \
 	rm -rf docs/build \
-	rm -rf *.egg-info
+	rm -rf *.egg-info \
+	rm -rf docs/source/modules.rst \
+	rm -rf docs/source/hifis_surveyval.*
 	poetry run coverage erase
 
 reformat:

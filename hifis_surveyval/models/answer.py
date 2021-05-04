@@ -18,12 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""
-This module contains a class to represent survey answers.
-
-.. currentmodule:: hifis_surveyval.models.answer
-.. moduleauthor:: HIFIS Software <software@hifis.net>
-"""
+"""This module contains a class to represent survey answers."""
 from typing import List, Optional, Union
 
 #: Type to represent raw answer data.
@@ -40,9 +35,9 @@ class Answer(object):
 
     The use-case is twofold:
     * Answers may be used to represent pre-defined answers which could be
-      selected by users
+    selected by users
     * Answers also represent - when associated with a participant - the actual
-      selection a user made.
+    selection a user made.
     """
 
     def __init__(
@@ -56,20 +51,19 @@ class Answer(object):
         Initialize an Answer from the data or metadata.
 
         Args:
-            answer_id (str): A unique string identifying the answer.
-            answer_data (str): If the answer is predefined, it is the text
-                               the form suggested.
-                               Otherwise it is the text the user entered.
-                               For pre-defining a free-text answer the text
-                               may be empty.
-            answer_short_text (Optional[str]): An optional string to be used
-                                               for the string representation
-                                               instead of the full text.
-
-            answer_data_type (type): The type of the data associated with this
-                                     answer. Supported types are bool, int,
-                                     float and str. Defaults to str, if not
-                                     specified otherwise.
+            answer_id (str):
+                A unique string identifying the answer.
+            answer_data (str):
+                If the answer is predefined, it is the text the form suggested.
+                Otherwise it is the text the user entered. For pre-defining a
+                free-text answer the text may be empty.
+            answer_short_text (Optional[str]):
+                An optional string to be used for the string representation
+                instead of the full text.
+            answer_data_type (type):
+                The type of the data associated with this answer. Supported
+                types are bool, int, float and str. Defaults to str, if not
+                specified otherwise.
         """
         self._id: str = answer_id
         self._data: Optional[AnswerType] = answer_data
@@ -81,7 +75,8 @@ class Answer(object):
         Generate a string representation of the answer.
 
         Returns:
-            str: String representation of the answer.
+            str:
+                String representation of the answer.
         """
         return f"{self._id}: {self.text}"
 
@@ -91,7 +86,8 @@ class Answer(object):
         Obtain the ID of the answer. The ID is unique per question.
 
         Returns:
-            str: Answer ID.
+            str:
+                Answer ID.
         """
         return self._id
 
@@ -101,7 +97,8 @@ class Answer(object):
         Obtain the raw data that was associated with this answer.
 
         Returns:
-            AnswerType: Raw data of this answer.
+            AnswerType:
+                Raw data of this answer.
         """
         return self._data
 
@@ -111,7 +108,8 @@ class Answer(object):
         Obtain the full text that was associated with this answer.
 
         Returns:
-            str: Text of this answer.
+            str:
+                Text of this answer.
         """
         return str(self._data)
 
@@ -121,8 +119,8 @@ class Answer(object):
         Obtain the short text representation for the answer.
 
         Returns:
-            Optional[str]: The short text as string if one was set,
-                           None otherwise.
+            Optional[str]:
+                The short text as string if one was set, None otherwise.
         """
         return self._short_text
 
@@ -135,8 +133,9 @@ class Answer(object):
         If no short text is defined, the full text will be used instead.
 
         Returns:
-            str: The short text representation, if available,
-                 otherwise the full text
+            str:
+                The short text representation, if available, otherwise the
+                full text
         """
         return self._short_text if self._short_text else self.text
 
@@ -146,6 +145,7 @@ class Answer(object):
         Obtain the data type of the answer.
 
         Returns:
-            type: Data type of the answer.
+            type:
+                Data type of the answer.
         """
         return self._data_type

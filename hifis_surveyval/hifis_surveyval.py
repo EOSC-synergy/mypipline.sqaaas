@@ -22,12 +22,7 @@
 
 # -*- coding: utf-8 -*-
 
-"""
-This project is used to develop analysis scripts for the HIFIS Software survey.
-
-.. currentmodule:: hifis_surveyval.hifis_surveyval
-.. moduleauthor:: HIFIS Software <software@hifis.net>
-"""
+"""This project is used to develop analysis scripts for surveys."""
 import logging
 import sys
 from typing import Dict, List, Set

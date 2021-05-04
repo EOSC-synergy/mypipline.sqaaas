@@ -18,12 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""
-This module provides helper functions.
-
-.. currentmodule:: hifis_surveyval.core.util
-.. moduleauthor:: HIFIS Software <software@hifis.net>
-"""
+"""This module provides helper functions."""
 
 import shutil
 from collections import defaultdict
@@ -48,17 +43,17 @@ def filter_and_group(
     Obtain filtered results grouped by the answers of a question.
 
     Args:
-        filter_question (Question): The question whose given answers are to be
-                                    filtered.
-        group_question (Question): The question according to whose given
-                                   answers the participants are grouped.
-        filter_args: Arguments passed to filter.
-
+        filter_question (Question):
+            The question whose given answers are to be filtered.
+        group_question (Question):
+            The question according to whose given answers the
+            participants are grouped.
+        filter_args:
+            Arguments passed to filter.
     Returns:
-        Dict[Answer, Dict[str, List[Answer]]]: An association of answers of
-                                               group_question to the filtered
-                                               answers of filter_question from
-                                               these participants.
+        Dict[Answer, Dict[str, List[Answer]]]:
+            An association of answers of group_question to the
+            filtered answers of filter_question from these participants.
     """
     grouped_answers = group_question.grouped_by_answer()
 
@@ -79,14 +74,14 @@ def get_free_text_subquestion(
     Get the sub-question of QuestionCollection that asks for free text answers.
 
     Args:
-        question QuestionCollection): QuestionCollection, in which the
-                                      sub-question for free text answers is
-                                      searched.
-        free_text_question_id (str): ID of a question that is of type free
-                                     text.
-
+        question QuestionCollection):
+            QuestionCollection, in which the sub-question for free text
+            answers is searched.
+        free_text_question_id (str):
+            ID of a question that is of type free text.
     Returns:
-        Question: A sub-question that asks for custom free text answers.
+        Question:
+            A sub-question that asks for custom free text answers.
     """
     assert (
         question.has_subquestions
@@ -109,15 +104,14 @@ def get_given_free_text_answers(
     Obtain valid free text answers of a Question.
 
     Args:
-        abstract_question (AbstractQuestion): A Question or QuestionCollection
-                                              whose free text answers are to
-                                              be determined.
-
+        abstract_question (AbstractQuestion):
+            A Question or QuestionCollection whose free text answers are to
+            be determined.
     Returns:
-        Dict[str, Answer]: An association of participant IDs to the free text
-                           answers from these participants. Only participants
-                           for which free text answers were found are included
-                           in the results.
+        Dict[str, Answer]:
+            An association of participant IDs to the free text answers from
+            these participants. Only participants for which free text answers
+            were found are included in the results.
     """
     if isinstance(abstract_question, QuestionCollection):
         question = get_free_text_subquestion(abstract_question)
@@ -141,18 +135,18 @@ def dataframe_value_counts(
     Count how often a unique value appears in each column of a data frame.
 
     Args:
-        dataframe (DataFrame): The data frame of which the values shall be
-                               counted.
-        relative_values (bool): Instead of absolute counts fill the cells with
-                                their relative contribution to the column total
-        drop_nans (bool): Whether to remove the NaN value count.
-                          Defaults to True
-
+        dataframe (DataFrame):
+            The data frame of which the values shall be counted.
+        relative_values (bool):
+            Instead of absolute counts fill the cells with their relative
+            contribution to the column total
+        drop_nans (bool):
+            Whether to remove the NaN value count. Defaults to True
     Returns:
-        DataFrame: A new data frame with the same columns as the input.
-                   The index is changed to represent the unique values and the
-                   cells contain the count of the unique values in the given
-                   column.
+        DataFrame:
+            A new data frame with the same columns as the input. The index is
+            changed to represent the unique values and the cells contain the
+            count of the unique values in the given column.
     """
     new_frame: DataFrame = DataFrame(
         [
@@ -184,20 +178,19 @@ def cross_reference_sum(data: DataFrame, grouping: Series) -> DataFrame:
     They get matched by the participant IDs and the correlations get summed up.
 
     Args:
-        data (DataFrame): A data frame of which the columns are to be grouped
-                          and summed up.
-        grouping (Series): A series with indices (mostly) matching that of
-                           "data", associating each index with a group towards
-                           which the values of "data" are to be counted.
-
+        data (DataFrame):
+            A data frame of which the columns are to be grouped and summed up.
+        grouping (Series):
+            A series with indices (mostly) matching that of "data", associating
+            each index with a group towards which the values of "data" are to
+            be counted.
     Returns:
-        DataFrame: A data frame containing the columns from data (minus
-                   dropped columns) and the unique values of the grouping
-                   series as indices.
-                   Each cell at [column, index] holds the sum of the values
-                   in the respective column of the data which corresponded
-                   to the index in the grouping series.
-
+        DataFrame:
+            A data frame containing the columns from data (minus dropped
+            columns) and the unique values of the grouping series as indices.
+            Each cell at [column, index] holds the sum of the values in the
+            respective column of the data which corresponded to the index in
+            the grouping series.
     """
     grouping_values: List[Any] = grouping.unique()
     grouping_header: str = grouping.name
@@ -245,24 +238,22 @@ def filter_and_group_series(
     Indexes not present in base_data will result in an empty column.
 
     Args:
-        base_data (Series): The series of which the data is to be sorted and
-                            filtered.
-        group_by (Series): A series assigning each index to a group.
-        min_value (Optional[float]): An optional minimum value. All values of
-                                     base_data below this value will be
-                                     excluded from the result.
-                                     Not set by default.
-        max_value (Optional[float]): An optional maximum value. All values of
-                                     base_data above this value will be
-                                     excluded from the result.
-                                     Not set by default.
-
+        base_data (Series):
+            The series of which the data is to be sorted and filtered.
+        group_by (Series):
+            A series assigning each index to a group.
+        min_value (Optional[float]):
+            An optional minimum value. All values of base_data below this
+            value will be excluded from the result. Not set by default.
+        max_value (Optional[float]):
+            An optional maximum value. All values of base_data above this
+            value will be excluded from the result. Not set by default.
     Returns:
-        DataFrame: A new DataFrame where each row represents an index of
-                   base_data and each column is one of the unique values of
-                   the group_by series.
-                   The values of base_data are put into the column where the
-                   base_data index matches the group_by index.
+        DataFrame:
+            A new DataFrame where each row represents an index of base_data
+            and each column is one of the unique values of the group_by series.
+            The values of base_data are put into the column where the base_data
+            index matches the group_by index.
     """
     result_frame: DataFrame = DataFrame(
         index=base_data.index, columns=group_by.unique()
@@ -290,7 +281,8 @@ def create_example_script(settings: Settings) -> None:
     Create an example script from data payload at the default script location.
 
     Args:
-        settings (Settings): Settings of the analysis run.
+        settings (Settings):
+            Settings of the analysis run.
     """
     # create folder to store the scripts
     if settings.SCRIPT_FOLDER is not None:

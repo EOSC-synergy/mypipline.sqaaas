@@ -36,5 +36,12 @@ You can use pip to install `hifis_surveyval`.
 
     pip install hifis_surveyval
 
+Interface Documentation
+=======================
+
+.. click:: hifis_surveyval.cli:cli
+   :prog: hifis_surveyval
+   :nested: full
+
 
 

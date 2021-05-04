@@ -22,9 +22,4 @@
 
 # -*- coding: utf-8 -*-
 
-"""
-This project is used to develop analysis scripts for the HIFIS Software survey.
-
-.. currentmodule:: hifis_surveyval
-.. moduleauthor:: HIFIS Software <software@hifis.net>
-"""
+"""This project is used to develop analysis scripts for the surveys."""

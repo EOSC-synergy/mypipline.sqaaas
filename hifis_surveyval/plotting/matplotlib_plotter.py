@@ -26,9 +26,6 @@ which processes `pandas` data-frames as input and transforms them into
 informative plots.
 The actual plotting is done by utilizing a separate plotting library called
 `matplotlib`.
-
-.. currentmodule:: hifis_surveyval.plotting.matplotlib_plotter
-.. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import logging
 import math
@@ -37,8 +34,7 @@ from pathlib import Path
 from textwrap import wrap
 from typing import List, Optional
 
-from matplotlib import pyplot, rcParams
-from matplotlib.colors import Colormap, ListedColormap
+from matplotlib import colors, pyplot, rcParams
 from pandas import DataFrame
 
 from hifis_surveyval.plotting.plotter import Plotter
@@ -59,12 +55,11 @@ class MatplotlibPlotter(Plotter):
         (Basically instead of pyplot.show() or pyplot.savefig())
 
         Args:
-            output_file_stem (str): The stem of the desired filename
-                                    (without extension).
-                                    Defaults to an empty string which will
-                                    prompt the automatic generation of a file
-                                    name from the date of the run and the
-                                    module producing the image.
+            output_file_stem (str):
+                The stem of the desired filename (without extension).
+                Defaults to an empty string which will prompt the automatic
+                generation of a file name from the date of the run and the
+                module producing the image.
         """
         if self.OUTPUT_FORMAT == SupportedOutputFormat.SCREEN:
             pyplot.show()
@@ -103,8 +98,10 @@ class MatplotlibPlotter(Plotter):
         Set the figure size so the main area fits into the desired space.
 
         Args:
-            width (float):  Desired plotting space width in inches.
-            height (float): Desired plotting space height in inches.
+            width (float):
+                Desired plotting space width in inches.
+            height (float):
+                Desired plotting space height in inches.
         """
         figure = pyplot.gcf()
         left: float = figure.subplotpars.left
@@ -124,7 +121,7 @@ class MatplotlibPlotter(Plotter):
         round_value_labels_to_decimals: int = 0,
         **kwargs,
     ) -> None:
-        """
+        r"""
         Plot given data-frame as a (stacked) bar chart.
 
         A pandas DataFrame is used as input data from which a (stacked) bar
@@ -141,40 +138,44 @@ class MatplotlibPlotter(Plotter):
         column names are used as labels in the legend.
 
         Args:
-            data_frame (DataFrame): All data needed for this function to plot
-                                    a stacked bar chart is encapsulated in
-                                    this DataFrame.
-            plot_file_name (str): Optional file name which is used to store
-                                  the plot to a file. If this argument is an
-                                  empty string (Default) for this argument, a
-                                  suitable file name is auto-generated.
-            show_legend (bool): Used to control whether a legend is included
-                                in the plot or not. (Default: True)
-            show_value_labels (bool): Enable or disable labels to show the
-                                      values of each bar. (Default: True)
-            round_value_labels_to_decimals (int): Round label values to the
-                                                  number of decimals.
-                                                  (Default: 0)
-            **kwargs:
-                stacked (bool): Prompts the generation of a stacked bar chart
-                                instead on bars being grouped side-by-side.
-                plot_title (str): The title text for the plot. (Default: "")
-                x_axis_label (str): The label for the x-axis. Default: "")
-                x_label_rotation (int): Allows to rotate the x-axis labels for
-                                        better readability. Value is given in
-                                        degrees. (Default: 0)
-                y_axis_label (str): The label for the y-axis. Default: "")
-                legend_location (str): Specifies positioning of the plot's
-                                       legend. (Default: "best")
-                                       See Also: pandas.Axis.legend(loc)
-                legend_anchor (BboxBase): Allows to specify an anchor point
-                                          for the plot's legend (Default: None)
-                                          See Also:
-                                          pandas.Axis.legend(bbox_to_anchor)
-                ylim (Set[float]): Allows to specify the maximum and minimum
-                                   values of the y axis (Default: None)
-                                   See Also: matplotlib.axes.Axes.set_ylim
-
+            data_frame (DataFrame):
+                All data needed for this function to plot a stacked bar
+                chart is encapsulated in this DataFrame.
+            plot_file_name (str):
+                Optional file name which is used to store the plot to a
+                file. If this argument is an empty string (Default) for this
+                argument, a suitable file name is auto-generated.
+            show_legend (bool):
+                Used to control whether a legend is included in the plot or
+                not. (Default: True)
+            show_value_labels (bool):
+                Enable or disable labels to show the values of each bar. (
+                Default: True)
+            round_value_labels_to_decimals (int):
+                Round label values to the number of decimals. (Default: 0)
+            \*\*kwargs:
+                stacked (bool):
+                    Prompts the generation of a stacked bar chart instead on
+                    bars being grouped side-by-side.
+                plot_title (str):
+                    The title text for the plot. (Default: "")
+                x_axis_label (str):
+                    The label for the x-axis. Default: "")
+                x_label_rotation (int):
+                    Allows to rotate the x-axis labels for better
+                    readability. Value is given in degrees. (Default: 0)
+                y_axis_label (str):
+                    The label for the y-axis. Default: "")
+                legend_location (str):
+                    Specifies positioning of the plot's legend. (Default:
+                    "best") See Also: pandas.Axis.legend(loc)
+                legend_anchor (BboxBase):
+                    Allows to specify an anchor point for the plot's legend (
+                    Default: None) See Also: pandas.Axis.legend(bbox_to_anchor)
+                ylim (Set[float]):
+                    Allows to specify the maximum and minimum values of the
+                    y axis (Default: None) See Also:
+                    matplotlib.axes.Axes.set_ylim
         """
         rcParams.update({"figure.autolayout": True})
 
@@ -195,7 +196,7 @@ class MatplotlibPlotter(Plotter):
         # columns so each columns color index matches the column index
         # (If the colormap were larger one would have to do linear
         # interpolation to obtain the proper color.)
-        colors = ListedColormap(
+        color_map = colors.ListedColormap(
             [
                 base_color_map.colors[index]
                 for index in range(len(data_frame.columns))
@@ -206,7 +207,7 @@ class MatplotlibPlotter(Plotter):
         plot_stacked: bool = kwargs.get("stacked", False)
         x_rotation: int = kwargs.get("x_label_rotation", 0)
 
-        data_frame.plot(kind="bar", stacked=plot_stacked, cmap=colors)
+        data_frame.plot(kind="bar", stacked=plot_stacked, cmap=color_map)
 
         axes = pyplot.gca()
 
@@ -234,7 +235,7 @@ class MatplotlibPlotter(Plotter):
         if show_value_labels:
             self._add_bar_chart_value_labels(
                 data_frame,
-                colors,
+                color_map,
                 plot_stacked,
                 round_value_labels_to_decimals,
             )
@@ -246,7 +247,7 @@ class MatplotlibPlotter(Plotter):
     def _add_bar_chart_value_labels(
         cls,
         data_frame: DataFrame,
-        color_map: Colormap,
+        color_map: colors.Colormap,
         plot_stacked: bool,
         round_value_labels_to_decimals: int = 0,
     ) -> None:
@@ -256,15 +257,14 @@ class MatplotlibPlotter(Plotter):
         This is a helper method and not supposed to be called on its own.
 
         Args:
-            data_frame (DataFrame): The data frame providing the data for the
-                                    chart.
-            color_map (Colormap): The color map used by the bar chart.
-
-            plot_stacked (bool): Whether the chart is a stacked bar chart or
-                                 not.
-            round_value_labels_to_decimals (int): Round label values to the
-                                                  number of decimals.
-                                                  (Default: 0)
+            data_frame (DataFrame):
+                The data frame providing the data for the chart.
+            color_map (Colormap):
+                The color map used by the bar chart.
+            plot_stacked (bool):
+                Whether the chart is a stacked bar chart or not.
+            round_value_labels_to_decimals (int):
+                Round label values to the number of decimals. (Default: 0)
         """
         default_font_size = rcParams["font.size"]
         axes = pyplot.gca()
@@ -434,30 +434,32 @@ class MatplotlibPlotter(Plotter):
         plot_file_name: str = "",
         **kwargs,
     ) -> None:
-        """
+        r"""
         Generate a box chart from the provided data.
 
         Each column in the frame corresponds to one box with whiskers.
 
         Args:
-            data_frame (Optional[DataFrame]): A singular data frame. Syntactic
-                                              sugar for using `data_frame=x`
-                                              instead of `data_frames=[x]`.
-            data_frames (List[DataFrame]): A list of data frames. The columns
-                                           with the same column index across
-                                           all the frames are grouped together.
-            plot_file_name (str): Optional file name which is used to store
-                                  the plot to a file. If this argument is an
-                                  empty string (Default) for this argument, a
-                                  suitable file name is auto-generated.
-
-            **kwargs:
-                plot_title (str): The title text for the plot. (Default: "")
-                x_axis_label (str): The label for the x-axis. Default: "")
-                x_label_rotation (int): Allows to rotate the x-axis labels for
-                                        better readability.
-                                        Value is given in degrees. (Default: 0)
-                y_axis_label (str): The label for the y-axis. Default: "")
+            data_frame (Optional[DataFrame]):
+                A singular data frame. Syntactic sugar for using
+                `data_frame=x` instead of `data_frames=[x]`.
+            data_frames (List[DataFrame]):
+                A list of data frames. The columns with the same column
+                index across all the frames are grouped together.
+            plot_file_name (str):
+                Optional file name which is used to store the plot to a file.
+                If this argument is an empty string (Default) for this
+                argument, a suitable file name is auto-generated.
+            \*\*kwargs:
+                plot_title (str):
+                    The title text for the plot. (Default: "")
+                x_axis_label (str):
+                    The label for the x-axis. Default: "")
+                x_label_rotation (int):
+                    Allows to rotate the x-axis labels for better
+                    readability. Value is given in degrees. (Default: 0)
+                y_axis_label (str):
+                    The label for the y-axis. Default: "")
         """
         rcParams.update({"figure.autolayout": True})
         x_rotation: int = kwargs.get("x_label_rotation", 0)
@@ -533,27 +535,30 @@ class MatplotlibPlotter(Plotter):
         value_label_decimals: int = 2,
         **kwargs,
     ) -> None:
-        """
+        r"""
         Plot given data frame as matrix chart.
 
         Args:
-            data_frame (DataFrame): The data frame to plot.
-            plot_file_name (str): (Optional) The file name stem for the output
-                                  file.
-            invert_colors (bool): (Optional) Use an inverted color scheme for
-                                  plotting. This is recommended for plotting
-                                  data that represents the absence of
-                                  something. Defaults to False.
-            value_label_decimals (int): Round label values to the number of
-                                        decimals. (Default: 2)
-
-            **kwargs:
-                plot_title (str): The title text for the plot. (Dafault: "")
-                x_axis_label (str): The label for the x-axis. Default: "")
-                x_label_rotation (int): Allows to rotate the x-axis labels for
-                                        better readability. Value is given in
-                                        degrees. (Default: 0)
-                y_axis_label (str): The label for the y-axis. Default: "")
+            data_frame (DataFrame):
+                The data frame to plot.
+            plot_file_name (str):
+                (Optional) The file name stem for the output file.
+            invert_colors (bool):
+                (Optional) Use an inverted color scheme for plotting. This
+                is recommended for plotting data that represents the absence of
+                something. Defaults to False.
+            value_label_decimals (int):
+                Round label values to the number of decimals. (Default: 2)
+            \*\*kwargs:
+                plot_title (str):
+                    The title text for the plot. (Dafault: "")
+                x_axis_label (str):
+                    The label for the x-axis. Default: "")
+                x_label_rotation (int):
+                    Allows to rotate the x-axis labels for better
+                    readability. Value is given in degrees. (Default: 0)
+                y_axis_label (str):
+                    The label for the y-axis. Default: "")
         """
         rcParams.update({"figure.autolayout": True})
         color_map_name = "Blues_r" if invert_colors else "Blues"
