@@ -24,6 +24,8 @@ version = "0.5.0"
 description = "This project is used to develop analysis scripts for the HIFIS Software survey."
 license = "GPL-3.0-or-later"
 authors = ["HIFIS Software <software@hifis.net>"]
+homepage = "https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval"
+repository = "https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval"
 readme = "README.md"
 classifiers = [
     'Development Status :: 3 - Alpha',
@@ -38,6 +40,11 @@ packages = [
     {include = "hifis_surveyval", from = "."}
 ]
 include = ["LICENSES", "docs/build/html/**/*.*", "hifis_surveyval/files/**/*"]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/issues"
+"Changelog" = "https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/blob/main/CHANGELOG.md"
+"CI" = "https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/pipelines"
 
 [tool.poetry.scripts]
 hifis-surveyval = "hifis_surveyval.cli:cli"
