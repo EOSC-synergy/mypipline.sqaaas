@@ -26,6 +26,7 @@ comment in file:
   - '.*\.yml$'
   - '.*\.toml$'
   - '.*\.md$'
+  - '.*\.css$'
   - '.*\.gitignore$'
   - '.*\.gitmodules$'
   - '.*Makefile.*$'

@@ -125,7 +125,7 @@ title = "gitleaks config"
 	tags = ["key", "API", "generic"]
 	[rules.allowlist]
 		paths = ['''scripts''']
-		regexes = ['''keys\[0\]\+"\["\+codomain_key\+"''', '''key: str = [\"\']G1234[\"\']''', '''KEYWORD_''', '''keys = properties\[''', '''keyring = \[\"keyring\"\]''']
+		regexes = ['''keys\[0\]\+"\["\+codomain_key\+"''', '''key: str = [\"\']G1234[\"\']''', '''KEYWORD_''', '''keys = properties\[''', '''keyring = \[\"keyring\"\]''','''key_''']
 [allowlist]
 	description = "Allowlisted files"
 	files = ['''.*gitleaks_config.toml$''', '''(.*?)(jpg|gif|doc|pdf|bin)$''', '''(go.mod|go.sum)$''', '''.*QUALITY.md$''']

@@ -27,16 +27,23 @@ SurveyAnalysis2020
 
 This project is used to develop analysis scripts for the HIFIS Software survey.
 
+There are two scopes of developers within this project.
+
+The first one is ``analysis script developer``, which are using
+hifis-surveyval to analyse data sets. Please see the `Getting Started
+<./pages/getting_started>`_ guide.
+
+The other one is ``hifis-surveyval developer``, which are changing
+hifis-surveyval itself. Please see the `Developer Guide
+<./pages/development>`_.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   getting_started
-   api
-   development
-   requirements
-
-
+   pages/getting_started
+   pages/development
+   pages/api
 
 Indices and tables
 ==================

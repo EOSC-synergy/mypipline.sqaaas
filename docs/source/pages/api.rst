@@ -18,30 +18,20 @@
 .. You should have received a copy of the GNU General Public License
 .. along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-.. _getting_started:
+API Documentation
+=================
 
-.. toctree::
-    :glob:
-
-***************
-Getting Started
-***************
-
-Installing the Library
-======================
-
-You can use pip to install `hifis_surveyval`.
-
-.. code-block:: sh
-
-    pip install hifis_surveyval
-
-Interface Documentation
-=======================
+CLI Interface
+-------------
 
 .. click:: hifis_surveyval.cli:cli
    :prog: hifis_surveyval
    :nested: full
 
+Modules
+-------
 
+.. toctree::
+   :maxdepth: 4
 
+   ../modules/modules
