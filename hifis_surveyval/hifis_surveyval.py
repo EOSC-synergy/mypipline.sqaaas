@@ -25,16 +25,13 @@
 """This project is used to develop analysis scripts for surveys."""
 import logging
 import sys
-from typing import Dict, List, Set
+from csv import reader
+from pathlib import Path
 
-import click
-import pandas
-from pandas import DataFrame, concat
+import yaml
 
-from hifis_surveyval.core.metadata import MetaDataHandler
 from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.data_container import DataContainer
-from hifis_surveyval.models.question import AbstractQuestion, Question
 from hifis_surveyval.plotting.matplotlib_plotter import MatplotlibPlotter
 from hifis_surveyval.printing.printer import Printer
 
@@ -47,13 +44,18 @@ class HIFISSurveyval:
     """
 
     def __init__(self, settings: Settings):
-        """Initialize HIFISSurveyval."""
+        """
+        Initialize HIFISSurveyval.
+
+        Args:
+              settings:
+                A Settings container to store the setup configuration
+                in. It will be populated with the related settings during the
+                initialization of the HIFISSurveyval object.
+        """
         #: A global copy-on-read container for providing the survey data
         #: to the analysis functions
         self.dataContainer: DataContainer = DataContainer()
-
-        #: All the survey questions and their associated answers
-        self.survey_questions: Dict[str, AbstractQuestion] = {}
 
         #: The settings storage
         self.settings: Settings = settings
@@ -75,16 +77,16 @@ class HIFISSurveyval:
         * creating output folder to save images
         """
         # set syspath to later on load scripts
-        sys.path.insert(0, self.settings.SCRIPT_FOLDER)
+        sys.path.insert(0, str(self.settings.SCRIPT_FOLDER.resolve()))
 
         # create folder to output the results
         if self.settings.ANALYSIS_OUTPUT_PATH is not None:
             if not self.settings.ANALYSIS_OUTPUT_PATH.exists():
                 self.settings.ANALYSIS_OUTPUT_PATH.mkdir(parents=True)
 
-    def analyze(self, data_file: click.File) -> None:
+    def load_all_data(self, data_file: Path) -> None:
         """
-        Run the analysis.
+        Populate the data container with the survey results and metadata.
 
         Args:
             data_file (click.File): File that contains the data for the
@@ -94,87 +96,14 @@ class HIFISSurveyval:
             IOError: Exception thrown if data could not be parsed.
             IOError: Exception thrown if metadata could not be parsed.
         """
-        try:
-            frame: DataFrame = pandas.read_csv(
-                data_file,
-                true_values=self.settings.TRUE_VALUES,
-                false_values=self.settings.FALSE_VALUES,
-            )
-
-            logging.debug("\n" + str(frame))
-
-            # Put the Data Frame into the global container
-            self.dataContainer.set_raw_data(frame)
-        except IOError:
-            logging.error("Could not parse the given file as CSV")
-            exit(1)
-
+        # Load the metadata
         logging.info(f"Attempt to load metadata from {self.settings.METADATA}")
 
-        # Load survey metadata from given YAML file.
-        # register metadata handler
-        metadata_handler: MetaDataHandler = MetaDataHandler(
-            data_source=self.dataContainer
-        )
-        try:
-            self.survey_questions = (
-                metadata_handler.construct_questions_from_metadata(
-                    self.settings.METADATA
-                )
-            )
+        with self.settings.METADATA.open(mode="r") as metadata_io_stream:
+            metadata_yaml = yaml.safe_load(metadata_io_stream)
+            self.dataContainer.load_metadata(metadata_yaml)
 
-            # When debugging, print all parsed Questions
-            if self.settings.VERBOSITY == logging.DEBUG:
-                logging.debug("Parsed Questions:")
-                for question in self.survey_questions.values():
-                    logging.debug(question)
-
-            metadata_handler.fetch_participant_answers()
-        except IOError:
-            logging.error("Could not parse the metadata file as YAML.")
-            exit(1)
-
-    def question_ids_to_dataframe(
-        self, question_ids: Set[str] = set()
-    ) -> DataFrame:
-        """
-        Combine multiple questions into a single pandas DataFrame.
-
-        It replaces all question collections with their
-        sub questions and ignores all invalid identifiers.
-
-        In case the argument is omitted, all questions will be loaded.
-
-        Args:
-            question_ids (Set[str]): A list containing question IDs as string.
-
-        Returns:
-            DataFrame: A joint data frame containing the columns for each
-                       question_id.
-        """
-        if not question_ids:  # if arg question_ids is empty, use full list
-            question_ids = set(self.survey_questions.keys())
-
-        questions: Set[Question] = set()
-
-        for question_id in question_ids:
-            try:
-                question: AbstractQuestion = self.survey_questions[question_id]
-                item: List[Question]
-                for item in question.flatten():
-                    questions.add(item)
-            except KeyError:
-                logging.error(
-                    f"When constructing data frame from multiple questions: "
-                    f"{question_id} is not a valid ID"
-                )
-                continue
-
-        item: Question
-        questions_as_dataframe: DataFrame = concat(
-            list(item.as_series(filter_invalid=False) for item in questions),
-            axis=1,
-            join="outer",
-        )
-
-        return questions_as_dataframe
+        #  Load the actual survey data
+        with data_file.open(mode="r") as data_io_stream:
+            csv_reader = reader(data_io_stream)
+            self.dataContainer.load_survey_data(csv_data=list(csv_reader))

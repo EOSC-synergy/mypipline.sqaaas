@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
@@ -18,26 +20,32 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# META
-# valid names for programming languages
-# ['Python',
-#  'Node',
-#  'submodules']
+# -*- coding: utf-8 -*-
 
-manual dependency config:
-  Python:
-    - import name: 'yaml'
-      pkg name: 'PyYAML'
-    - import name: 'hifis_surveyval#noqa'
-      pkg name: 'hifis_surveyval'
-      ignore: True
-    - import name: 'tests#noqa'
-      pkg name: 'tests'
-      ignore: True
-    - import name: 'pkg_resources'
-      pkg name: 'pkg_resources'
-      ignore: True
-    - import name: 'python-dotenv'
-      pkg name: 'python-dotenv'
-      licenses:
-        - 'BSD-3-Clause'
+"""Offering YAML helper methods for test cases in test case suites."""
+
+import yaml
+
+from hifis_surveyval.models.mixins.yaml_constructable import YamlDict
+
+
+class YamlReader:
+    """Provides helper method to handle YAML files."""
+
+    @classmethod
+    def read_in_yaml_file(cls, yaml_file_path: str) -> YamlDict:
+        """
+        Read in a YAML file and create a dictionary out of it.
+
+        Args:
+            yaml_file_path (str):
+                File name of a YAML file to be read in.
+
+        Returns:
+            YamlDict:
+                Dictionary of a read-in YAML file.
+        """
+        metadata_yaml: YamlDict = {}
+        with open(yaml_file_path, 'r') as file:
+            metadata_yaml = yaml.load(stream=file, Loader=yaml.FullLoader)
+        return metadata_yaml

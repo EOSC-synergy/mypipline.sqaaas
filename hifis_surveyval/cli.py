@@ -41,6 +41,7 @@ It can be used as a handy facility for running the task from a command line.
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import logging
+import pathlib
 
 import click
 import pkg_resources
@@ -61,7 +62,7 @@ settings: Settings = Settings()
     default=0,
     show_default=True,
     help="Enable verbose output. "
-    "Increase verbosity by setting this option up to 3 times.",
+         "Increase verbosity by setting this option up to 3 times.",
 )
 def cli(verbose: int) -> None:
     """
@@ -99,7 +100,7 @@ def version() -> None:
     is_flag=True,
     show_default=True,
     help="Create a default config as file. "
-    "Overwrites any existing configuration file.",
+         "Overwrites any existing configuration file.",
 )
 @click.option(
     "--script",
@@ -107,7 +108,7 @@ def version() -> None:
     is_flag=True,
     show_default=True,
     help="Create an example script in the given script folder. "
-    "Overwrites any existing example script file.",
+         "Overwrites any existing example script file.",
 )
 def init(config: bool, script: bool) -> None:
     """
@@ -130,26 +131,28 @@ def init(config: bool, script: bool) -> None:
         util.create_example_script(settings)
 
 
-@click.argument("file_name", type=click.File(mode="r"))
+@click.argument("survey_data",
+                type=click.Path(
+                    exists=True,
+                    dir_okay=False,
+                    path_type=pathlib.Path)
+                )
 @cli.command()
-def analyze(file_name: click.File) -> None:
+def analyze(survey_data: click.Path) -> None:
     """
-    Read the given files into global data and metadata objects.
+    Read the survey data and run all defined analysis scripts.
 
-    If the data file can not be parsed by Pandas, an error will be printed and
-    the program will abort.
-    If the metadata file can not be parsed, an error will be printed and
-    the program will abort.
+    The metadata are read from a file specified in the settings.
 
     Args:
-        file_name (click.File): File that contains all data for the analysis.
+        survey_data (click.File): File that contains all data for the analysis.
     """
     settings.load_config_file()
 
     surveyval: HIFISSurveyval = HIFISSurveyval(settings=settings)
     surveyval.prepare_environment()
-    logging.info(f"Analyzing file {file_name.name}")
-    surveyval.analyze(data_file=file_name)
+    logging.info(f"Analyzing file {survey_data.name}")
+    surveyval.load_all_data(data_file=survey_data)
 
     dispatcher: Dispatcher = Dispatcher(surveyval=surveyval)
     dispatcher.discover()

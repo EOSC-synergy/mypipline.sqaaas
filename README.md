@@ -288,7 +288,6 @@ hifis_surveyval/
 ├── dispatch.py
 ├── globals.py
 ├── __init__.py
-├── metadata.py
 ├── plot.py
 ├── question.py
 └── util.py

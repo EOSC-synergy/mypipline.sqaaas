@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
@@ -18,26 +20,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# META
-# valid names for programming languages
-# ['Python',
-#  'Node',
-#  'submodules']
+# -*- coding: utf-8 -*-
 
-manual dependency config:
-  Python:
-    - import name: 'yaml'
-      pkg name: 'PyYAML'
-    - import name: 'hifis_surveyval#noqa'
-      pkg name: 'hifis_surveyval'
-      ignore: True
-    - import name: 'tests#noqa'
-      pkg name: 'tests'
-      ignore: True
-    - import name: 'pkg_resources'
-      pkg name: 'pkg_resources'
-      ignore: True
-    - import name: 'python-dotenv'
-      pkg name: 'python-dotenv'
-      licenses:
-        - 'BSD-3-Clause'
+"""Offering pytest fixtures to test cases of this package."""
+
+import pytest
+
+from hifis_surveyval.models.mixins.yaml_constructable import YamlDict
+from tests.helper.yaml_helper.yaml_reader import YamlReader
+
+
+@pytest.fixture(scope='function')
+def metadata_fixture() -> YamlDict:
+    """
+    Get metadata from YAML file.
+
+    Returns:
+        YamlDict:
+            YAML containing metadata.
+    """
+    yaml_file_path: str = \
+        './tests/models/question_collection/fixtures/' \
+        'metadata-single-question-collection.yml'
+    return YamlReader.read_in_yaml_file(yaml_file_path)

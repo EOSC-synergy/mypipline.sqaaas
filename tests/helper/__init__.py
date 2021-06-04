@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # hifis-surveyval
 # Framework to help developing analysis scripts for the HIFIS Software survey.
 #
@@ -18,26 +20,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# META
-# valid names for programming languages
-# ['Python',
-#  'Node',
-#  'submodules']
+# -*- coding: utf-8 -*-
 
-manual dependency config:
-  Python:
-    - import name: 'yaml'
-      pkg name: 'PyYAML'
-    - import name: 'hifis_surveyval#noqa'
-      pkg name: 'hifis_surveyval'
-      ignore: True
-    - import name: 'tests#noqa'
-      pkg name: 'tests'
-      ignore: True
-    - import name: 'pkg_resources'
-      pkg name: 'pkg_resources'
-      ignore: True
-    - import name: 'python-dotenv'
-      pkg name: 'python-dotenv'
-      licenses:
-        - 'BSD-3-Clause'
+"""This package contains all helpers for unit testing HIFISSurveyval."""

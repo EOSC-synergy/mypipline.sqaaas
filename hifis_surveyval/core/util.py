@@ -21,115 +21,17 @@
 """This module provides helper functions."""
 
 import shutil
-from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 
 from pandas import DataFrame, Series, concat
 
 from hifis_surveyval.core.settings import Settings
-from hifis_surveyval.models.answer import Answer
-from hifis_surveyval.models.question import (
-    AbstractQuestion,
-    Question,
-    QuestionCollection,
-)
-
-
-def filter_and_group(
-    filter_question: Question, group_question: Question, **filter_args
-) -> Dict[Answer, Dict[str, List[Answer]]]:
-    """
-    Obtain filtered results grouped by the answers of a question.
-
-    Args:
-        filter_question (Question):
-            The question whose given answers are to be filtered.
-        group_question (Question):
-            The question according to whose given answers the
-            participants are grouped.
-        filter_args:
-            Arguments passed to filter.
-    Returns:
-        Dict[Answer, Dict[str, List[Answer]]]:
-            An association of answers of group_question to the
-            filtered answers of filter_question from these participants.
-    """
-    grouped_answers = group_question.grouped_by_answer()
-
-    results: Dict[Answer, Dict[str, List[Answer]]] = defaultdict(dict)
-
-    for answer, participant_ids in grouped_answers.items():
-        filter_args["participant_id"] = participant_ids
-        results[answer] = filter_question.filter_given_answers(**filter_args)
-
-    return results
-
-
-# TODO this can be a member of QuestionCollection itself
-def get_free_text_subquestion(
-    question: QuestionCollection, free_text_question_id: str = "other"
-) -> Question:
-    """
-    Get the sub-question of QuestionCollection that asks for free text answers.
-
-    Args:
-        question QuestionCollection):
-            QuestionCollection, in which the sub-question for free text
-            answers is searched.
-        free_text_question_id (str):
-            ID of a question that is of type free text.
-    Returns:
-        Question:
-            A sub-question that asks for custom free text answers.
-    """
-    assert (
-        question.has_subquestions
-    ), "QuestionCollection should have subquestions, but didn't"
-
-    return next(
-        (
-            subquestion
-            for subquestion in question.subquestions
-            if subquestion.id == f"{question.id}[{free_text_question_id}]"
-        ),
-        None,
-    )
-
-
-def get_given_free_text_answers(
-    abstract_question: AbstractQuestion,
-) -> Dict[str, Answer]:
-    """
-    Obtain valid free text answers of a Question.
-
-    Args:
-        abstract_question (AbstractQuestion):
-            A Question or QuestionCollection whose free text answers are to
-            be determined.
-    Returns:
-        Dict[str, Answer]:
-            An association of participant IDs to the free text answers from
-            these participants. Only participants for which free text answers
-            were found are included in the results.
-    """
-    if isinstance(abstract_question, QuestionCollection):
-        question = get_free_text_subquestion(abstract_question)
-    elif isinstance(abstract_question, Question):
-        question = abstract_question
-    else:
-        return {}
-
-    return {
-        # it is assumed that only one free text answer is given to a question
-        participant_id: list_of_answers[0]
-        for participant_id, list_of_answers in question.given_answers.items()
-        if list_of_answers[0].text != "nan"
-    }
 
 
 def dataframe_value_counts(
-    dataframe: DataFrame, relative_values: bool = False, drop_nans: bool = True
+        dataframe: DataFrame, relative_values: bool = False,
+        drop_nans: bool = True,
 ) -> DataFrame:
     """
     Count how often a unique value appears in each column of a data frame.
@@ -193,7 +95,7 @@ def cross_reference_sum(data: DataFrame, grouping: Series) -> DataFrame:
             the grouping series.
     """
     grouping_values: List[Any] = grouping.unique()
-    grouping_header: str = grouping.name
+    grouping_header: str = str(grouping.name)
 
     # Join the frame and the series for association and clean N/A values
     # Rows that can not be associated get dropped, they will not contribute to
@@ -222,10 +124,10 @@ def cross_reference_sum(data: DataFrame, grouping: Series) -> DataFrame:
 
 # TODO Remove filter and group for Questions?
 def filter_and_group_series(
-    base_data: Series,
-    group_by: Series,
-    min_value: Optional[float] = None,
-    max_value: Optional[float] = None,
+        base_data: Series,
+        group_by: Series,
+        min_value: Optional[float] = None,
+        max_value: Optional[float] = None,
 ) -> DataFrame:
     """
     Filter a series and group its values according to another series.
@@ -292,5 +194,5 @@ def create_example_script(settings: Settings) -> None:
     # copy a file from the packages file payload to the set up scripts folder
     shutil.copy(
         f"{Path(__file__).parent.parent.absolute()}/files/example_script.py",
-        settings.SCRIPT_FOLDER,
+        settings.SCRIPT_FOLDER.resolve(),
     )

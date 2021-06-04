@@ -18,26 +18,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# META
-# valid names for programming languages
-# ['Python',
-#  'Node',
-#  'submodules']
+---
 
-manual dependency config:
-  Python:
-    - import name: 'yaml'
-      pkg name: 'PyYAML'
-    - import name: 'hifis_surveyval#noqa'
-      pkg name: 'hifis_surveyval'
-      ignore: True
-    - import name: 'tests#noqa'
-      pkg name: 'tests'
-      ignore: True
-    - import name: 'pkg_resources'
-      pkg name: 'pkg_resources'
-      ignore: True
-    - import name: 'python-dotenv'
-      pkg name: 'python-dotenv'
-      licenses:
-        - 'BSD-3-Clause'
+- id: "SQ001"
+  text:
+    en: "English question text"
+    de: "Deutscher Fragentext"
+  label: "label text"
+  datatype: "str"
+  mandatory: True
+  additional_metadata: "metadata"
+
+...
