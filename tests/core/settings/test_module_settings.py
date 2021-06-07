@@ -25,7 +25,6 @@
 """Provide pytest test cases for module settings."""
 
 import logging
-import os
 import re
 from pathlib import Path
 from typing import List
@@ -46,21 +45,6 @@ class TestModuleSettings(object):
     """
 
     @pytest.mark.ci
-    def test_config_filename_is_correct(self, settings_fixture: Settings):
-        """
-        Tests that config filename is given.
-
-        Args:
-            settings_fixture (Settings):
-                New Settings object containing all settings of an analysis run.
-        """
-        expected_config_filename: str = "hifis-surveyval.yml"
-        settings: Settings = settings_fixture
-        assert settings.CONFIG_FILENAME.absolute() == \
-               Path(expected_config_filename).absolute(), \
-               "Default value of config filename is not correct."
-
-    @pytest.mark.ci
     def test_verbosity_is_correct(self, settings_fixture: Settings):
         """
         Tests that verbosity default value is correct.
@@ -73,6 +57,22 @@ class TestModuleSettings(object):
         settings: Settings = settings_fixture
         assert settings.VERBOSITY == expected_verbosity, \
                "Default value of verbosity is not correct."
+
+    @pytest.mark.ci
+    def test_setting_verbosity_works(self, settings_fixture: Settings):
+        """
+        Tests that setting verbosity works fine.
+
+        Args:
+            settings_fixture (Settings):
+                New Settings object containing all settings of an analysis run.
+        """
+        expected_verbosity: int = logging.INFO
+        verbosity_count: int = 2
+        settings: Settings = settings_fixture
+        settings.set_verbosity(verbosity_count)
+        assert settings.VERBOSITY == expected_verbosity, \
+               "Value of verbosity set is not correct."
 
     @pytest.mark.ci
     def test_run_timestamp_is_correct(self, settings_fixture: Settings):
@@ -88,7 +88,24 @@ class TestModuleSettings(object):
         settings: Settings = settings_fixture
         settings.set_timestamp('')
         assert re.match(expected_timestamp_regex, settings.RUN_TIMESTAMP), \
-               "Default value of run timestamp is not correct."
+               "Format of default value of run timestamp is not correct."
+
+    @pytest.mark.ci
+    def test_setting_run_timestamp_works(self, settings_fixture: Settings):
+        """
+        Tests that setting run timestamp works fine.
+
+        Args:
+            settings_fixture (Settings):
+                New Settings object containing all settings of an analysis run.
+        """
+        expected_timestamp_regex: re = \
+            r'\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}'
+        arbitrary_timestamp: str = "2021-06-07_12-34-56"
+        settings: Settings = settings_fixture
+        settings.RUN_TIMESTAMP = arbitrary_timestamp
+        assert re.match(expected_timestamp_regex, settings.RUN_TIMESTAMP), \
+            "Format of run timestamp set is not as expected."
 
     @pytest.mark.ci
     def test_analysis_output_path_is_correct(self, settings_fixture: Settings):
@@ -113,51 +130,6 @@ class TestModuleSettings(object):
                "Default value of analysis output path is not correct."
 
     @pytest.mark.ci
-    def test_metadata_path_is_correct(self, settings_fixture: Settings):
-        """
-        Tests that metadata path default value is correct.
-
-        Args:
-            settings_fixture (Settings):
-                New Settings object containing all settings of an analysis run.
-        """
-        expected_metadata_path: str = "metadata/meta.yml"
-        settings: Settings = settings_fixture
-        assert settings.METADATA.absolute() == \
-               Path(expected_metadata_path).absolute(), \
-               "Default value of metadata path is not correct."
-
-    @pytest.mark.ci
-    def test_scripts_folder_is_correct(self, settings_fixture: Settings):
-        """
-        Tests that script folder default value is correct.
-
-        Args:
-            settings_fixture (Settings):
-                New Settings object containing all settings of an analysis run.
-        """
-        expected_script_folder: str = "scripts"
-        settings: Settings = settings_fixture
-        assert settings.SCRIPT_FOLDER.absolute() == \
-               Path(expected_script_folder).absolute(), \
-               "Default value of script folder is not correct."
-
-    @pytest.mark.ci
-    def test_script_names_is_correct(self, settings_fixture: Settings):
-        """
-        Tests that script names default value is correct.
-
-        Args:
-            settings_fixture (Settings):
-                New Settings object containing all settings of an analysis run.
-        """
-        settings: Settings = settings_fixture
-        assert isinstance(settings.SCRIPT_NAMES, List), \
-               "Datatype of list of script names is not a list."
-        assert len(settings.SCRIPT_NAMES) == 0, \
-               "Default value of list of script names is not empty."
-
-    @pytest.mark.ci
     def test_output_format_is_correct(self, settings_fixture: Settings):
         """
         Tests that output format default value is correct.
@@ -173,71 +145,109 @@ class TestModuleSettings(object):
                "Default value of output format is not correct."
 
     @pytest.mark.ci
-    def test_output_folder_is_correct(self, settings_fixture: Settings):
+    def test_load_config_file_check_metadata(
+            self, settings_custom_config_fixture: Settings):
         """
-        Tests that output folder default value is correct.
+        Tests that loading a config file with custom metadata file works.
 
         Args:
-            settings_fixture (Settings):
+            settings_custom_config_fixture (Settings):
                 New Settings object containing all settings of an analysis run.
         """
-        expected_output_folder: str = "output"
-        settings: Settings = settings_fixture
-        assert settings.OUTPUT_FOLDER.absolute() == \
-               Path(expected_output_folder).absolute(), \
-               "Default value of output folder is not correct."
-
-    @pytest.mark.ci
-    def test_set_verbosity_warning(self, settings_fixture: Settings):
-        """
-        Tests that setting verbosity level works.
-
-        Args:
-            settings_fixture (Settings):
-                New Settings object containing all settings of an analysis run.
-        """
-        expected_verbosity: int = logging.WARNING
-        verbosity_option_index_warning: int = 1
-        settings: Settings = settings_fixture
-        settings.set_verbosity(verbosity_option_index_warning)
-        assert settings.VERBOSITY == expected_verbosity, \
-               "Value of verbosity level set is not correct."
-
-    @pytest.mark.ci
-    def test_load_config_file(self, settings_fixture: Settings):
-        """
-        Tests that loading a configuration file works.
-
-        Args:
-            settings_fixture (Settings):
-                New Settings object containing all settings of an analysis run.
-        """
-        fixtures_folder_name: str = "fixtures"
-        config_file_name: str = "hifis-surveyval-fixture.yml"
         expected_metadata_path: str = "metadata/metadata.yml"
-        expected_output_folder: str = "output_folder"
-        expected_output_format: SupportedOutputFormat = \
-            SupportedOutputFormat.SVG
-        expected_script_folder: str = "scripts_folder"
-        expected_script_names: List[str] = ["example_script"]
-        settings: Settings = settings_fixture
-        settings.CONFIG_FILENAME = os.path.dirname(__file__) / \
-            Path(fixtures_folder_name) / Path(config_file_name)
-        settings.load_config_file()
+        settings: Settings = settings_custom_config_fixture
         assert settings.METADATA.absolute() == \
                Path(expected_metadata_path).absolute(), \
                "Value of metadata path set is not correct."
+
+    @pytest.mark.ci
+    def test_load_config_file_check_output_folder(
+            self, settings_custom_config_fixture: Settings):
+        """
+        Tests that loading a config file with custom output folder works.
+
+        Args:
+            settings_custom_config_fixture (Settings):
+                New Settings object containing all settings of an analysis run.
+        """
+        expected_output_folder: str = "output_folder"
+        settings: Settings = settings_custom_config_fixture
         assert settings.OUTPUT_FOLDER.absolute() == \
                Path(expected_output_folder).absolute(), \
                "Value of output folder set is not correct."
+
+    @pytest.mark.ci
+    def test_load_config_file_check_output_format(
+            self, settings_custom_config_fixture: Settings):
+        """
+        Tests that loading a config file with custom output format works.
+
+        Args:
+            settings_custom_config_fixture (Settings):
+                New Settings object containing all settings of an analysis run.
+        """
+        expected_output_format: SupportedOutputFormat = \
+            SupportedOutputFormat.SVG
+        settings: Settings = settings_custom_config_fixture
         assert settings.OUTPUT_FORMAT == expected_output_format, \
                "Value of output format set is not correct."
+
+    @pytest.mark.ci
+    def test_load_config_file_check_scripts_folder(
+            self, settings_custom_config_fixture: Settings):
+        """
+        Tests that loading a config file with custom scripts folder works.
+
+        Args:
+            settings_custom_config_fixture (Settings):
+                New Settings object containing all settings of an analysis run.
+        """
+        expected_script_folder: str = "scripts_folder"
+        settings: Settings = settings_custom_config_fixture
         assert settings.SCRIPT_FOLDER.absolute() == \
                Path(expected_script_folder).absolute(), \
-               "Value of script folder set is not correct."
+               "Value of scripts folder set is not correct."
+
+    @pytest.mark.ci
+    def test_load_config_file_check_scripts_names_list_datatype(
+            self, settings_custom_config_fixture: Settings):
+        """
+        Tests that loading a config file with script names of type list works.
+
+        Args:
+            settings_custom_config_fixture (Settings):
+                New Settings object containing all settings of an analysis run.
+        """
+        settings: Settings = settings_custom_config_fixture
         assert isinstance(settings.SCRIPT_NAMES, List), \
-               "Datatype of list of script names is not a list."
-        assert len(settings.SCRIPT_NAMES) == len(expected_script_names), \
+               "Datatype of script names is not a list."
+
+    @pytest.mark.ci
+    def test_load_config_file_check_scripts_names_list_count(
+            self, settings_custom_config_fixture: Settings):
+        """
+        Tests that loading a config file with custom script names list works.
+
+        Args:
+            settings_custom_config_fixture (Settings):
+                New Settings object containing all settings of an analysis run.
+        """
+        expected_script_names_count: int = 1
+        settings: Settings = settings_custom_config_fixture
+        assert len(settings.SCRIPT_NAMES) == expected_script_names_count, \
                "List size of script names is not as expected."
-        assert settings.SCRIPT_NAMES[0] == expected_script_names[0], \
+
+    @pytest.mark.ci
+    def test_load_config_file_check_scripts_names_list_entry(
+            self, settings_custom_config_fixture: Settings):
+        """
+        Tests that loading a config file with custom script name works.
+
+        Args:
+            settings_custom_config_fixture (Settings):
+                New Settings object containing all settings of an analysis run.
+        """
+        expected_script_name: str = "example_script"
+        settings: Settings = settings_custom_config_fixture
+        assert settings.SCRIPT_NAMES[0] == expected_script_name, \
                "First element of list of script names is not as expected."

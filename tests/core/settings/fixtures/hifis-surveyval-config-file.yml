@@ -20,10 +20,10 @@
 
 ---
 
-METADATA: metadata/metadata.yml
-OUTPUT_FOLDER: output_folder
-OUTPUT_FORMAT: SVG
-SCRIPT_FOLDER: scripts_folder
+METADATA: "metadata/metadata.yml"
+OUTPUT_FOLDER: "output_folder"
+OUTPUT_FORMAT: "SVG"
+SCRIPT_FOLDER: "scripts_folder"
 SCRIPT_NAMES: ["example_script"]
 
 ...
