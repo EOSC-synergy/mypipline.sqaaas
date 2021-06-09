@@ -87,7 +87,6 @@ ENV/
 # mkdocs documentation
 /site
 
-
 # JetBrains
 .idea
 
@@ -102,3 +101,6 @@ meta/
 analysis/
 hifis-surveyval.yml
 scripts/
+
+# Survey Data
+*.csv
