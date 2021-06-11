@@ -28,7 +28,7 @@ build:package:
   script:
     - make package
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
     - changes:
         - ".gitlab/ci/build.gitlab-ci.yml"
         - "docs/**/*"

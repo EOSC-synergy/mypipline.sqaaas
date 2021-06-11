@@ -48,7 +48,7 @@ sqa:production:
   script:
     - sqa --repository_dir "$CI_PROJECT_DIR" run -r -lli -lla -la -c
   rules:
-      - if: '$CI_COMMIT_BRANCH == "master"'
+      - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
   artifacts:
     paths:
       - "QUALITY.md"
