@@ -30,7 +30,7 @@ from hifis_surveyval.models.mixins.yaml_constructable import YamlDict
 from tests.helper.yaml_helper.yaml_reader import YamlReader
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def metadata_fixture() -> YamlDict:
     """
     Get metadata from YAML file.
@@ -39,7 +39,8 @@ def metadata_fixture() -> YamlDict:
         YamlDict:
             YAML containing metadata.
     """
-    yaml_file_path: str = \
-        './tests/models/question_collection/fixtures/' \
-        'metadata-single-question-collection.yml'
+    yaml_file_path: str = (
+        "./tests/models/question_collection/fixtures/"
+        "metadata-single-question-collection.yml"
+    )
     return YamlReader.read_in_yaml_file(yaml_file_path)

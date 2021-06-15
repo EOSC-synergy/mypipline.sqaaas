@@ -50,54 +50,59 @@ class TestQuestion(object):
     @pytest.mark.ci
     def test_from_yaml_dictionary_works_check_type(self) -> None:
         """Tests that getting a Question object given metadata works."""
-        yaml_file_path: str = \
-            './tests/models/question/fixtures/' \
-            'metadata-single-question.yml'
+        yaml_file_path: str = (
+            "./tests/models/question/fixtures/" "metadata-single-question.yml"
+        )
         metadata_yaml: YamlDict = YamlReader.read_in_yaml_file(yaml_file_path)
-        question: Question = \
-            Question.from_yaml_dictionary(
-                metadata_yaml[0], parent_id=TestQuestion.collection_id)
+        question: Question = Question.from_yaml_dictionary(
+            metadata_yaml[0], parent_id=TestQuestion.collection_id
+        )
         # Make sure that object retrieved from metadata YAML is of type
         # Question.
-        assert isinstance(question, Question), \
-            "Object is not of type Question."
+        assert isinstance(
+            question, Question
+        ), "Object is not of type Question."
 
     @pytest.mark.ci
     def test_from_yaml_dictionary_works_check_id(self) -> None:
         """Tests that getting a Question object given metadata works."""
         expected_question_id: str = TestQuestion.question_id
-        yaml_file_path: str = \
-            './tests/models/question/fixtures/' \
-            'metadata-single-question.yml'
+        yaml_file_path: str = (
+            "./tests/models/question/fixtures/" "metadata-single-question.yml"
+        )
         metadata_yaml: YamlDict = YamlReader.read_in_yaml_file(yaml_file_path)
-        question: Question = \
-            Question.from_yaml_dictionary(
-                metadata_yaml[0], parent_id=TestQuestion.collection_id)
+        question: Question = Question.from_yaml_dictionary(
+            metadata_yaml[0], parent_id=TestQuestion.collection_id
+        )
         # Make sure that Question object retrieved from metadata YAML has
         # correct question ID.
-        assert question.short_id == expected_question_id, \
-            "Question ID of question object is not correct."
+        assert (
+            question.short_id == expected_question_id
+        ), "Question ID of question object is not correct."
 
     @pytest.mark.ci
     def test_from_yaml_dictionary_works_check_answer_text(self) -> None:
         """Tests that getting a Question object given metadata works."""
         expected_translated_answer_option_text: str = "No"
-        yaml_file_path: str = \
-            './tests/models/question/fixtures/' \
-            'metadata-single-question.yml'
+        yaml_file_path: str = (
+            "./tests/models/question/fixtures/" "metadata-single-question.yml"
+        )
         metadata_yaml: YamlDict = YamlReader.read_in_yaml_file(yaml_file_path)
-        question: Question = \
-            Question.from_yaml_dictionary(
-                metadata_yaml[0], parent_id=TestQuestion.collection_id)
-        answer_option_text: Translated = \
-            question._answer_options[TestQuestion.answer_option_id].text
-        actual_translated_answer_option_text: str = \
+        question: Question = Question.from_yaml_dictionary(
+            metadata_yaml[0], parent_id=TestQuestion.collection_id
+        )
+        answer_option_text: Translated = question._answer_options[
+            TestQuestion.answer_option_id
+        ].text
+        actual_translated_answer_option_text: str = (
             answer_option_text.get_translation(TestQuestion.language_code)
+        )
         # Make sure that a Question object retrieved from metadata YAML
         # contains correct translated answer option text.
-        assert actual_translated_answer_option_text == \
-            expected_translated_answer_option_text,\
-            "Translated AnswerOption text is not correct."
+        assert (
+            actual_translated_answer_option_text
+            == expected_translated_answer_option_text
+        ), "Translated AnswerOption text is not correct."
 
     @pytest.mark.ci
     def test_add_answer_works(self, question_fixture: Question) -> None:
@@ -111,19 +116,23 @@ class TestQuestion(object):
         """
         expected_translated_answer_option_text: str = "No"
         question: Question = question_fixture
-        question.add_answer(TestQuestion.participant_id,
-                            TestQuestion.answer_option_id)
-        actual_translated_answer_option_text: str = \
-            question._answers[TestQuestion.participant_id]
+        question.add_answer(
+            TestQuestion.participant_id, TestQuestion.answer_option_id
+        )
+        actual_translated_answer_option_text: str = question._answers[
+            TestQuestion.participant_id
+        ]
         # Make sure that a Question object of a mandatory question contains the
         # answer given.
-        assert actual_translated_answer_option_text == \
-            expected_translated_answer_option_text,\
-            "Given answer of participant is not correct."
+        assert (
+            actual_translated_answer_option_text
+            == expected_translated_answer_option_text
+        ), "Given answer of participant is not correct."
 
     @pytest.mark.ci
     def test_add_answer_but_no_mandatory_answer_given(
-            self, question_fixture: Question) -> None:
+        self, question_fixture: Question
+    ) -> None:
         """
         Tests that adding empty answer for a mandatory question fails.
 
@@ -141,12 +150,14 @@ class TestQuestion(object):
         # Make sure that a ValueError exception is raised if given answer to a
         # mandatory question is empty.
         with pytest.raises(ValueError):
-            question.add_answer(TestQuestion.participant_id,
-                                target_answer_value)
+            question.add_answer(
+                TestQuestion.participant_id, target_answer_value
+            )
 
     @pytest.mark.ci
     def test_add_empty_answer_works(
-            self, question_not_mandatory_fixture: Question) -> None:
+        self, question_not_mandatory_fixture: Question
+    ) -> None:
         """
         Tests that adding empty answer for a non-mandatory question works.
 
@@ -158,16 +169,19 @@ class TestQuestion(object):
         target_answer_value: str = ""
         question: Question = question_not_mandatory_fixture
         question.add_answer(TestQuestion.participant_id, target_answer_value)
-        actual_given_answer_value: str = \
-            question._answers[TestQuestion.participant_id]
+        actual_given_answer_value: str = question._answers[
+            TestQuestion.participant_id
+        ]
         # Make sure that a Question object of a non-mandatory question contains
         # None as answer given if an empty answer is given.
-        assert actual_given_answer_value is None, \
-            "Given answer of participant is not None."
+        assert (
+            actual_given_answer_value is None
+        ), "Given answer of participant is not None."
 
     @pytest.mark.ci
     def test_add_answer_with_no_answer_options_works(
-            self, question_no_answer_options_fixture: Question) -> None:
+        self, question_no_answer_options_fixture: Question
+    ) -> None:
         """
         Tests that adding an answer to a question without answer options works.
 
@@ -179,11 +193,14 @@ class TestQuestion(object):
         target_given_answer_value: int = 42
         expected_given_answer_value: str = "42"
         question: Question = question_no_answer_options_fixture
-        question.add_answer(TestQuestion.participant_id,
-                            target_given_answer_value)
-        actual_given_answer_value: str = \
-            question._answers[TestQuestion.participant_id]
+        question.add_answer(
+            TestQuestion.participant_id, target_given_answer_value
+        )
+        actual_given_answer_value: str = question._answers[
+            TestQuestion.participant_id
+        ]
         # Make sure that the Question object of a question with no answer
         # options contains the answer given.
-        assert actual_given_answer_value == expected_given_answer_value, \
-            "Given answer of participant is not casted correctly."
+        assert (
+            actual_given_answer_value == expected_given_answer_value
+        ), "Given answer of participant is not casted correctly."

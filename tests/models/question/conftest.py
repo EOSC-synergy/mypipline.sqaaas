@@ -45,13 +45,13 @@ def question_from_metadata(yaml_file_path: str) -> Question:
     """
     target_question_collection_id: str = "Q001"
     metadata_yaml: YamlDict = YamlReader.read_in_yaml_file(yaml_file_path)
-    question: Question = \
-        Question.from_yaml_dictionary(
-            metadata_yaml[0], parent_id=target_question_collection_id)
+    question: Question = Question.from_yaml_dictionary(
+        metadata_yaml[0], parent_id=target_question_collection_id
+    )
     return question
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def question_fixture() -> Question:
     """
     Get a new Question object of a mandatory question.
@@ -60,13 +60,14 @@ def question_fixture() -> Question:
         Question:
             New Question object of given metadata as a test fixture.
     """
-    yaml_file_path: str = \
-        './tests/models/question/fixtures/metadata-single-question.yml'
+    yaml_file_path: str = (
+        "./tests/models/question/fixtures/metadata-single-question.yml"
+    )
     question: Question = question_from_metadata(yaml_file_path)
     return question
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def question_not_mandatory_fixture() -> Question:
     """
     Get a new Question object of a non-mandatory question.
@@ -75,14 +76,15 @@ def question_not_mandatory_fixture() -> Question:
         Question:
             New Question object of given metadata as a test fixture.
     """
-    yaml_file_path: str = \
-        './tests/models/question/fixtures/' \
-        'metadata-single-question-not-mandatory.yml'
+    yaml_file_path: str = (
+        "./tests/models/question/fixtures/"
+        "metadata-single-question-not-mandatory.yml"
+    )
     question: Question = question_from_metadata(yaml_file_path)
     return question
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def question_no_answer_options_fixture() -> Question:
     """
     Get a new Question object not containing answer options.
@@ -91,8 +93,9 @@ def question_no_answer_options_fixture() -> Question:
         Question:
             New Question object of given metadata as a test fixture.
     """
-    yaml_file_path: str = \
-        './tests/models/question/fixtures/' \
-        'metadata-single-question-no-answer-options.yml'
+    yaml_file_path: str = (
+        "./tests/models/question/fixtures/"
+        "metadata-single-question-no-answer-options.yml"
+    )
     question: Question = question_from_metadata(yaml_file_path)
     return question

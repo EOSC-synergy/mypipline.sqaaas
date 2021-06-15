@@ -42,13 +42,16 @@ It can be used as a handy facility for running the task from a command line.
 """
 import logging
 import pathlib
+from csv import reader
 
 import click
 import pkg_resources
+import yaml
 
 from hifis_surveyval.core import util
 from hifis_surveyval.core.dispatch import Dispatcher
 from hifis_surveyval.core.settings import Settings
+from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.hifis_surveyval import HIFISSurveyval
 
 settings: Settings = Settings()
@@ -62,7 +65,7 @@ settings: Settings = Settings()
     default=0,
     show_default=True,
     help="Enable verbose output. "
-         "Increase verbosity by setting this option up to 3 times.",
+    "Increase verbosity by setting this option up to 3 times.",
 )
 def cli(verbose: int) -> None:
     """
@@ -100,7 +103,7 @@ def version() -> None:
     is_flag=True,
     show_default=True,
     help="Create a default config as file. "
-         "Overwrites any existing configuration file.",
+    "Overwrites any existing configuration file.",
 )
 @click.option(
     "--script",
@@ -108,7 +111,7 @@ def version() -> None:
     is_flag=True,
     show_default=True,
     help="Create an example script in the given script folder. "
-         "Overwrites any existing example script file.",
+    "Overwrites any existing example script file.",
 )
 def init(config: bool, script: bool) -> None:
     """
@@ -131,12 +134,10 @@ def init(config: bool, script: bool) -> None:
         util.create_example_script(settings)
 
 
-@click.argument("survey_data",
-                type=click.Path(
-                    exists=True,
-                    dir_okay=False,
-                    path_type=pathlib.Path)
-                )
+@click.argument(
+    "survey_data",
+    type=click.Path(exists=True, dir_okay=False, path_type=pathlib.Path),
+)
 @cli.command()
 def analyze(survey_data: click.Path) -> None:
     """
@@ -150,10 +151,21 @@ def analyze(survey_data: click.Path) -> None:
     settings.load_config_file()
 
     surveyval: HIFISSurveyval = HIFISSurveyval(settings=settings)
-    surveyval.prepare_environment()
+    data = DataContainer
     logging.info(f"Analyzing file {survey_data.name}")
-    surveyval.load_all_data(data_file=survey_data)
 
-    dispatcher: Dispatcher = Dispatcher(surveyval=surveyval)
+    # Load the metadata
+    logging.info(f"Attempt to load metadata from {settings.METADATA}")
+
+    with settings.METADATA.open(mode="r") as metadata_io_stream:
+        metadata_yaml = yaml.safe_load(metadata_io_stream)
+        data.load_metadata(metadata_yaml)
+
+    #  Load the actual survey data
+    with survey_data.open(mode="r") as data_io_stream:
+        csv_reader = reader(data_io_stream)
+        data.load_survey_data(csv_data=list(csv_reader))
+
+    dispatcher: Dispatcher = Dispatcher(surveyval=surveyval, data=data)
     dispatcher.discover()
     dispatcher.load_all_modules()

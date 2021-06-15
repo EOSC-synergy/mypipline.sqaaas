@@ -25,7 +25,7 @@ This module contains the base class for all objects that carry a unique ID.
 IDs are composed of multiple parts interjected by a hierarchy separator.
 """
 
-from typing import Set, Optional
+from typing import Optional, Set
 
 
 class Identifiable(object):
@@ -44,9 +44,7 @@ class Identifiable(object):
     HIERARCHY_SEPARATOR: str = "/"
     known_ids: Set[str] = set()
 
-    def __init__(self,
-                 object_id: str,
-                 parent_id: Optional[str] = None):
+    def __init__(self, object_id: str, parent_id: Optional[str] = None):
         """
         Create a new identifiable object with a given ID.
 
@@ -72,13 +70,12 @@ class Identifiable(object):
             )
 
         if object_id in Identifiable.known_ids:
-            raise ValueError(
-                f"Attempted to assign duplicate ID {object_id}"
-            )
+            raise ValueError(f"Attempted to assign duplicate ID {object_id}")
 
         self._full_id: str = (
             f"{parent_id}{Identifiable.HIERARCHY_SEPARATOR}{object_id}"
-            if parent_id else object_id
+            if parent_id
+            else object_id
         )
         Identifiable.known_ids.add(self._full_id)
 
@@ -101,6 +98,7 @@ class Identifiable(object):
             The string identifying this object with respect to its siblings
         """
         return self._full_id.split(Identifiable.HIERARCHY_SEPARATOR)[-1]
+
     # TODO: Decide whether to cache the short id
 
     @property

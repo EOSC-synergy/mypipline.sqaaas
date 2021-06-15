@@ -55,12 +55,14 @@ class TestQuestionCollection(object):
                 Test fixture providing metadata of a QuestionCollection.
         """
         metadata_yaml: YamlDict = metadata_fixture
-        question_collection: QuestionCollection = \
+        question_collection: QuestionCollection = (
             QuestionCollection.from_yaml_dictionary(metadata_yaml[0])
+        )
         # Make sure that QuestionCollection object can be retrieved by
         # metadata YAML file.
-        assert isinstance(question_collection, QuestionCollection), \
-            "Object is not of type QuestionCollection."
+        assert isinstance(
+            question_collection, QuestionCollection
+        ), "Object is not of type QuestionCollection."
 
     @pytest.mark.ci
     def test_from_yaml_dictionary_works_check_text(self, metadata_fixture):
@@ -73,17 +75,26 @@ class TestQuestionCollection(object):
         """
         expected_translated_answer_option_text: str = "No"
         metadata_yaml: YamlDict = metadata_fixture
-        question_collection: QuestionCollection = \
+        question_collection: QuestionCollection = (
             QuestionCollection.from_yaml_dictionary(metadata_yaml[0])
-        answer_option_text: Translated = question_collection.\
-            question_for_id(TestQuestionCollection.question_id).\
-            _answer_options[TestQuestionCollection.answer_option_id].text
-        actual_translated_answer_option_text: str = answer_option_text.\
-            get_translation(TestQuestionCollection.language_code)
+        )
+        answer_option_text: Translated = (
+            question_collection.question_for_id(
+                TestQuestionCollection.question_id
+            )
+            ._answer_options[TestQuestionCollection.answer_option_id]
+            .text
+        )
+        actual_translated_answer_option_text: str = (
+            answer_option_text.get_translation(
+                TestQuestionCollection.language_code
+            )
+        )
         # Make sure that translated AnswerOption text is correct.
-        assert actual_translated_answer_option_text == \
-            expected_translated_answer_option_text,\
-            "Translated AnswerOption text is not correct."
+        assert (
+            actual_translated_answer_option_text
+            == expected_translated_answer_option_text
+        ), "Translated AnswerOption text is not correct."
 
     @pytest.mark.ci
     def test_question_for_id_works(self, metadata_fixture):
@@ -95,10 +106,13 @@ class TestQuestionCollection(object):
                 Test fixture providing metadata of a QuestionCollection.
         """
         metadata_yaml: YamlDict = metadata_fixture
-        question_collection: QuestionCollection = \
+        question_collection: QuestionCollection = (
             QuestionCollection.from_yaml_dictionary(metadata_yaml[0])
-        question: Question = question_collection.\
-            question_for_id(TestQuestionCollection.question_id)
+        )
+        question: Question = question_collection.question_for_id(
+            TestQuestionCollection.question_id
+        )
         # Make sure that object is of type Question.
-        assert isinstance(question, Question), \
-            "Object is not of type Question."
+        assert isinstance(
+            question, Question
+        ), "Object is not of type Question."

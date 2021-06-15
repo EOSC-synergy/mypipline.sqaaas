@@ -33,7 +33,7 @@ from hifis_surveyval.models.translated import Translated
 from tests.helper.yaml_helper.yaml_reader import YamlReader
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def non_iso_code_translations_dict_fixture() -> Dict[str, str]:
     """
     Get a new translations dict.
@@ -43,13 +43,14 @@ def non_iso_code_translations_dict_fixture() -> Dict[str, str]:
             New translations dict to manage translations of questions and
             answers.
     """
-    yaml_file_path: str = \
-        './tests/models/translated/fixtures/' \
-        'non-iso-code-translations-fixture.yml'
+    yaml_file_path: str = (
+        "./tests/models/translated/fixtures/"
+        "non-iso-code-translations-fixture.yml"
+    )
     return YamlReader.read_in_yaml_file(yaml_file_path)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def translated_fixture() -> Translated:
     """
     Get a new Translated object.
@@ -59,13 +60,14 @@ def translated_fixture() -> Translated:
             New Translated object to manage translations of questions and
             answers.
     """
-    yaml_file_path: str = \
-        './tests/models/translated/fixtures/translations-fixture.yml'
+    yaml_file_path: str = (
+        "./tests/models/translated/fixtures/translations-fixture.yml"
+    )
     translations: YamlDict = YamlReader.read_in_yaml_file(yaml_file_path)
     return Translated(translations)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def translations_dict_fixture() -> Dict[str, str]:
     """
     Get a new translations dict.
@@ -75,6 +77,7 @@ def translations_dict_fixture() -> Dict[str, str]:
             New translations dict to manage translations of questions and
             answers.
     """
-    yaml_file_path: str = \
-        './tests/models/translated/fixtures/translations-fixture.yml'
+    yaml_file_path: str = (
+        "./tests/models/translated/fixtures/translations-fixture.yml"
+    )
     return YamlReader.read_in_yaml_file(yaml_file_path)

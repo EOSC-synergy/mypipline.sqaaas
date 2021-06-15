@@ -30,8 +30,9 @@ from hifis_surveyval.core.settings import Settings
 
 
 def dataframe_value_counts(
-        dataframe: DataFrame, relative_values: bool = False,
-        drop_nans: bool = True,
+    dataframe: DataFrame,
+    relative_values: bool = False,
+    drop_nans: bool = True,
 ) -> DataFrame:
     """
     Count how often a unique value appears in each column of a data frame.
@@ -124,10 +125,10 @@ def cross_reference_sum(data: DataFrame, grouping: Series) -> DataFrame:
 
 # TODO Remove filter and group for Questions?
 def filter_and_group_series(
-        base_data: Series,
-        group_by: Series,
-        min_value: Optional[float] = None,
-        max_value: Optional[float] = None,
+    base_data: Series,
+    group_by: Series,
+    min_value: Optional[float] = None,
+    max_value: Optional[float] = None,
 ) -> DataFrame:
     """
     Filter a series and group its values according to another series.

@@ -24,10 +24,11 @@ This is an example script for an analysis.
 It is a file payload of the package `hifis_surveyval`.
 """
 
+from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.hifis_surveyval import HIFISSurveyval
 
 
-def run(hifis_surveyval: HIFISSurveyval):
+def run(hifis_surveyval: HIFISSurveyval, data: DataContainer):
     """Execute example script."""
-    for question in hifis_surveyval.survey_questions:
-        print(question)
+    frame = data.get_by_id()
+    hifis_surveyval.printer.print_dataframe(frame)

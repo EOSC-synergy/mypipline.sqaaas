@@ -24,9 +24,8 @@ This module contains classes to represent survey questions.
 These can be constructed from YAML through the YamlConstructable abstract
 class.
 """
-from typing import Dict, List
-
 # alias name to avoid clash with schema.Optional
+from typing import Dict, List
 from typing import Optional as typing_Optional
 
 from schema import Optional, Schema
@@ -36,7 +35,7 @@ from hifis_surveyval.models.answer_types import VALID_ANSWER_TYPES
 from hifis_surveyval.models.mixins.identifiable import Identifiable
 from hifis_surveyval.models.mixins.yaml_constructable import (
     YamlConstructable,
-    YamlDict
+    YamlDict,
 )
 from hifis_surveyval.models.translated import Translated
 
@@ -58,27 +57,29 @@ class Question(YamlConstructable, Identifiable):
     token_DATA_TYPE = "datatype"
     token_MANDATORY = "mandatory"
 
-    schema = Schema({
-        token_ID: str,
-        token_LABEL: str,
-        token_TEXT: dict,
-        token_DATA_TYPE: lambda t: t in VALID_ANSWER_TYPES,
-        token_MANDATORY: bool,
-        Optional(token_ANSWER_OPTIONS, default=[]): list,
-        Optional(str): object  # Catchall for unsupported yaml data
-    })
+    schema = Schema(
+        {
+            token_ID: str,
+            token_LABEL: str,
+            token_TEXT: dict,
+            token_DATA_TYPE: lambda t: t in VALID_ANSWER_TYPES,
+            token_MANDATORY: bool,
+            Optional(token_ANSWER_OPTIONS, default=[]): list,
+            Optional(str): object,  # Catchall for unsupported yaml data
+        }
+    )
 
     # TODO: log unsupported elements in YAML?
 
     def __init__(
-            self,
-            parent_id: str,
-            question_id: str,
-            text: Translated,
-            label: str,
-            answer_type: type,
-            mandatory: bool,
-            answer_options: List[AnswerOption],
+        self,
+        parent_id: str,
+        question_id: str,
+        text: Translated,
+        label: str,
+        answer_type: type,
+        mandatory: bool,
+        answer_options: List[AnswerOption],
     ):
         """
         Initialize a question object with metadata.
@@ -194,9 +195,9 @@ class Question(YamlConstructable, Identifiable):
 
         answer_options = [
             AnswerOption.from_yaml_dictionary(
-                yaml=answer_yaml,
-                parent_id=question_id
-            ) for answer_yaml in yaml[Question.token_ANSWER_OPTIONS]
+                yaml=answer_yaml, parent_id=question_id
+            )
+            for answer_yaml in yaml[Question.token_ANSWER_OPTIONS]
         ]
 
         return Question(
@@ -206,5 +207,5 @@ class Question(YamlConstructable, Identifiable):
             text=Translated(yaml[Question.token_TEXT]),
             answer_type=answer_type,
             answer_options=answer_options,
-            mandatory=yaml[Question.token_MANDATORY]
+            mandatory=yaml[Question.token_MANDATORY],
         )

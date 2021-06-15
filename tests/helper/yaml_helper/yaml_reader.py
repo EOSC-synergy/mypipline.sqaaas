@@ -46,6 +46,6 @@ class YamlReader:
                 Dictionary of a read-in YAML file.
         """
         metadata_yaml: YamlDict = {}
-        with open(yaml_file_path, 'r') as file:
+        with open(yaml_file_path, "r") as file:
             metadata_yaml = yaml.load(stream=file, Loader=yaml.FullLoader)
         return metadata_yaml

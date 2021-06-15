@@ -31,7 +31,7 @@ import pytest
 from hifis_surveyval.core.settings import Settings
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def settings_fixture() -> Settings:
     """
     Get a new Settings object.
@@ -43,7 +43,7 @@ def settings_fixture() -> Settings:
     return Settings()
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def settings_custom_config_fixture() -> Settings:
     """
     Get a new Settings object with custom configuration file loaded.
@@ -55,7 +55,10 @@ def settings_custom_config_fixture() -> Settings:
     fixtures_folder_name: str = "fixtures"
     config_file_name: str = "hifis-surveyval-config-file.yml"
     settings: Settings = Settings()
-    settings.CONFIG_FILENAME = os.path.dirname(__file__) / \
-        Path(fixtures_folder_name) / Path(config_file_name)
+    settings.CONFIG_FILENAME = (
+        os.path.dirname(__file__)
+        / Path(fixtures_folder_name)
+        / Path(config_file_name)
+    )
     settings.load_config_file()
     return settings

@@ -45,9 +45,10 @@ class CsvReader:
                 New object containing test data read in from CSV file.
         """
         csv_data: List[List[str]] = []
-        with open(file_path, mode='r') as csv_file:
-            reader = csv.reader(csv_file, delimiter=',', quotechar='"',
-                                quoting=csv.QUOTE_ALL)
+        with open(file_path, mode="r") as csv_file:
+            reader = csv.reader(
+                csv_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL
+            )
             for row in reader:
                 csv_data.append(row)
         return csv_data

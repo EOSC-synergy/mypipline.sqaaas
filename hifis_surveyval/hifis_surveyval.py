@@ -23,15 +23,9 @@
 # -*- coding: utf-8 -*-
 
 """This project is used to develop analysis scripts for surveys."""
-import logging
 import sys
-from csv import reader
-from pathlib import Path
-
-import yaml
 
 from hifis_surveyval.core.settings import Settings
-from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.plotting.matplotlib_plotter import MatplotlibPlotter
 from hifis_surveyval.printing.printer import Printer
 
@@ -53,10 +47,6 @@ class HIFISSurveyval:
                 in. It will be populated with the related settings during the
                 initialization of the HIFISSurveyval object.
         """
-        #: A global copy-on-read container for providing the survey data
-        #: to the analysis functions
-        self.dataContainer: DataContainer = DataContainer()
-
         #: The settings storage
         self.settings: Settings = settings
 
@@ -68,8 +58,9 @@ class HIFISSurveyval:
 
         # register printer
         self.printer: Printer = Printer()
+        self._prepare_environment()
 
-    def prepare_environment(self) -> None:
+    def _prepare_environment(self) -> None:
         """
         Prepare the runtime environment.
 
@@ -83,27 +74,3 @@ class HIFISSurveyval:
         if self.settings.ANALYSIS_OUTPUT_PATH is not None:
             if not self.settings.ANALYSIS_OUTPUT_PATH.exists():
                 self.settings.ANALYSIS_OUTPUT_PATH.mkdir(parents=True)
-
-    def load_all_data(self, data_file: Path) -> None:
-        """
-        Populate the data container with the survey results and metadata.
-
-        Args:
-            data_file (click.File): File that contains the data for the
-                                    analysis.
-
-        Raises:
-            IOError: Exception thrown if data could not be parsed.
-            IOError: Exception thrown if metadata could not be parsed.
-        """
-        # Load the metadata
-        logging.info(f"Attempt to load metadata from {self.settings.METADATA}")
-
-        with self.settings.METADATA.open(mode="r") as metadata_io_stream:
-            metadata_yaml = yaml.safe_load(metadata_io_stream)
-            self.dataContainer.load_metadata(metadata_yaml)
-
-        #  Load the actual survey data
-        with data_file.open(mode="r") as data_io_stream:
-            csv_reader = reader(data_io_stream)
-            self.dataContainer.load_survey_data(csv_data=list(csv_reader))

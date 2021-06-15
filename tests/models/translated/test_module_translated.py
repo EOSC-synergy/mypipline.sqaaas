@@ -51,16 +51,18 @@ class TestModuleTranslated(object):
                 answers.
         """
         translated: Translated = translated_fixture
-        target_language_code: str = 'de'
-        expected_translated_text: str = 'deutscher Text'
+        target_language_code: str = "de"
+        expected_translated_text: str = "deutscher Text"
         # Make sure that translation can be retrieved by a language code.
-        assert translated.get_translation(target_language_code) == \
-               expected_translated_text, \
-               "Getter is not returning expected translation given a code."
+        assert (
+            translated.get_translation(target_language_code)
+            == expected_translated_text
+        ), "Getter is not returning expected translation given a code."
 
     @pytest.mark.ci
     def test_translation_code_not_iso(
-            self, non_iso_code_translations_dict_fixture: Dict[str, str]):
+        self, non_iso_code_translations_dict_fixture: Dict[str, str]
+    ):
         """
         Tests that a non-iso language code raises exception.
 
@@ -86,15 +88,17 @@ class TestModuleTranslated(object):
                 answers.
         """
         translated: Translated = translated_fixture
-        expected_languages_list: List[str] = ['de', 'en']
+        expected_languages_list: List[str] = ["de", "en"]
         # Make sure that available languages can be retrieved.
-        assert translated.available_languages().sort() == \
-               expected_languages_list.sort(), \
-               "Getter is not returning expected list of translations."
+        assert (
+            translated.available_languages().sort()
+            == expected_languages_list.sort()
+        ), "Getter is not returning expected list of translations."
 
     @pytest.mark.ci
     def test_from_yaml_dictionary_works(
-            self, translations_dict_fixture: Dict[str, str]):
+        self, translations_dict_fixture: Dict[str, str]
+    ):
         """
         Tests that a construction of Translated object works.
 
@@ -103,12 +107,16 @@ class TestModuleTranslated(object):
                 New translations dict object to manage translations of
                 questions and answers.
         """
-        target_language_code: str = 'de'
-        expected_translated_text: str = 'deutscher Text'
-        translated: Translated = \
-            Translated.from_yaml_dictionary(translations_dict_fixture)
+        target_language_code: str = "de"
+        expected_translated_text: str = "deutscher Text"
+        translated: Translated = Translated.from_yaml_dictionary(
+            translations_dict_fixture
+        )
         # Make sure Translated object was constructed properly.
-        assert translated.get_translation(target_language_code) == \
-               expected_translated_text, \
-               "Method from_yaml_dictionary did not construct Translated" \
-               "object properly."
+        assert (
+            translated.get_translation(target_language_code)
+            == expected_translated_text
+        ), (
+            "Method from_yaml_dictionary did not construct Translated"
+            "object properly."
+        )

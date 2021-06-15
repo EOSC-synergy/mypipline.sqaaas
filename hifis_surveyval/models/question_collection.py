@@ -24,14 +24,14 @@ This module contains classes to represent groups of survey questions.
 These can be constructed from YAML through the YamlConstructable abstract
 class.
 """
-from typing import List, Dict
+from typing import Dict, List
 
-from schema import Schema, Optional
+from schema import Optional, Schema
 
 from hifis_surveyval.models.mixins.identifiable import Identifiable
 from hifis_surveyval.models.mixins.yaml_constructable import (
     YamlConstructable,
-    YamlDict
+    YamlDict,
 )
 from hifis_surveyval.models.question import Question
 from hifis_surveyval.models.translated import Translated
@@ -50,20 +50,22 @@ class QuestionCollection(YamlConstructable, Identifiable):
     token_TEXT = "text"
     token_QUESTIONS = "questions"
 
-    schema = Schema({
-        token_ID: str,
-        token_LABEL: str,
-        token_TEXT: dict,
-        Optional(token_QUESTIONS, default=[]): list,
-        Optional(str): object  # catchall
-    })
+    schema = Schema(
+        {
+            token_ID: str,
+            token_LABEL: str,
+            token_TEXT: dict,
+            Optional(token_QUESTIONS, default=[]): list,
+            Optional(str): object,  # catchall
+        }
+    )
 
     def __init__(
-            self,
-            collection_id: str,
-            text: Translated,
-            label: str,
-            questions: List[Question],
+        self,
+        collection_id: str,
+        text: Translated,
+        label: str,
+        questions: List[Question],
     ) -> None:
         """
         Initialize an empty question collection.
@@ -88,7 +90,8 @@ class QuestionCollection(YamlConstructable, Identifiable):
         self._text: Translated = text
         self._label: str = label
         self._questions: Dict[str, Question] = {
-            question.short_id: question for question in questions}
+            question.short_id: question for question in questions
+        }
 
     def question_for_id(self, question_short_id: str) -> Question:
         """
@@ -105,8 +108,9 @@ class QuestionCollection(YamlConstructable, Identifiable):
         return self._questions[question_short_id]
 
     @staticmethod
-    def _from_yaml_dictionary(yaml: YamlDict,
-                              **kwargs) -> "QuestionCollection":
+    def _from_yaml_dictionary(
+        yaml: YamlDict, **kwargs
+    ) -> "QuestionCollection":
         """
         Generate a new QuestionCollection-instance from YAML data.
 
@@ -122,8 +126,8 @@ class QuestionCollection(YamlConstructable, Identifiable):
 
         questions = [
             Question.from_yaml_dictionary(
-                yaml=question_yaml,
-                parent_id=collection_id)
+                yaml=question_yaml, parent_id=collection_id
+            )
             for question_yaml in yaml[QuestionCollection.token_QUESTIONS]
         ]
 
@@ -135,5 +139,5 @@ class QuestionCollection(YamlConstructable, Identifiable):
             collection_id=collection_id,
             text=text,
             label=yaml[QuestionCollection.token_LABEL],
-            questions=questions
+            questions=questions,
         )

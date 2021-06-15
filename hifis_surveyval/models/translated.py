@@ -22,11 +22,12 @@
 
 from typing import Dict, List
 
-from schema import Schema, And, Regex
+from schema import And, Regex, Schema
 
 from hifis_surveyval.models.mixins.yaml_constructable import (
     YamlConstructable,
-    YamlDict)
+    YamlDict,
+)
 
 
 class Translated(YamlConstructable):
@@ -36,11 +37,15 @@ class Translated(YamlConstructable):
     Languages are identified by their ISO 693-1 two-letter codes.
     """
 
-    schema = Schema({
-        And(str, Regex("^[a-z]{2}$")):
-            And(str, lambda s: s,
-                error="Translation must neither be empty nor None")
-    })
+    schema = Schema(
+        {
+            And(str, Regex("^[a-z]{2}$")): And(
+                str,
+                lambda s: s,
+                error="Translation must neither be empty nor None",
+            )
+        }
+    )
     """
     The validation schema used for translation dictionaries.
     * The dictionary may not be empty

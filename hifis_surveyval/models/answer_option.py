@@ -25,7 +25,7 @@ from schema import Schema
 from hifis_surveyval.models.mixins.identifiable import Identifiable
 from hifis_surveyval.models.mixins.yaml_constructable import (
     YamlConstructable,
-    YamlDict
+    YamlDict,
 )
 from hifis_surveyval.models.translated import Translated
 
@@ -37,18 +37,10 @@ class AnswerOption(YamlConstructable, Identifiable):
     token_LABEL = "label"
     token_TEXT = "text"
 
-    schema = Schema({
-        token_ID: str,
-        token_LABEL: str,
-        token_TEXT: dict
-    })
+    schema = Schema({token_ID: str, token_LABEL: str, token_TEXT: dict})
 
     def __init__(
-            self,
-            parent_id: str,
-            option_id: str,
-            text: Translated,
-            label: str
+        self, parent_id: str, option_id: str, text: Translated, label: str
     ) -> None:
         """
         Create an answer option from the metadata.
@@ -118,5 +110,7 @@ class AnswerOption(YamlConstructable, Identifiable):
             parent_id=parent_id,
             option_id=yaml[AnswerOption.token_ID],
             label=yaml[AnswerOption.token_LABEL],
-            text=Translated.from_yaml_dictionary(yaml[AnswerOption.token_TEXT])
+            text=Translated.from_yaml_dictionary(
+                yaml[AnswerOption.token_TEXT]
+            ),
         )

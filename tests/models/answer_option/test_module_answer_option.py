@@ -45,7 +45,8 @@ class TestAnswerOption(object):
 
     @pytest.mark.ci
     def test_from_yaml_dictionary_works_check_type(
-            self, metadata_fixture: YamlDict) -> None:
+        self, metadata_fixture: YamlDict
+    ) -> None:
         """
         Tests that retrieving an AnswerOption object given metadata works.
 
@@ -54,17 +55,19 @@ class TestAnswerOption(object):
                 Test fixture providing an AnswerOption object.
         """
         metadata_yaml: YamlDict = metadata_fixture
-        answer_option: AnswerOption = \
-            AnswerOption.from_yaml_dictionary(
-                metadata_yaml[0], parent_id=TestAnswerOption.question_id)
+        answer_option: AnswerOption = AnswerOption.from_yaml_dictionary(
+            metadata_yaml[0], parent_id=TestAnswerOption.question_id
+        )
         # Make sure that object retrieved from metadata YAML file given is of
         # type AnswerOption.
-        assert isinstance(answer_option, AnswerOption), \
-            "Object is not of type AnswerOption."
+        assert isinstance(
+            answer_option, AnswerOption
+        ), "Object is not of type AnswerOption."
 
     @pytest.mark.ci
     def test_from_yaml_dictionary_works_check_id(
-            self, metadata_fixture: YamlDict) -> None:
+        self, metadata_fixture: YamlDict
+    ) -> None:
         """
         Tests that retrieving an AnswerOption object given metadata works.
 
@@ -74,18 +77,20 @@ class TestAnswerOption(object):
         """
         expected_answer_option_id: str = TestAnswerOption.answer_option_id
         metadata_yaml: YamlDict = metadata_fixture
-        answer_option: AnswerOption = \
-            AnswerOption.from_yaml_dictionary(
-                metadata_yaml[0], parent_id=TestAnswerOption.question_id)
+        answer_option: AnswerOption = AnswerOption.from_yaml_dictionary(
+            metadata_yaml[0], parent_id=TestAnswerOption.question_id
+        )
         actual_answer_option_id: str = answer_option.short_id
         # Make sure that AnswerOption object retrieved from metadata YAML file
         # has correct AnswerOption ID.
-        assert actual_answer_option_id == expected_answer_option_id, \
-            "AnswerOption ID of AnswerOption object is not correct."
+        assert (
+            actual_answer_option_id == expected_answer_option_id
+        ), "AnswerOption ID of AnswerOption object is not correct."
 
     @pytest.mark.ci
     def test_from_yaml_dictionary_works_check_text(
-            self, metadata_fixture: YamlDict) -> None:
+        self, metadata_fixture: YamlDict
+    ) -> None:
         """
         Tests that retrieving an AnswerOption object given metadata works.
 
@@ -95,13 +100,15 @@ class TestAnswerOption(object):
         """
         expected_translated_answer_option_text: str = "No"
         metadata_yaml: YamlDict = metadata_fixture
-        answer_option: AnswerOption = \
-            AnswerOption.from_yaml_dictionary(
-                metadata_yaml[0], parent_id=TestAnswerOption.question_id)
-        actual_translated_answer_option_text: str = \
+        answer_option: AnswerOption = AnswerOption.from_yaml_dictionary(
+            metadata_yaml[0], parent_id=TestAnswerOption.question_id
+        )
+        actual_translated_answer_option_text: str = (
             answer_option.text.get_translation(TestAnswerOption.language_code)
+        )
         # Make sure that AnswerOption object retrieved from metadata YAML file
         # has correct translated AnswerOption text.
-        assert actual_translated_answer_option_text == \
-            expected_translated_answer_option_text, \
-            "Translated AnswerOption text is not correct."
+        assert (
+            actual_translated_answer_option_text
+            == expected_translated_answer_option_text
+        ), "Translated AnswerOption text is not correct."

@@ -29,7 +29,7 @@ functions.
 """
 
 from logging import warning
-from typing import List, Union, Dict
+from typing import Dict, List, Union
 
 from hifis_surveyval.models.mixins.identifiable import Identifiable
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict, YamlList
@@ -95,10 +95,12 @@ class DataContainer(object):
                 A YAML mapping containing the data for one question collection.
         """
         new_collection = QuestionCollection.from_yaml_dictionary(
-            new_collection_yaml)
+            new_collection_yaml
+        )
         if new_collection.full_id in self._survey_questions:
-            raise ValueError("Attempt to add QuestionCollection "
-                             "with duplicate ID")
+            raise ValueError(
+                "Attempt to add QuestionCollection " "with duplicate ID"
+            )
         self._survey_questions[new_collection.full_id] = new_collection
 
     def load_survey_data(self, csv_data: List[List[str]]) -> None:

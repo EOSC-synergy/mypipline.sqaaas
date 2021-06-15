@@ -32,8 +32,9 @@ from typing import List
 import pytest
 
 from hifis_surveyval.core.settings import Settings
-from hifis_surveyval.plotting.supported_output_format import \
-    SupportedOutputFormat
+from hifis_surveyval.plotting.supported_output_format import (
+    SupportedOutputFormat,
+)
 
 
 class TestModuleSettings(object):
@@ -56,8 +57,9 @@ class TestModuleSettings(object):
         expected_verbosity: int = logging.NOTSET
         settings: Settings = settings_fixture
         # Assure that initial verbosity is NOTSET.
-        assert settings.VERBOSITY == expected_verbosity, \
-               "Default value of verbosity is not correct."
+        assert (
+            settings.VERBOSITY == expected_verbosity
+        ), "Default value of verbosity is not correct."
 
     @pytest.mark.ci
     def test_setting_verbosity_works(self, settings_fixture: Settings):
@@ -73,8 +75,9 @@ class TestModuleSettings(object):
         settings: Settings = settings_fixture
         settings.set_verbosity(verbosity_count)
         # Assure that verbosity set is as expected.
-        assert settings.VERBOSITY == expected_verbosity, \
-               "Value of verbosity set is not correct."
+        assert (
+            settings.VERBOSITY == expected_verbosity
+        ), "Value of verbosity set is not correct."
 
     @pytest.mark.ci
     def test_run_timestamp_is_correct(self, settings_fixture: Settings):
@@ -85,12 +88,12 @@ class TestModuleSettings(object):
             settings_fixture (Settings):
                 New Settings object containing all settings of an analysis run.
         """
-        expected_timestamp_regex: re = \
-            r'\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}'
+        expected_timestamp_regex: re = r"\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}"
         settings: Settings = settings_fixture
         # Assure that timestamp is matching the timestamp pattern.
-        assert re.match(expected_timestamp_regex, settings.RUN_TIMESTAMP), \
-               "Format of default value of run timestamp is not correct."
+        assert re.match(
+            expected_timestamp_regex, settings.RUN_TIMESTAMP
+        ), "Format of default value of run timestamp is not correct."
 
     @pytest.mark.ci
     def test_output_format_is_correct(self, settings_fixture: Settings):
@@ -101,16 +104,19 @@ class TestModuleSettings(object):
             settings_fixture (Settings):
                 New Settings object containing all settings of an analysis run.
         """
-        expected_output_format: SupportedOutputFormat = \
+        expected_output_format: SupportedOutputFormat = (
             SupportedOutputFormat.SCREEN
+        )
         settings: Settings = settings_fixture
         # Assure that initial output format is SCREEN.
-        assert settings.OUTPUT_FORMAT == expected_output_format, \
-               "Default value of output format is not correct."
+        assert (
+            settings.OUTPUT_FORMAT == expected_output_format
+        ), "Default value of output format is not correct."
 
     @pytest.mark.ci
     def test_load_config_file_check_metadata(
-            self, settings_custom_config_fixture: Settings):
+        self, settings_custom_config_fixture: Settings
+    ):
         """
         Tests that loading a config file with custom metadata file works.
 
@@ -121,13 +127,15 @@ class TestModuleSettings(object):
         expected_metadata_path: str = "metadata/metadata.yml"
         settings: Settings = settings_custom_config_fixture
         # Assure that loaded custom metadata path is as expected.
-        assert settings.METADATA.absolute() == \
-               Path(expected_metadata_path).absolute(), \
-               "Value of metadata path set is not correct."
+        assert (
+            settings.METADATA.absolute()
+            == Path(expected_metadata_path).absolute()
+        ), "Value of metadata path set is not correct."
 
     @pytest.mark.ci
     def test_load_config_file_check_output_folder(
-            self, settings_custom_config_fixture: Settings):
+        self, settings_custom_config_fixture: Settings
+    ):
         """
         Tests that loading a config file with custom output folder works.
 
@@ -138,13 +146,15 @@ class TestModuleSettings(object):
         expected_output_folder: str = "output_folder"
         settings: Settings = settings_custom_config_fixture
         # Assure that loaded custom output folder path is as expected.
-        assert settings.OUTPUT_FOLDER.absolute() == \
-               Path(expected_output_folder).absolute(), \
-               "Value of output folder set is not correct."
+        assert (
+            settings.OUTPUT_FOLDER.absolute()
+            == Path(expected_output_folder).absolute()
+        ), "Value of output folder set is not correct."
 
     @pytest.mark.ci
     def test_load_config_file_check_output_format(
-            self, settings_custom_config_fixture: Settings):
+        self, settings_custom_config_fixture: Settings
+    ):
         """
         Tests that loading a config file with custom output format works.
 
@@ -152,16 +162,19 @@ class TestModuleSettings(object):
             settings_custom_config_fixture (Settings):
                 New Settings object containing all settings of an analysis run.
         """
-        expected_output_format: SupportedOutputFormat = \
+        expected_output_format: SupportedOutputFormat = (
             SupportedOutputFormat.SVG
+        )
         settings: Settings = settings_custom_config_fixture
         # Assure that loaded custom output format is as expected.
-        assert settings.OUTPUT_FORMAT == expected_output_format, \
-               "Value of output format set is not correct."
+        assert (
+            settings.OUTPUT_FORMAT == expected_output_format
+        ), "Value of output format set is not correct."
 
     @pytest.mark.ci
     def test_load_config_file_check_scripts_folder(
-            self, settings_custom_config_fixture: Settings):
+        self, settings_custom_config_fixture: Settings
+    ):
         """
         Tests that loading a config file with custom scripts folder works.
 
@@ -172,13 +185,15 @@ class TestModuleSettings(object):
         expected_script_folder: str = "scripts_folder"
         settings: Settings = settings_custom_config_fixture
         # Assure that loaded custom scripts folder path is as expected.
-        assert settings.SCRIPT_FOLDER.absolute() == \
-               Path(expected_script_folder).absolute(), \
-               "Value of scripts folder set is not correct."
+        assert (
+            settings.SCRIPT_FOLDER.absolute()
+            == Path(expected_script_folder).absolute()
+        ), "Value of scripts folder set is not correct."
 
     @pytest.mark.ci
     def test_load_config_file_check_scripts_names_list_datatype(
-            self, settings_custom_config_fixture: Settings):
+        self, settings_custom_config_fixture: Settings
+    ):
         """
         Tests that loading a config file with script names of type list works.
 
@@ -188,12 +203,14 @@ class TestModuleSettings(object):
         """
         settings: Settings = settings_custom_config_fixture
         # Assure that loaded custom scripts names is a list.
-        assert isinstance(settings.SCRIPT_NAMES, List), \
-               "Datatype of script names is not a list."
+        assert isinstance(
+            settings.SCRIPT_NAMES, List
+        ), "Datatype of script names is not a list."
 
     @pytest.mark.ci
     def test_load_config_file_check_scripts_names_list_count(
-            self, settings_custom_config_fixture: Settings):
+        self, settings_custom_config_fixture: Settings
+    ):
         """
         Tests that loading a config file with custom script names list works.
 
@@ -204,12 +221,14 @@ class TestModuleSettings(object):
         expected_script_names_count: int = 1
         settings: Settings = settings_custom_config_fixture
         # Assure that loaded custom list of script names contains one element.
-        assert len(settings.SCRIPT_NAMES) == expected_script_names_count, \
-               "List size of script names is not as expected."
+        assert (
+            len(settings.SCRIPT_NAMES) == expected_script_names_count
+        ), "List size of script names is not as expected."
 
     @pytest.mark.ci
     def test_load_config_file_check_scripts_names_list_entry(
-            self, settings_custom_config_fixture: Settings):
+        self, settings_custom_config_fixture: Settings
+    ):
         """
         Tests that loading a config file with custom script name works.
 
@@ -220,5 +239,6 @@ class TestModuleSettings(object):
         expected_script_name: str = "example_script"
         settings: Settings = settings_custom_config_fixture
         # Assure that loaded custom script names contain expected script name.
-        assert settings.SCRIPT_NAMES[0] == expected_script_name, \
-               "First element of list of script names is not as expected."
+        assert (
+            settings.SCRIPT_NAMES[0] == expected_script_name
+        ), "First element of list of script names is not as expected."

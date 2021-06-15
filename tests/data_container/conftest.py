@@ -34,7 +34,7 @@ from tests.helper.csv_helper.csv_reader import CsvReader
 from tests.helper.yaml_helper.yaml_reader import YamlReader
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def data_container_fixture() -> DataContainer:
     """
     Get a new DataContainer object.
@@ -46,9 +46,10 @@ def data_container_fixture() -> DataContainer:
     return DataContainer()
 
 
-@pytest.fixture(scope='function')
-def read_in_metadata_yaml_file(metadata_yaml_file_path: str) \
-        -> Union[YamlList, YamlDict]:
+@pytest.fixture(scope="function")
+def read_in_metadata_yaml_file(
+    metadata_yaml_file_path: str,
+) -> Union[YamlList, YamlDict]:
     """
     Read in a YAML file and create a dictionary out of it.
 
@@ -60,14 +61,14 @@ def read_in_metadata_yaml_file(metadata_yaml_file_path: str) \
         YamlDict:
             Dictionary of a read-in metadata YAML file.
     """
-    metadata_yaml: Union[YamlList, YamlDict] = \
-        YamlReader.read_in_yaml_file(metadata_yaml_file_path)
+    metadata_yaml: Union[YamlList, YamlDict] = YamlReader.read_in_yaml_file(
+        metadata_yaml_file_path
+    )
     return metadata_yaml
 
 
-@pytest.fixture(scope='function')
-def read_in_data_csv_file(test_data_csv_file_path: str) \
-        -> List[List[str]]:
+@pytest.fixture(scope="function")
+def read_in_data_csv_file(test_data_csv_file_path: str) -> List[List[str]]:
     """
     Read in test data from CSV file.
 
@@ -79,12 +80,13 @@ def read_in_data_csv_file(test_data_csv_file_path: str) \
         List[List[str]]:
             New object containing test data read in from CSV file.
     """
-    csv_data: List[List[str]] = \
-        CsvReader.read_in_data_file(test_data_csv_file_path)
+    csv_data: List[List[str]] = CsvReader.read_in_data_file(
+        test_data_csv_file_path
+    )
     return csv_data
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def load_metadata(metadata_yaml_file_path: str) -> DataContainer:
     """
     Read in a YAML file and create a dictionary out of it.
@@ -98,15 +100,17 @@ def load_metadata(metadata_yaml_file_path: str) -> DataContainer:
             DataContainer containing metadata from YAML file.
     """
     data_container: DataContainer = DataContainer()
-    metadata: Union[YamlList, YamlDict] = \
-        YamlReader.read_in_yaml_file(metadata_yaml_file_path)
+    metadata: Union[YamlList, YamlDict] = YamlReader.read_in_yaml_file(
+        metadata_yaml_file_path
+    )
     data_container.load_metadata(metadata)
     return data_container
 
 
-@pytest.fixture(scope='function')
-def load_metadata_and_data(metadata_yaml_file_path: str,
-                           test_data_csv_file_path: str) -> DataContainer:
+@pytest.fixture(scope="function")
+def load_metadata_and_data(
+    metadata_yaml_file_path: str, test_data_csv_file_path: str
+) -> DataContainer:
     """
     Read in a YAML file and create a dictionary out of it.
 
@@ -122,10 +126,12 @@ def load_metadata_and_data(metadata_yaml_file_path: str,
             CSV file.
     """
     data_container: DataContainer = DataContainer()
-    metadata: Union[YamlList, YamlDict] = \
-        YamlReader.read_in_yaml_file(metadata_yaml_file_path)
-    csv_data: List[List[str]] = \
-        CsvReader.read_in_data_file(test_data_csv_file_path)
+    metadata: Union[YamlList, YamlDict] = YamlReader.read_in_yaml_file(
+        metadata_yaml_file_path
+    )
+    csv_data: List[List[str]] = CsvReader.read_in_data_file(
+        test_data_csv_file_path
+    )
     data_container.load_metadata(metadata)
     data_container.load_survey_data(csv_data)
     return data_container

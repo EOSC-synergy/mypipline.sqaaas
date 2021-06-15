@@ -26,8 +26,9 @@ structure of the YAML to be parsed.
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Union, List
-from schema import Schema, Or
+from typing import Dict, List, Union
+
+from schema import Or, Schema
 
 # A shorthand type for the kind of lists and dictionaries that can be
 # encountered when parsing YAML data
@@ -66,9 +67,9 @@ class YamlConstructable(ABC):
         pass
 
     @classmethod
-    def from_yaml_dictionary(cls,
-                             yaml: YamlDict,
-                             **kwargs) -> "YamlConstructable":
+    def from_yaml_dictionary(
+        cls, yaml: YamlDict, **kwargs
+    ) -> "YamlConstructable":
         """
         Instantiate an object of this class from a given YamlDict.
 

@@ -19,12 +19,14 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """This module allows discovery and dispatch of analysis functions."""
+import copy
 import importlib.util
 import logging
 import traceback
 from pathlib import Path
 from typing import List
 
+from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.hifis_surveyval import HIFISSurveyval
 
 
@@ -36,7 +38,7 @@ class Dispatcher(object):
     module names to be given at initialization.
     """
 
-    def __init__(self, surveyval: HIFISSurveyval) -> None:
+    def __init__(self, surveyval: HIFISSurveyval, data: DataContainer) -> None:
         """
         Initialize the Dispatcher.
 
@@ -46,6 +48,7 @@ class Dispatcher(object):
                                         particular analysis scripts.
         """
         self.surveyval: HIFISSurveyval = surveyval
+        self.data: DataContainer = data
         self.module_folder: Path = self.surveyval.settings.SCRIPT_FOLDER
         self.module_names: List[str] = self.surveyval.settings.SCRIPT_NAMES
         self.module_name_paths: List[Path] = []
@@ -145,7 +148,10 @@ class Dispatcher(object):
             logging.error(f"Failed to load module {module_name}." f"{error}")
 
         try:
-            module.run(hifis_surveyval=self.surveyval)
+            module.run(
+                hifis_surveyval=copy.deepcopy(self.surveyval),
+                data=copy.deepcopy(self.data),
+            )
         except AttributeError as error:
             traceback.print_exc()
             logging.error(
