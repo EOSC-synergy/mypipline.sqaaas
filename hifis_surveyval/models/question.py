@@ -94,7 +94,7 @@ class Question(YamlConstructable, Identifiable):
                 the question collection.
             text:
                 A Translated object representing the text that describes the
-               question.
+                question.
             label:
                 A short label that can be used in plotting to represent the
                 question collection.
@@ -141,7 +141,7 @@ class Question(YamlConstructable, Identifiable):
                 The text-version of the answer as stored in the CSV.
                 If the question is mandatory, the value must not be empty.
                 If answer options are defined the value must match the short id
-                 of the selected answer option.
+                of the selected answer option.
         Raises:
             ValueError:
                 if the question was marked as mandatory but the given value was

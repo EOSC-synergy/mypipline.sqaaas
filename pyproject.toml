@@ -44,7 +44,7 @@ hifis-surveyval = "hifis_surveyval.cli:cli"
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.10"
-click = ">=7.0,<8'"
+click = ">=8.0"
 matplotlib = ">=3.2.0"
 numpy = ">=1.18.1"
 pandas = ">=1.0.1"
@@ -61,12 +61,10 @@ pytest = ">=3.4.0"
 pytest-cov = ">=2.5.1"
 pytest-pythonpath = ">=0.7.2"
 Sphinx = ">=2.2.0"
-sphinx-rtd-theme = ">=0.4.3,<1"
+sphinx-rtd-theme = ">=0.4.3"
 black = "^20.8b1"
 flakehell = "^0.9.0"
-importlib-metadata = "<4.0.0"
 flake8 = "==3.9.0"
-sphinx-click = "^2.7.1"
 recommonmark = "^0.7.1"
 
 [tool.coverage.run]

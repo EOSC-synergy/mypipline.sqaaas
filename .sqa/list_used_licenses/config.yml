@@ -41,3 +41,11 @@ manual dependency config:
       pkg name: 'python-dotenv'
       licenses:
         - 'BSD-3-Clause'
+    - import name: 'importlib'
+      pkg name: 'importlib-metadata'
+      licenses:
+        - 'Apache-2.0'
+    - import name: 'zipp'
+      pkg name: 'zipp'
+      licenses:
+        - 'MIT'

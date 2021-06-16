@@ -18,13 +18,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
----
+"""
+This is an empty preprocessing script for an analysis.
 
-METADATA: "metadata/metadata.yml"
-OUTPUT_FOLDER: "output_folder"
-OUTPUT_FORMAT: "SVG"
-PREPROCESSING_FILENAME: "preprocess.py"
-SCRIPT_FOLDER: "scripts_folder"
-SCRIPT_NAMES: ["example_script"]
+It is a file payload of the package `hifis_surveyval`.
+"""
 
-...
+from hifis_surveyval.data_container import DataContainer
+
+
+def preprocess(data: DataContainer) -> DataContainer:
+    """Preprocess raw data."""
+    return data

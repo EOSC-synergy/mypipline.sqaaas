@@ -50,6 +50,7 @@ import yaml
 
 from hifis_surveyval.core import util
 from hifis_surveyval.core.dispatch import Dispatcher
+from hifis_surveyval.core.preprocess import Preprocessor
 from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.hifis_surveyval import HIFISSurveyval
@@ -113,7 +114,15 @@ def version() -> None:
     help="Create an example script in the given script folder. "
     "Overwrites any existing example script file.",
 )
-def init(config: bool, script: bool) -> None:
+@click.option(
+    "--preprocess",
+    "-p",
+    is_flag=True,
+    show_default=True,
+    help="Create an empty preprocessing script in the given location. "
+    "Overwrites any existing preprocessing script.",
+)
+def init(config: bool, script: bool, preprocess: bool) -> None:
     """
     Create a configuration file and an example script in the default locations.
 
@@ -124,14 +133,17 @@ def init(config: bool, script: bool) -> None:
         script (bool): Indicates whether to create an example analysis
                        script.
     """
-    if not config and not script:
+    if not config and not script and not preprocess:
         config = True
         script = True
+        preprocess = True
 
     if config:
         settings.create_default_config_file()
     if script:
         util.create_example_script(settings)
+    if preprocess:
+        util.create_preprocessing_script(settings)
 
 
 @click.argument(
@@ -151,7 +163,7 @@ def analyze(survey_data: click.Path) -> None:
     settings.load_config_file()
 
     surveyval: HIFISSurveyval = HIFISSurveyval(settings=settings)
-    data = DataContainer
+    raw_data = DataContainer
     logging.info(f"Analyzing file {survey_data.name}")
 
     # Load the metadata
@@ -159,13 +171,21 @@ def analyze(survey_data: click.Path) -> None:
 
     with settings.METADATA.open(mode="r") as metadata_io_stream:
         metadata_yaml = yaml.safe_load(metadata_io_stream)
-        data.load_metadata(metadata_yaml)
+        raw_data.load_metadata(metadata_yaml)
 
     #  Load the actual survey data
     with survey_data.open(mode="r") as data_io_stream:
         csv_reader = reader(data_io_stream)
-        data.load_survey_data(csv_data=list(csv_reader))
+        raw_data.load_survey_data(csv_data=list(csv_reader))
 
-    dispatcher: Dispatcher = Dispatcher(surveyval=surveyval, data=data)
+    # preproces the data
+    preprocessed_data: DataContainer = Preprocessor.preprocess(
+        settings=settings, data=raw_data
+    )
+
+    # run analysis scripts
+    dispatcher: Dispatcher = Dispatcher(
+        surveyval=surveyval, data=preprocessed_data
+    )
     dispatcher.discover()
     dispatcher.load_all_modules()

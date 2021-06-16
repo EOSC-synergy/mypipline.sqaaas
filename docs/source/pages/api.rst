@@ -24,9 +24,11 @@ API Documentation
 CLI Interface
 -------------
 
-.. click:: hifis_surveyval.cli:cli
-   :prog: hifis_surveyval
-   :nested: full
+Can be seen with the following command:
+
+.. code-block:: bash
+
+    hifis-surveyval --help
 
 Modules
 -------

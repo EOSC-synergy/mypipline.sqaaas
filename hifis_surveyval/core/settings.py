@@ -122,6 +122,25 @@ class SystemSettings(BaseSettings):
 class FileSettings(BaseSettings):
     """Settings, that the user can change."""
 
+    # Path to preprocessing script
+    PREPROCESSING_FILENAME: Path = Path("preprocess.py")
+
+    @validator("PREPROCESSING_FILENAME")
+    def validate_preprocessing_script(cls, to_validate: str) -> Path:
+        """
+        Assure, that preprocessing script is a Python file.
+
+        Args:
+            to_validate (str):
+                Preprocessing script path as string to be validated.
+        Returns:
+            Path: Path to the preprocessing script.
+        """
+        if not str(to_validate).endswith(".py"):
+            raise ValueError("Preprocessing Script must be a python script")
+
+        return Path(to_validate)
+
     # Path to metadata
     METADATA: Path = Path("metadata/meta.yml")
 

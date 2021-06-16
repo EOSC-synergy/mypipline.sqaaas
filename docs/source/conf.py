@@ -86,7 +86,6 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
-    "sphinx_click",
     "recommonmark",
 ]
 

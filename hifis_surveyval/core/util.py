@@ -197,3 +197,18 @@ def create_example_script(settings: Settings) -> None:
         f"{Path(__file__).parent.parent.absolute()}/files/example_script.py",
         settings.SCRIPT_FOLDER.resolve(),
     )
+
+
+def create_preprocessing_script(settings: Settings) -> None:
+    """
+    Create an empty preprocessing script at the default location.
+
+    Args:
+        settings (Settings):
+            Settings of the analysis run.
+    """
+    # copy a file from the packages file payload to the set up scripts folder
+    shutil.copy(
+        f"{Path(__file__).parent.parent.absolute()}/files/preprocess.py",
+        settings.PREPROCESSING_FILENAME.resolve(),
+    )

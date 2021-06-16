@@ -22,7 +22,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-SurveyAnalysis2020
+HIFIS-Surveyval
 ==================
 
 This project is used to develop analysis scripts for the HIFIS Software survey.
@@ -42,6 +42,7 @@ hifis-surveyval itself. Please see the `Developer Guide
    :caption: Contents:
 
    pages/getting_started
+   pages/preprocessing
    pages/development
    pages/api
 

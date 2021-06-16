@@ -98,8 +98,8 @@ meta/
 .reuse/
 
 # test files
-analysis/
 hifis-surveyval.yml
+preprocess.py
 scripts/
 
 # Survey Data
