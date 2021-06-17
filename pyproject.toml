@@ -26,6 +26,7 @@ license = "GPL-3.0-or-later"
 authors = ["HIFIS Software <software@hifis.net>"]
 homepage = "https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval"
 repository = "https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval"
+documentation = "https://hifis.pages.hzdr.de/surveys/hifis-surveyval"
 readme = "README.md"
 classifiers = [
     'Development Status :: 3 - Alpha',
