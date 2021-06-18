@@ -106,6 +106,9 @@ Group your changes into these categories:
 - Adapt file CHANGELOG to document changes made during the developments
   ([!95](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/95)
   by [hueser93](https://gitlab.hzdr.de/hueser93)).
+- Increase version in file `pyproject.toml` to version `1.0.0`
+  ([!96](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/96)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
 
 ### Fixed
 - Enable GitLab CI job trigger to run on merges into default branch
