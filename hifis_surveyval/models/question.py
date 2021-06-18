@@ -25,10 +25,10 @@ These can be constructed from YAML through the YamlConstructable abstract
 class.
 """
 # alias name to avoid clash with schema.Optional
-from typing import Dict, List
-from typing import Optional as typing_Optional
+from typing import Dict, List, Optional
 
-from schema import Optional, Schema
+import schema
+from pandas import Series
 
 from hifis_surveyval.models.answer_option import AnswerOption
 from hifis_surveyval.models.answer_types import VALID_ANSWER_TYPES
@@ -57,15 +57,15 @@ class Question(YamlConstructable, Identifiable):
     token_DATA_TYPE = "datatype"
     token_MANDATORY = "mandatory"
 
-    schema = Schema(
+    schema = schema.Schema(
         {
             token_ID: str,
             token_LABEL: str,
             token_TEXT: dict,
             token_DATA_TYPE: lambda t: t in VALID_ANSWER_TYPES,
             token_MANDATORY: bool,
-            Optional(token_ANSWER_OPTIONS, default=[]): list,
-            Optional(str): object,  # Catchall for unsupported yaml data
+            schema.Optional(token_ANSWER_OPTIONS, default=[]): list,
+            schema.Optional(str): object,  # Catchall for unsupported yaml data
         }
     )
 
@@ -126,7 +126,7 @@ class Question(YamlConstructable, Identifiable):
 
         # The actual answers are not part of the metadata but have to be read
         # from other sources in a separate step
-        self._answers: Dict[str, typing_Optional[answer_type]] = {}
+        self._answers: Dict[str, Optional[answer_type]] = {}
 
     def add_answer(self, participant_id: str, value: str):
         """
@@ -172,6 +172,44 @@ class Question(YamlConstructable, Identifiable):
             value = self._answer_type(value)
 
         self._answers[participant_id] = value
+
+    @property
+    def answers(self) -> Dict[str, Optional[object]]:  # NOTE (0) below
+        """
+        Obtain the given answers as read from the survey data.
+
+        The answers are given as a mapping:
+        participant ID -> participant answer
+
+        The participant ID will be a string, while the answers may be
+        assumed to be of the answer_type of the Question.
+        If the Question is not mandatory, answers may also be None.
+
+        Returns:
+            The mapping from participant ID to the participant's answer for
+            this question.
+        """
+        return self._answers
+
+    # (0) Sadly I found no better way to narrow down the type since I could
+    # not refer to self._answer_type when specifying the return type.
+    # Suggestions for improvement are welcome.
+
+    def as_series(self) -> Series:
+        """
+        Obtain the answers to this question as a pandas.Series.
+
+        The series' index are the participant IDs, while data for the
+        indices are the respective answers.
+
+        The series will be named with the question's full ID.
+
+        Returns:
+            A pandas.Series representing the answers for each participant
+        """
+        series = Series(self._answers)
+        series.name = self.full_id
+        return series
 
     @staticmethod
     def _from_yaml_dictionary(yaml: YamlDict, **kwargs) -> "Question":

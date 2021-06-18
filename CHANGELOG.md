@@ -86,6 +86,9 @@ Group your changes into these categories:
 - Add URL of project documentation to file `pyproject.toml` for PyPi.org
   ([!94](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/94)
   by [Normo](https://gitlab.hzdr.de/Normo)).
+- Re-enable access to data as pandas DataFrames
+  ([!88](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/88)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
   
 ### Changed
 - Change Makefile and GitLab CI pipeline

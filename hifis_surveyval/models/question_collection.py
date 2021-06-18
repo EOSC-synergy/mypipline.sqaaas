@@ -25,7 +25,10 @@ These can be constructed from YAML through the YamlConstructable abstract
 class.
 """
 from typing import Dict, List
+from typing import Optional as typing_Optional
+from typing import Union
 
+from pandas import DataFrame, Series, concat
 from schema import Optional, Schema
 
 from hifis_surveyval.models.mixins.identifiable import Identifiable
@@ -106,6 +109,41 @@ class QuestionCollection(YamlConstructable, Identifiable):
             KeyError - if no question with the given ID did exist.
         """
         return self._questions[question_short_id]
+
+    def as_data_frame(
+        self, exclude_labels: typing_Optional[Union[str, List[str]]] = None
+    ) -> DataFrame:
+        """
+        Gather the answers given to each question as a data frame.
+
+        Args:
+            exclude_labels:
+                A short label or a list of short labels for questions that
+                are to be excluded from the data frame.
+
+        Returns:
+            A pandas data frame with participants in the rows and the
+            questions of this collection in the columns. The fields in
+            the data frame then contain the answer to a question for a
+            given participant.
+        """
+        excluded = []
+        if isinstance(exclude_labels, str):
+            excluded.append(exclude_labels)
+        elif isinstance(exclude_labels, list):
+            excluded.extend(exclude_labels)
+        # Nothing to do in any other case
+
+        question_series: List[Series] = []
+        for (label, question) in self._questions.items():
+            if label in excluded:
+                continue
+            question_series.append(question.as_series())
+        return concat(question_series, axis=1)  # Note (0)
+
+    # Note (0) The series are joined row-wise, so each participant in the
+    # row labels (aka indexes) is associated with each answer according to
+    # the question (Question ID in the column labels).
 
     @staticmethod
     def _from_yaml_dictionary(

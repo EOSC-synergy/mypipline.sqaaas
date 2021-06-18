@@ -101,6 +101,10 @@ meta/
 hifis-surveyval.yml
 preprocess.py
 scripts/
+output/
 
 # Survey Data
 *.csv
+
+# Backups from Meld
+*.orig
