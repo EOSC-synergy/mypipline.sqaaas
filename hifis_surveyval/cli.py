@@ -163,7 +163,7 @@ def analyze(survey_data: click.Path) -> None:
     settings.load_config_file()
 
     surveyval: HIFISSurveyval = HIFISSurveyval(settings=settings)
-    raw_data = DataContainer
+    raw_data: DataContainer = DataContainer()
     logging.info(f"Analyzing file {survey_data.name}")
 
     # Load the metadata
