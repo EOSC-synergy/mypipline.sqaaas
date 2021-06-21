@@ -132,6 +132,8 @@ def init(config: bool, script: bool, preprocess: bool) -> None:
         config (bool): Indicates whether to create a configuration file.
         script (bool): Indicates whether to create an example analysis
                        script.
+        preprocess (bool): Indicates whether to create an example preprocess
+                           script.
     """
     if not config and not script and not preprocess:
         config = True
