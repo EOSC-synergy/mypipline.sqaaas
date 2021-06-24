@@ -115,3 +115,50 @@ $ poetry run make test
 Please consider using [pytest](https://docs.pytest.org/) to write 
 unit test cases for your suggested changes.
 Feel free to add those tests to the GitLab CI pipeline of this project.
+
+## How to Create and Document a Release Tag
+
+As soon as all tasks have been completed regarding the upcoming milestone a 
+release tag may be created in GitLab which triggers the release process via CI
+pipeline to publish the resulting package on [PyPi.org](https://pypi.org).
+The following prerequisites need to be fulfilled:
+
+1. **Change version in file `pyproject.toml`**:
+The semantic versioning number in file `pyproject.toml` needs to be adapted
+to match the version number of the tag to be created.
+
+2. **Add section to file `CHANGELOG`**:
+The file [CHANGELOG](CHANGELOG.md) needs an additional section that 
+states the version to be tagged, a link to the release tag (which is available
+as soon as the tag has been created), the date of tag creation, a link to a list
+of commits done since the last tag, and a lists of all changes and their authors
+that were merged into the default branch via Merge Requests since the last
+release tag.
+This example illustrates how such an entry should look like:
+```
+## [1.0.0](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/releases/v1.0.0) - 2021-06-18
+
+[List of commits](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/compare/v0.3.0...v1.0.0)
+
+### Changed
+- Increase version in file `pyproject.toml` to version `1.0.0`
+  ([!96](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/96)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+```
+
+3. **Create a protected tag:**
+The name of a release tag need to start with a `v` followed by a [semantic
+version number](https://semver.org) like `v1.0.0`. 
+Be aware that only tags that start with a `v` are protected tags and will be
+used as a base for the packages to be published.
+
+4. **Provide release notes:**
+The tag needs to have a title, a message and release notes. 
+These release notes provide a link to the respective entry in file
+[CHANGELOG](CHANGELOG.md) and a link to a list of commits done between the last
+release and the release to be created next, for example:
+```
+Release version 1.0.0. Read the changelog for further information.
+- [Changelog](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/blob/main/CHANGELOG.md#100-2021-06-18)
+- [Commits](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/compare/v0.3.0...v1.0.0)
+```
