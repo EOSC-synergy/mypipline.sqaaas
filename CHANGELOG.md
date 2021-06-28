@@ -33,6 +33,15 @@ Group your changes into these categories:
 
 ## Unreleased
 
+## [1.1.0](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/releases/v1.1.0) - 2021-XX-XX
+
+[List of commits](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/compare/v1.0.1...v1.1.0)
+
+### Changed
+- exclude release links from link checking
+  ([!101](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/101)
+  by [mdolling-gfz](https://gitlab.hzdr.de/mdolling-gfz)).
+  
 ## [1.0.1](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/releases/v1.0.1) - 2021-06-21
 
 [List of commits](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/compare/v1.0.0...v1.0.1)

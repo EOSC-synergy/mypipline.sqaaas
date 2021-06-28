@@ -45,8 +45,15 @@ check_links:
     before_script:
         - gem install awesome_bot
     script:
-        - awesome_bot --allow-redirect --allow-dupe `find . -name "*.md"`
-        - awesome_bot --allow-redirect --allow-dupe `find . -name "*.rst"`
+        - awesome_bot
+          --allow-redirect
+          --allow-dupe
+          -w https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/releases/
+          `find . -name "*.md"`
+        - awesome_bot
+          --allow-redirect
+          --allow-dupe
+          `find . -name "*.rst"`
     rules:
       - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
       - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
