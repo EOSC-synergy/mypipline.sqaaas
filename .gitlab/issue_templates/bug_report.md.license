@@ -1,4 +1,3 @@
-<!--
 hifis-surveyval
 Framework to help developing analysis scripts for the HIFIS Software survey.
 
@@ -18,15 +17,3 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
--->
-
-## License
-
-Copyright © [<YEAR>] [<COPYRIGHT>]
-
-This work is licensed under the following license(s):
-[<SCOPE>]
-
-Please see the individual files for more accurate information.
-
-> **Hint:** We provided the copyright and license information in accordance to the [REUSE Specification 3.0](https://reuse.software/spec/).
