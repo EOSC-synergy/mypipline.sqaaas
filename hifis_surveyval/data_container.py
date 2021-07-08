@@ -27,9 +27,12 @@ functions.
 .. currentmodule:: hifis_surveyval.data_container
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
-
+import logging
 from logging import warning
 from typing import Dict, List, Union
+
+import pandas
+from pandas import DataFrame
 
 from hifis_surveyval.models.mixins.identifiable import Identifiable
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict, YamlList
@@ -169,11 +172,83 @@ class DataContainer(object):
         Returns:
             The question for the given ID.
         Raises:
-            KeyError - if either the collection or the question for the given
-            ID could not be found.
+            KeyError:
+                If either the collection or the question for the given ID
+                could not be found.
         """
         parts: List[str] = full_id.split(Identifiable.HIERARCHY_SEPARATOR)
         collection_id = parts[0]
         question_id = parts[1]
         collection = self.collection_for_id(collection_id)
         return collection.question_for_id(question_id)
+
+    @property
+    def question_collection_ids(self) -> List[str]:
+        """
+        Get the IDs of all question collections.
+
+        Returns:
+            A list of question collection IDs as strings.
+        """
+        return list(self._survey_questions.keys())
+
+    def data_frame_for_ids(self, requested_ids: List[str]) -> DataFrame:
+        """
+        Compose a Data Frame form a list of question (collection) IDs.
+
+        IDs for which no question or question collection can be found will
+        be skipped. These will be logged at debug level.
+
+        Args:
+            requested_ids:
+                A list of full question or question collection IDs,
+                which are to be composed by participant into a single data
+                frame.
+        Returns:
+            A single data frame containing the answers of all participants
+            for the given questions / question collections.
+        """
+        frame_pieces: List[DataFrame] = []
+
+        for piece_id in requested_ids:
+            try:
+                frame_pieces.append(self._frame_for_id(piece_id))
+            except ValueError as error:
+                logging.debug(error)
+                continue
+
+        return pandas.concat(frame_pieces)
+
+    def _frame_for_id(self, piece_id) -> DataFrame:
+        """
+        Obtain a data frame representation for a Question (Collection) ID.
+
+        This is a helper method used to transform either questions or
+        question collections into data frames based on their ID. It a
+        shortcut to be used in data_frame_for_ids() and not meant to be
+        called by the user. Use the appropriate functions of questions and
+        collections instead.
+        Args:
+            piece_id:
+                The full ID of either a question or question collection.
+        Returns:
+            A data frame matching the answers given per participant for the
+            question or question collection identified by the provided ID.
+        Raises:
+            ValueError:
+                When no Question or QuestionCollection with the given ID
+                exists.
+        """
+        try:
+            return self.collection_for_id(piece_id).as_data_frame()
+        except KeyError:
+            pass
+
+        try:
+            return DataFrame(self.question_for_id(piece_id).as_series())
+        except KeyError:
+            pass
+
+        raise ValueError(
+            f"{piece_id} is not a valid " f"question / collection ID"
+        )

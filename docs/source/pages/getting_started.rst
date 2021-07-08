@@ -102,9 +102,10 @@ function of the script. An example script is shown below.
 
 .. code-block:: python
 
+    from hifis_surveyval.data_container import DataContainer
     from hifis_surveyval.hifis_surveyval import HIFISSurveyval
 
-    def run(hifis_surveyval: HIFISSurveyval):
+    def run(hifis_surveyval: HIFISSurveyval, data: DataContainer):
         """Execute example script."""
-        for question in hifis_surveyval.survey_questions:
+        for question in data.question_collection_ids:
             print(question)

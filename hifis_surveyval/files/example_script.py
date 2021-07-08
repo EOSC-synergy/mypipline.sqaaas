@@ -30,5 +30,15 @@ from hifis_surveyval.hifis_surveyval import HIFISSurveyval
 
 def run(hifis_surveyval: HIFISSurveyval, data: DataContainer):
     """Execute example script."""
-    frame = data.get_by_id()
-    hifis_surveyval.printer.print_dataframe(frame)
+    # print all loaded question IDs
+    for question in data.question_collection_ids:
+        print(question)
+
+    # get a pandas dataframe for one or more question collection IDs
+    question_collection_ids = ["Q001", "Q002", "Q009"]
+    dataframe = data.data_frame_for_ids(question_collection_ids)
+    hifis_surveyval.printer.print_dataframe(dataframe)
+
+    # get a pandas dataframe for all questions collections
+    dataframe = data.data_frame_for_ids(data.question_collection_ids)
+    hifis_surveyval.printer.print_dataframe(dataframe)

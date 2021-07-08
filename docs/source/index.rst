@@ -43,6 +43,7 @@ hifis-surveyval itself. Please see the `Developer Guide
 
    pages/getting_started
    pages/preprocessing
+   pages/accessing_data
    pages/development
    pages/api
 
