@@ -24,7 +24,7 @@ This module contains classes to represent groups of survey questions.
 These can be constructed from YAML through the YamlConstructable abstract
 class.
 """
-from typing import Dict, List
+from typing import Dict, List, Set
 from typing import Optional as typing_Optional
 from typing import Union
 
@@ -109,6 +109,18 @@ class QuestionCollection(YamlConstructable, Identifiable):
             KeyError - if no question with the given ID did exist.
         """
         return self._questions[question_short_id]
+
+    def remove_answers(self, participant_ids: Set[str]) -> None:
+        """
+        Remove the answers by the specified participants.
+
+        Args:
+            participant_ids:
+                The IDs of the participants whose answers are to be removed.
+                Invalid IDs are ignored.
+        """
+        for question in self._questions.values():
+            question.remove_answers(participant_ids)
 
     def as_data_frame(
         self, exclude_labels: typing_Optional[Union[str, List[str]]] = None

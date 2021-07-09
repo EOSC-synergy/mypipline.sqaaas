@@ -34,14 +34,39 @@ You can create an empty preprocessing script with the following command:
     hifis-surveyval init -p
 
 Within the preprocessing script, you need to have a function called
-`preprocessing`, which receives a `DataContainer` Object as argument and is
-expected to return a `DataContainer` Object.
+``preprocessing(…)``, which receives a ``DataContainer`` Object as argument
+and is expected to return a ``DataContainer``-instance.
 
-The data you receive is the parsed raw data from csv. You can do whatever
-The data you receive is the parsed raw data from your survey's CSV, enriched with the metadata you provided. 
+The data you receive is the parsed raw data from your survey's CSV, enriched with the metadata you provided.
 You can do whatever you like within the script and modify the data as you wish.
 Common use-cases would be to filter the data, like dropping incomplete questionnaires.
 If you are concerned about reproducibility it is highly recommended to also publish the preprocessing script along with you raw data and metadata.
 
 All analysis scripts run afterwards will receive a copy of the
 `DataContainer` returned by the preprocessing script.
+
+Cleaning Invalid Data
+---------------------
+
+A usual task in preprocessing is to remove data that is invalid for any reason.
+The ``DataContainer`` keeps track of participant IDs for those participants
+that submitted incomplete answer sets.
+An answer set is considered incomplete if not all questions that are marked
+as `mandatory` have been answered.
+You can manually mark the answer sets of participants as invalid by using
+the ``mark_as_invalid(…)``-method of the ``DataContainer``-instance.
+This can be used to also exclude data that you found to be unfitting after
+manual inspection.
+
+Contrary, there is also a ``mark_as_valid(…)``-method to manually override
+decisions made by the framework.
+
+After you have marked the answer sets accordingly, you can call the
+``remove_invalid_answers()``-method to clean up all marked answer sets
+across all questions and collections.
+Please note that this will change your data container irrevocably.
+
+For fine tuning, the ``QuestionCollection``- and ``Question``-classes also
+offer methods to remove answers of selected participants directly.
+
+See also the provided example script for implementation details.

@@ -29,7 +29,7 @@ functions.
 """
 import logging
 from logging import warning
-from typing import Dict, List, Union
+from typing import Dict, List, Set, Union
 
 import pandas
 from pandas import DataFrame
@@ -41,7 +41,15 @@ from hifis_surveyval.models.question_collection import QuestionCollection
 
 
 class DataContainer(object):
-    """The data container holds the data read from the command line."""
+    """
+    The data container holds the data read from the command line.
+
+    All data is grouped into question collections, which in turn hold the
+    questions.
+    During the loading, the DataContainer will keep track of answer sets
+    which contradict the validation rules set in the metadata (e.g. no
+    answer being given despite being mandatory.
+    """
 
     #: Name of the ID column in the Limesurvey CSV data
     ID_COLUMN_NAME: str = "id"
@@ -49,6 +57,8 @@ class DataContainer(object):
     def __init__(self):
         """Set up an empty data container."""
         self._survey_questions: Dict[str, QuestionCollection] = {}
+        self._invalid_answer_sets: Set[str] = set()
+        # Track participant IDs with invalid answer sets.
 
     @property
     def survey_questions(self) -> List[QuestionCollection]:
@@ -60,6 +70,17 @@ class DataContainer(object):
             questions.
         """
         return list(self._survey_questions.values())
+
+    @property
+    def invalid_answer_sets(self) -> Set[str]:
+        """
+        Get all participants who gave invalid answers.
+
+        Returns:
+            A set with the IDs of participants who had their answers marked
+            as invalid.
+        """
+        return self._invalid_answer_sets
 
     def load_metadata(self, yaml: Union[YamlList, YamlDict]) -> None:
         """
@@ -181,6 +202,39 @@ class DataContainer(object):
         question_id = parts[1]
         collection = self.collection_for_id(collection_id)
         return collection.question_for_id(question_id)
+
+    def remove_invalid_answer_sets(self) -> None:
+        """
+        Remove answer sets that were marked as invalid.
+
+        The answers are removed on a per-participant basis.
+        """
+        for collection in self._survey_questions.values():
+            collection.remove_answers(self._invalid_answer_sets)
+
+    def mark_answers_invalid(self, participant_ids: Set[str]) -> None:
+        """
+        Mark the answers given by participants as invalid.
+
+        Args:
+            participant_ids:
+                The IDs of participants who gave invalid answers.
+        """
+        self._invalid_answer_sets.update(participant_ids)
+
+    def mark_answers_valid(self, participant_ids: Set[str]) -> None:
+        """
+        Mark the answers given by participants as valid.
+
+        NOTE: This does not restore previously removed invalid answers.
+        Invalid IDs are silently ignored.
+
+        Args:
+            participant_ids:
+                The IDs of participants for whom answers are to be marked as
+                valid.
+        """
+        self._invalid_answer_sets.difference_update(participant_ids)
 
     @property
     def question_collection_ids(self) -> List[str]:

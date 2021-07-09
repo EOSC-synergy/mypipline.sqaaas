@@ -25,7 +25,7 @@ These can be constructed from YAML through the YamlConstructable abstract
 class.
 """
 # alias name to avoid clash with schema.Optional
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 
 import schema
 from pandas import Series
@@ -172,6 +172,18 @@ class Question(YamlConstructable, Identifiable):
             value = self._answer_type(value)
 
         self._answers[participant_id] = value
+
+    def remove_answers(self, participant_ids: Set[str]) -> None:
+        """
+        Remove the answers by the specified participants.
+
+        Args:
+            participant_ids:
+                The IDs of the participants whose answers are to be removed.
+                Invalid IDs are ignored.
+        """
+        for participant_id in participant_ids:
+            del self._answers[participant_id]
 
     @property
     def answers(self) -> Dict[str, Optional[object]]:  # NOTE (0) below
