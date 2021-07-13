@@ -33,13 +33,33 @@ Group your changes into these categories:
 
 ## Unreleased
 
-## [1.1.0](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/releases/v1.1.0) - 2021-XX-XX
+## [1.1.0](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/releases/v1.1.0) - 2021-07-13
 
 [List of commits](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/compare/v1.0.1...v1.1.0)
 
+### Added
+- Additional features for preprocessing to mark and filter out specific answers
+  ([!106](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/106)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+- Enable DataContainer to compose a DataFrame from given IDs
+  ([!100](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/100)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+- Add license files for issue templates
+  ([!109](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/109)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+- Write a section in CONTRIBUTING file about how to create and document a tag
+  ([!102](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/102)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+  
 ### Changed
-- exclude release links from link checking
+- Exclude release links from link checking
   ([!101](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/101)
+  by [mdolling-gfz](https://gitlab.hzdr.de/mdolling-gfz)).
+- Change development status classifier to production/stable 
+  ([!97](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/97)
+  by [Normo](https://gitlab.hzdr.de/Normo)).
+- Add documentation of additional flag for preprocessing as a method argument
+  ([!99](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/99)
   by [mdolling-gfz](https://gitlab.hzdr.de/mdolling-gfz)).
   
 ## [1.0.1](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/releases/v1.0.1) - 2021-06-21
@@ -47,7 +67,7 @@ Group your changes into these categories:
 [List of commits](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/compare/v1.0.0...v1.0.1)
 
 ### Added
-- missing documentation for preprocess option of the init command
+- Missing documentation for preprocess option of the init command
   ([!99](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/99)
   by [mdolling-gfz](https://gitlab.hzdr.de/mdolling-gfz)).
 
