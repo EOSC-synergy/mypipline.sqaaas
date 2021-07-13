@@ -171,7 +171,8 @@ def analyze(survey_data: click.Path) -> None:
     # Load the metadata
     logging.info(f"Attempt to load metadata from {settings.METADATA}")
 
-    with settings.METADATA.open(mode="r", encoding="utf-8") as metadata_io_stream:
+    with settings.METADATA.open(mode="r",
+                                encoding="utf-8") as metadata_io_stream:
         metadata_yaml = yaml.safe_load(metadata_io_stream)
         raw_data.load_metadata(metadata_yaml)
 
