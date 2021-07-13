@@ -72,7 +72,7 @@ Sphinx = ">=2.2.0"
 sphinx-rtd-theme = ">=0.4.3"
 black = "^21.6b0"
 flakehell = "^0.9.0"
-flake8 = "==3.9.2"
+flake8 = "==3.9.0"
 recommonmark = "^0.7.1"
 
 [tool.coverage.run]
