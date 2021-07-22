@@ -28,7 +28,7 @@ functions.
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import logging
-from logging import warning
+from logging import warning, debug
 from typing import Dict, List, Set, Union
 
 import pandas
@@ -126,6 +126,7 @@ class DataContainer(object):
                 "Attempt to add QuestionCollection " "with duplicate ID"
             )
         self._survey_questions[new_collection.full_id] = new_collection
+        debug(f"{new_collection.full_id} added successfully")
 
     def load_survey_data(self, csv_data: List[List[str]]) -> None:
         """
@@ -165,7 +166,10 @@ class DataContainer(object):
 
             for (question_index, question) in question_cache.items():
                 answer: str = row[question_index]
-                question.add_answer(participant_id, answer)
+                try:
+                    question.add_answer(participant_id, answer)
+                except (KeyError, ValueError) as error:
+                    warning(f"When loading CSV data: {error}")
 
     def collection_for_id(self, full_id: str) -> QuestionCollection:
         """

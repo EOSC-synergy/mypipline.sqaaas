@@ -85,9 +85,15 @@ class Identifiable(object):
 
         The used ID will be removed from the known IDs and can be re-used.
         """
-        assert self._full_id in Identifiable.known_ids
-
-        Identifiable.known_ids.remove(self._full_id)
+        try:
+            Identifiable.known_ids.remove(self._full_id)
+            # FIXME For some reason removing the full ID from the list of
+            #  known IDs fails due to them already being removed. But why?
+            # This has been put into this little exception-catch box to not
+            # spam the command line output, but I would prefer to understand
+            # better what is going on here…
+        except KeyError:
+            pass
 
     @property
     def short_id(self) -> str:

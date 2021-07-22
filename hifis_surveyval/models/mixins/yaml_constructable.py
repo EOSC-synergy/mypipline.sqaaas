@@ -28,7 +28,7 @@ structure of the YAML to be parsed.
 from abc import ABC, abstractmethod
 from typing import Dict, List, Union
 
-from schema import Or, Schema
+from schema import Or, Schema, SchemaError
 
 # A shorthand type for the kind of lists and dictionaries that can be
 # encountered when parsing YAML data
@@ -85,5 +85,20 @@ class YamlConstructable(ABC):
             A new instance of the overriding subclass
         """
         schema: Schema = cls.schema
-        validated_yaml = schema.validate(yaml)
-        return cls._from_yaml_dictionary(yaml=validated_yaml, **kwargs)
+        try:
+            validated_yaml = schema.validate(yaml)
+            return cls._from_yaml_dictionary(yaml=validated_yaml, **kwargs)
+        except SchemaError as validation_error:
+            # Construct a reduces YAML representation to limit the output in
+            # the error message to the essentials.
+            # This generator expression basically constructs a copy of the
+            # top YAML object, but all values that are either lists or
+            # dictionaries themselves will be replaced by the text "…"
+            reduced_yaml = {
+                key: (
+                    "…" if isinstance(value, dict) or isinstance(value, list)
+                    else value
+                )
+                for (key, value) in yaml.items()
+            }
+            raise ValueError(f"{validation_error} when parsing {reduced_yaml}")
