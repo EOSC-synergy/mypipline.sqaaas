@@ -280,7 +280,7 @@ class DataContainer(object):
                 logging.debug(error)
                 continue
 
-        return pandas.concat(frame_pieces)
+        return pandas.concat(frame_pieces, axis=1)
 
     def _frame_for_id(self, piece_id) -> DataFrame:
         """
