@@ -26,6 +26,7 @@
 
 import pytest
 
+from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict
 from hifis_surveyval.models.question import Question
 from tests.helper.yaml_helper.yaml_reader import YamlReader
@@ -46,7 +47,9 @@ def question_from_metadata(yaml_file_path: str) -> Question:
     target_question_collection_id: str = "Q001"
     metadata_yaml: YamlDict = YamlReader.read_in_yaml_file(yaml_file_path)
     question: Question = Question.from_yaml_dictionary(
-        metadata_yaml[0], parent_id=target_question_collection_id
+        metadata_yaml[0],
+        parent_id=target_question_collection_id,
+        settings=Settings()
     )
     return question
 

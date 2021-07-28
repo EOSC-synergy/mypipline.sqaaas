@@ -167,16 +167,20 @@ class QuestionCollection(YamlConstructable, Identifiable):
         Args:
             yaml:
                 A YAML dictionary describing the Question
-            **kwargs:
-                Only here to satisfy the inherited method signature.
+
+        Keyword Args:
+            settings:
+                (Required) An object representing the application settings.
+
         Returns:
             A new Question containing the provided data
         """
         collection_id = yaml[QuestionCollection.token_ID]
+        settings = kwargs["settings"]
 
         questions = [
             Question.from_yaml_dictionary(
-                yaml=question_yaml, parent_id=collection_id
+                yaml=question_yaml, parent_id=collection_id, settings=settings
             )
             for question_yaml in yaml[QuestionCollection.token_QUESTIONS]
         ]

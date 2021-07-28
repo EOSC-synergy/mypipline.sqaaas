@@ -159,6 +159,10 @@ class FileSettings(BaseSettings):
     # if the output format is not screen
     OUTPUT_FOLDER: Path = Path("output")
 
+    # The key that is used by LimeSurvey to identify the participants' ID
+    # column
+    ID_COLUMN_NAME: str = "id"
+
     class Config:
         """
         Subclass for specification.

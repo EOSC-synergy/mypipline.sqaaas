@@ -30,6 +30,7 @@ from typing import Dict, List, Optional, Set
 import schema
 from pandas import Series
 
+from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.models.answer_option import AnswerOption
 from hifis_surveyval.models.answer_types import VALID_ANSWER_TYPES
 from hifis_surveyval.models.mixins.identifiable import Identifiable
@@ -80,6 +81,7 @@ class Question(YamlConstructable, Identifiable):
         answer_type: type,
         mandatory: bool,
         answer_options: List[AnswerOption],
+        settings: Settings,
     ):
         """
         Initialize a question object with metadata.
@@ -110,8 +112,11 @@ class Question(YamlConstructable, Identifiable):
                 An optional list of predefined answers. If there are none
                 given, the question can have any answer, otherwise the answer
                 must be the short ID of the selected answer option.
+            settings:
+                An object reflecting the application settings.
         """
         super().__init__(question_id, parent_id)
+        self._settings = settings
         self._text = text
         self._label = label
         self._answer_type = answer_type
@@ -221,6 +226,7 @@ class Question(YamlConstructable, Identifiable):
         """
         series = Series(self._answers)
         series.name = self.full_id
+        series.index.name = self._settings.ID_COLUMN_NAME
         return series
 
     @staticmethod
@@ -231,10 +237,14 @@ class Question(YamlConstructable, Identifiable):
         Args:
             yaml:
                 A YAML dictionary describing the Question
-            **kwargs:
-                Must contain the ID of the QuestionCollection-instance to which
-                the newly generated Question belongs as the parameter
-                "parent_id".
+
+        Keyword Args:
+            parent_id:
+                (Required) The full ID of the QuestionCollection this Question
+                belongs to.
+            settings:
+                (Required) An object reflecting the applications settings.
+
         Returns:
             A new Question containing the provided data
         """
@@ -250,6 +260,8 @@ class Question(YamlConstructable, Identifiable):
             for answer_yaml in yaml[Question.token_ANSWER_OPTIONS]
         ]
 
+        settings: Settings = kwargs["settings"]
+
         return Question(
             question_id=question_id,
             parent_id=parent_id,
@@ -258,4 +270,5 @@ class Question(YamlConstructable, Identifiable):
             answer_type=answer_type,
             answer_options=answer_options,
             mandatory=yaml[Question.token_MANDATORY],
+            settings=settings
         )

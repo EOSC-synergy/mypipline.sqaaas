@@ -34,6 +34,7 @@ from typing import Dict, List, Set, Union
 import pandas
 from pandas import DataFrame
 
+from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.models.mixins.identifiable import Identifiable
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict, YamlList
 from hifis_surveyval.models.question import Question
@@ -51,14 +52,18 @@ class DataContainer(object):
     answer being given despite being mandatory.
     """
 
-    #: Name of the ID column in the Limesurvey CSV data
-    ID_COLUMN_NAME: str = "id"
+    def __init__(self, settings: Settings):
+        """
+        Set up an empty data container.
 
-    def __init__(self):
-        """Set up an empty data container."""
+        Args:
+            settings:
+                An object representing the current application settings.
+        """
         self._survey_questions: Dict[str, QuestionCollection] = {}
         self._invalid_answer_sets: Set[str] = set()
         # Track participant IDs with invalid answer sets.
+        self._settings = settings
 
     @property
     def survey_questions(self) -> List[QuestionCollection]:
@@ -119,7 +124,7 @@ class DataContainer(object):
                 A YAML mapping containing the data for one question collection.
         """
         new_collection = QuestionCollection.from_yaml_dictionary(
-            new_collection_yaml
+            new_collection_yaml, settings=self._settings
         )
         if new_collection.full_id in self._survey_questions:
             raise ValueError(
@@ -146,7 +151,7 @@ class DataContainer(object):
         # questions are identical.
 
         # Step 1: Find the column for the participant IDs
-        id_column_index = header.index(DataContainer.ID_COLUMN_NAME)
+        id_column_index = header.index(self._settings.ID_COLUMN_NAME)
 
         # Step 2: Find the Question for each of the headings
         for index in range(0, len(header)):

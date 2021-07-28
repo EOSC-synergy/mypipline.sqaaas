@@ -28,6 +28,7 @@ from typing import List, Union
 
 import pytest
 
+from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict, YamlList
 from tests.helper.csv_helper.csv_reader import CsvReader
@@ -43,7 +44,7 @@ def data_container_fixture() -> DataContainer:
         DataContainer:
             New DataContainer object containing an empty DataFrame object.
     """
-    return DataContainer()
+    return DataContainer(Settings())
 
 
 @pytest.fixture(scope="function")
@@ -99,7 +100,7 @@ def load_metadata(metadata_yaml_file_path: str) -> DataContainer:
         DataContainer:
             DataContainer containing metadata from YAML file.
     """
-    data_container: DataContainer = DataContainer()
+    data_container: DataContainer = DataContainer(Settings())
     metadata: Union[YamlList, YamlDict] = YamlReader.read_in_yaml_file(
         metadata_yaml_file_path
     )
@@ -125,7 +126,7 @@ def load_metadata_and_data(
             DataContainer containing metadata from YAML file and data from
             CSV file.
     """
-    data_container: DataContainer = DataContainer()
+    data_container: DataContainer = DataContainer(Settings())
     metadata: Union[YamlList, YamlDict] = YamlReader.read_in_yaml_file(
         metadata_yaml_file_path
     )

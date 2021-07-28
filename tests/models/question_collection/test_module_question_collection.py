@@ -26,6 +26,7 @@
 
 import pytest
 
+from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict
 from hifis_surveyval.models.question import Question
 from hifis_surveyval.models.question_collection import QuestionCollection
@@ -56,7 +57,8 @@ class TestQuestionCollection(object):
         """
         metadata_yaml: YamlDict = metadata_fixture
         question_collection: QuestionCollection = (
-            QuestionCollection.from_yaml_dictionary(metadata_yaml[0])
+            QuestionCollection.from_yaml_dictionary(metadata_yaml[0],
+                                                    settings=Settings())
         )
         # Make sure that QuestionCollection object can be retrieved by
         # metadata YAML file.
@@ -76,7 +78,8 @@ class TestQuestionCollection(object):
         expected_translated_answer_option_text: str = "No"
         metadata_yaml: YamlDict = metadata_fixture
         question_collection: QuestionCollection = (
-            QuestionCollection.from_yaml_dictionary(metadata_yaml[0])
+            QuestionCollection.from_yaml_dictionary(metadata_yaml[0],
+                                                    settings=Settings())
         )
         answer_option_text: Translated = (
             question_collection.question_for_id(
@@ -107,7 +110,8 @@ class TestQuestionCollection(object):
         """
         metadata_yaml: YamlDict = metadata_fixture
         question_collection: QuestionCollection = (
-            QuestionCollection.from_yaml_dictionary(metadata_yaml[0])
+            QuestionCollection.from_yaml_dictionary(metadata_yaml[0],
+                                                    settings=Settings())
         )
         question: Question = question_collection.question_for_id(
             TestQuestionCollection.question_id
