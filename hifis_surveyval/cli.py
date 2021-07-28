@@ -153,7 +153,7 @@ def init(config: bool, script: bool, preprocess: bool) -> None:
     type=click.Path(exists=True, dir_okay=False, path_type=pathlib.Path),
 )
 @cli.command()
-def analyze(survey_data: click.Path) -> None:
+def analyze(survey_data: pathlib.Path) -> None:
     """
     Read the survey data and run all defined analysis scripts.
 
@@ -163,6 +163,11 @@ def analyze(survey_data: click.Path) -> None:
         survey_data (click.File): File that contains all data for the analysis.
     """
     settings.load_config_file()
+
+    if not survey_data.suffix.lower() == ".csv":
+        logging.error("Loaded data file seems not to be a CSV file.")
+        # TODO Should we also use a regex to look whether the contents matches
+        #  the expected pattern of CSVs?
 
     surveyval: HIFISSurveyval = HIFISSurveyval(settings=settings)
     raw_data: DataContainer = DataContainer(settings=settings)
