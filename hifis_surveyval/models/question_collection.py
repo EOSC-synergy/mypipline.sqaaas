@@ -96,6 +96,16 @@ class QuestionCollection(YamlConstructable, Identifiable):
             question.short_id: question for question in questions
         }
 
+    @property
+    def questions(self) -> List[Question]:
+        """
+        List all questions in this collection.
+
+        Returns:
+            A list with all question objects associated with this collection
+        """
+        return list(self._questions.values())
+
     def question_for_id(self, question_short_id: str) -> Question:
         """
         Obtain a question from the collection for a given short ID.
