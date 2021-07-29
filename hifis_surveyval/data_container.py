@@ -150,17 +150,30 @@ class DataContainer(object):
         # over again. This expects that in each row the indices for the
         # questions are identical.
 
+        # Step 0: Check if all questions are present in the header
+        for question_collection in self._survey_questions.values():
+            for question in question_collection.questions:
+                if question.full_id not in header:
+                    logging.warning(f"Question {question.full_id} was in "
+                                    f"metadata but not in the CSV file")
+
         # Step 1: Find the column for the participant IDs
         id_column_index = header.index(self._settings.ID_COLUMN_NAME)
 
         # Step 2: Find the Question for each of the headings
         for index in range(0, len(header)):
+            if index == id_column_index:
+                # no need to check this, it will not be a question
+                continue
+
             potential_question_id = header[index]
             try:
                 question = self.question_for_id(potential_question_id)
                 question_cache[index] = question
             except (KeyError, IndexError):
-                # TODO: log ignored columns for potential CSV debugging?
+                logging.error(f"While parsing answers for "
+                              f"{potential_question_id}: Question unknown, "
+                              f"check the metadata")
                 continue
 
         assert id_column_index not in question_cache
