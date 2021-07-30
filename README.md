@@ -101,16 +101,17 @@ Command-Line-Interface (CLI).
 ### Quick Start Example: Run Analysis
 
 Due to sensible defaults of the project's configurations you need to have the 
-analysis scripts as well as metadata and data files in certain locations
-in order to run the survey analysis.
+analysis scripts, the preprocessing script as well as metadata and data files
+in certain locations in order to run the survey analysis.
+This configuration file _hifis-surveyval.yml_ which includes these defaults is
+created with the command `hifis-surveyval init`.
 Please put your analysis scripts into a sub-folder called _scripts_.
+The preprocessing script _preprocess.py_ is expected in the root folder of the
+project.
 Make sure that the file _meta.yml_ is put into sub-folder _metadata_.
-Finally, copy the data-CSV-file for example from the 
-[wiki page](https://gitlab.hzdr.de/hifis/survey-about-current-development-practice/-/wikis/home) 
-of the associated GitLab project 
-[Survey about current Development Practice](https://gitlab.hzdr.de/hifis/survey-about-current-development-practice)
-into a central location like a _data_ sub-folder and tell the program the 
-path to that data file.
+Finally, copy the CSV data file of your survey to a central location like a
+_data_ sub-folder and tell the program the path to that data file on the
+command line when running the survey analysis.
 
 Now you can do the following to start the survey analysis from the CLI:
 
@@ -205,32 +206,43 @@ hifis-surveyval init
 This file contains the following information:
 
 ```
+ID_COLUMN_NAME: id
 METADATA: metadata/meta.yml
 OUTPUT_FOLDER: output
-OUTPUT_FORMAT: PNG
+OUTPUT_FORMAT: SCREEN
+PREPROCESSING_FILENAME: preprocess.py
 SCRIPT_FOLDER: scripts
 SCRIPT_NAMES: []
 ```
 
-First of all, each analysis needs metadata about the questions asked in the
-survey and answers that participants may give.
-This metadata file is by default located in a folder called _metadata_
-and named _meta.yml_.
+- With `ID_COLUMN_NAME` you may want to specify the name of the _id_ column in
+  the CSV data file.
+- Each analysis needs metadata about the questions asked in the survey and
+  answers that participants may give.
+  Setting `METADATA` specifies the location of the Metadata file which is by
+  default located in a folder called _metadata_ and named _meta.yml_.
+- You may specify the output folder by setting `OUTPUT_FOLDER` which is named
+  _output_ by default.
+- You may prefer a specific output format like _PDF_, _PNG_, _SVG_ or
+  _SCREEN_ which you may select via `OUTPUT_FORMAT`.
+  The default value is _SCREEN_.
+  Note: Be aware that other output formats like text or markdown files may be
+  created, which depends largely upon the implementation of the analysis
+  scripts.
+- You might want to tell the program where to find the preprocessing file
+  _preprocess.py_ that preprocesses and filters your survey data according to 
+  specific rules.
+  You can do so by setting `PREPROCESSING_FILENAME`.
+- You may specify the folder which contains the analysis scripts with setting
+  `SCRIPT_FOLDER`, which is the _scripts_ folder by default.
+- With `SCRIPT_NAMES` you may select a subset of the analysis scripts available
+  as a list that ought to be executed.
+  This list is empty by default, which means, all scripts are executed.
 
-Second, you may specify the output folder which is named _output_ by default.
+Additional to the configuration file there are two more files created:
 
-Third, you may prefer a specific output format like _PDF_, _PNG_, _SVG_ or 
-_SCREEN_.
-The default value is _PNG_.
-Note: Be aware that other output formats like text or markdown files may be 
-created, which depends largely upon the implementation of the analysis scripts.
-
-Fourth, you may specify the folder which contains the analysis scripts, which
-is the _scripts_ folder by default.
-
-Finally, you may select a subset of the analysis scripts available as a list
-that ought to be executed.
-This list is empty by default, which means, all scripts are executed.
+1. File _preprocess.py_ is created in the root folder of the project.
+2. File _example_script.py_ is created in the _scripts_ folder of the project.
 
 #### Command _analyze_
 

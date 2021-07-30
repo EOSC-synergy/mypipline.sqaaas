@@ -28,34 +28,6 @@ from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.hifis_surveyval import HIFISSurveyval
 
 
-def preprocess(data: DataContainer) -> DataContainer:
-    """Preprocess raw data."""
-    # The IDs of the participants who gave invalid answers
-    # that we found after manual inspection
-    invalid_answer_sets = {
-        "participant_0",
-        "participant_1",
-    }
-
-    # The IDs of the participants who's answers we want to keep regardless
-    keep_answer_sets = {
-        "participant_2",
-        "participant_3",
-    }
-
-    # Mark answers to remove/keep
-    data.mark_answers_invalid(invalid_answer_sets)
-    data.mark_answers_valid(keep_answer_sets)
-
-    # Print our selection (just for reference)
-    print(data.invalid_answer_sets)
-
-    # Remove the marked answers
-    data.remove_invalid_answer_sets()
-
-    return data
-
-
 def run(hifis_surveyval: HIFISSurveyval, data: DataContainer):
     """Execute example script."""
     # print all loaded question IDs
