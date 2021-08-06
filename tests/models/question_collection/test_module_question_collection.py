@@ -23,14 +23,19 @@
 # -*- coding: utf-8 -*-
 
 """Provide pytest test cases for module question_collection."""
+from typing import List
 
 import pytest
+from pandas import DataFrame
 
 from hifis_surveyval.core.settings import Settings
+from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict
 from hifis_surveyval.models.question import Question
 from hifis_surveyval.models.question_collection import QuestionCollection
 from hifis_surveyval.models.translated import Translated
+from tests.helper.data_structure_helper.data_structure_creator import \
+    DataStructureCreator
 
 
 class TestQuestionCollection(object):
@@ -120,3 +125,80 @@ class TestQuestionCollection(object):
         assert isinstance(
             question, Question
         ), "Object is not of type Question."
+
+    @pytest.mark.ci
+    @pytest.mark.parametrize(
+        "metadata_yaml_file_path,test_data_csv_file_path",
+        [
+            [
+                "tests/models/question_collection/fixtures/"
+                "metadata-single-question-collection-three-questions.yml",
+                "tests/models/question_collection/fixtures/"
+                "test_data_for_module_question_collection.csv"
+            ],
+        ],
+    )
+    def test_as_data_frame_works(
+            self,
+            data_container_load_metadata_and_data_fixture: DataContainer):
+        """
+        Tests that the DataFrame retrieved from Collection is correct.
+
+        Args:
+            data_container_load_metadata_and_data_fixture (DataContainer):
+                DataContainer containing metadata from YAML file and data from
+                CSV file.
+        """
+        expected_data_dict = {"id": ["1", "2", "3"],
+                              "Q001/SQ001": ["No", "Yes", "I do not know"],
+                              "Q001/SQ002": ["Yes", "I do not know", "No"],
+                              "Q001/SQ003": ["I do not know", "No", "Yes"]}
+        expected_frame: DataFrame = DataStructureCreator. \
+            create_dataframe_from_dict(expected_data_dict)
+        question_collection_id: str = "Q001"
+        question_collection: QuestionCollection = \
+            data_container_load_metadata_and_data_fixture \
+            .collection_for_id(question_collection_id)
+        actual_data_frame: DataFrame = question_collection.as_data_frame()
+        # Make sure that expected and actual DataFrames are equal.
+        assert actual_data_frame.equals(expected_frame), \
+            "Expected and actual DataFrames are not equal."
+
+    @pytest.mark.ci
+    @pytest.mark.parametrize(
+        "metadata_yaml_file_path,test_data_csv_file_path",
+        [
+            [
+                "tests/models/question_collection/fixtures/"
+                "metadata-single-question-collection-three-questions.yml",
+                "tests/models/question_collection/fixtures/"
+                "test_data_for_module_question_collection.csv"
+            ],
+        ],
+    )
+    def test_as_data_frame_works_check_question_subset(
+            self,
+            data_container_load_metadata_and_data_fixture: DataContainer):
+        """
+        Tests that the DataFrame subset retrieved from Collection is correct.
+
+        Args:
+            data_container_load_metadata_and_data_fixture (DataContainer):
+                DataContainer containing metadata from YAML file and data from
+                CSV file.
+        """
+        expected_data_dict = {"id": ["1", "2", "3"],
+                              "Q001/SQ001": ["No", "Yes", "I do not know"],
+                              "Q001/SQ003": ["I do not know", "No", "Yes"]}
+        expected_frame: DataFrame = DataStructureCreator. \
+            create_dataframe_from_dict(expected_data_dict)
+        question_collection_id: str = "Q001"
+        exclude_list_question_ids: List[str] = ["SQ002"]
+        question_collection: QuestionCollection = \
+            data_container_load_metadata_and_data_fixture \
+            .collection_for_id(question_collection_id)
+        actual_data_frame: DataFrame = \
+            question_collection.as_data_frame(exclude_list_question_ids)
+        # Make sure that expected and actual DataFrames are equal.
+        assert actual_data_frame.equals(expected_frame), \
+            "Expected and actual DataFrames are not equal."
