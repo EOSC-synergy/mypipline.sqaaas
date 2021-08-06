@@ -25,11 +25,15 @@
 """Provide pytest test cases for module question."""
 
 import pytest
+from pandas import Series
 
 from hifis_surveyval.core.settings import Settings
+from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict
 from hifis_surveyval.models.question_collection import Question
 from hifis_surveyval.models.translated import Translated
+from tests.helper.data_structure_helper.data_structure_creator import \
+    DataStructureCreator
 from tests.helper.yaml_helper.yaml_reader import YamlReader
 
 
@@ -52,7 +56,7 @@ class TestQuestion(object):
     def test_from_yaml_dictionary_works_check_type(self) -> None:
         """Tests that getting a Question object given metadata works."""
         yaml_file_path: str = (
-            "./tests/models/question/fixtures/" "metadata-single-question.yml"
+            "./tests/models/question/fixtures/metadata-single-question.yml"
         )
         metadata_yaml: YamlDict = YamlReader.read_in_yaml_file(yaml_file_path)
         question: Question = Question.from_yaml_dictionary(
@@ -71,7 +75,7 @@ class TestQuestion(object):
         """Tests that getting a Question object given metadata works."""
         expected_question_id: str = TestQuestion.question_id
         yaml_file_path: str = (
-            "./tests/models/question/fixtures/" "metadata-single-question.yml"
+            "./tests/models/question/fixtures/metadata-single-question.yml"
         )
         metadata_yaml: YamlDict = YamlReader.read_in_yaml_file(yaml_file_path)
         question: Question = Question.from_yaml_dictionary(
@@ -90,7 +94,7 @@ class TestQuestion(object):
         """Tests that getting a Question object given metadata works."""
         expected_translated_answer_option_text: str = "No"
         yaml_file_path: str = (
-            "./tests/models/question/fixtures/" "metadata-single-question.yml"
+            "./tests/models/question/fixtures/metadata-single-question.yml"
         )
         metadata_yaml: YamlDict = YamlReader.read_in_yaml_file(yaml_file_path)
         question: Question = Question.from_yaml_dictionary(
@@ -211,3 +215,38 @@ class TestQuestion(object):
         assert (
             actual_given_answer_value == expected_given_answer_value
         ), "Given answer of participant is not casted correctly."
+
+    @pytest.mark.ci
+    @pytest.mark.parametrize(
+        "metadata_yaml_file_path,test_data_csv_file_path",
+        [
+            [
+                "tests/models/question/fixtures/"
+                "metadata-single-question-collection.yml",
+                "tests/models/question/fixtures/"
+                "test_data_for_module_question.csv",
+            ]
+        ],
+    )
+    def test_as_series_works_check_series(
+        self, data_container_load_metadata_and_data_fixture: DataContainer
+    ) -> None:
+        """
+        Tests that unit returns a Series for given collection ID.
+
+        Args:
+            data_container_load_metadata_and_data_fixture (DataContainer):
+                Fixture that sets up a DataContainer object with metadata and
+                data to be used in the test cases.
+        """
+        question_collection_id: str = "Q001/SQ001"
+        expected_data_dict = {"1": "No", "2": "Yes", "3": "Maybe"}
+        expected_series: Series = DataStructureCreator. \
+            create_series_from_dict(expected_data_dict, question_collection_id)
+        question: Question = \
+            data_container_load_metadata_and_data_fixture \
+            .question_for_id(question_collection_id)
+        actual_series: Series = question.as_series()
+        # Make sure that expected and actual Series are equal.
+        assert actual_series.equals(expected_series), \
+            "Expected and actual Series are not equal."
