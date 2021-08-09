@@ -28,7 +28,7 @@ functions.
 .. moduleauthor:: HIFIS Software <software@hifis.net>
 """
 import logging
-from logging import warning, debug
+from logging import debug, warning
 from typing import Dict, List, Set, Union
 
 import pandas

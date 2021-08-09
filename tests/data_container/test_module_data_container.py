@@ -27,6 +27,7 @@
 from typing import Dict, List, Optional, Union
 
 import pytest
+from pandas import DataFrame
 
 from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.models.answer_option import AnswerOption
@@ -35,6 +36,8 @@ from hifis_surveyval.models.mixins.yaml_constructable import YamlDict, YamlList
 from hifis_surveyval.models.question import Question
 from hifis_surveyval.models.question_collection import QuestionCollection
 from hifis_surveyval.models.translated import Translated
+from tests.helper.data_structure_helper.data_structure_creator import \
+    DataStructureCreator
 
 
 class TestDataContainer(object):
@@ -63,12 +66,10 @@ class TestDataContainer(object):
             data_container_fixture (DataContainer):
                 Fixture that provides an empty DataContainer.
         """
-        # Get new empty DataContainer.
-        data_container: DataContainer = data_container_fixture
         # Make sure that list of QuestionCollections in DataContainer is empty
         # initially.
         assert (
-            not data_container.survey_questions
+            not data_container_fixture.survey_questions
         ), "Metadata is not empty initially."
 
     @pytest.mark.ci
@@ -80,19 +81,18 @@ class TestDataContainer(object):
         ],
     )
     def test_load_metadata_works_check_question_collection_count(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that loading metadata works and checks question collection count.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
         expected_count_question_collection: int = 1
-        data_container: DataContainer = load_metadata
         actual_count_question_collection: int = len(
-            data_container.survey_questions
+            data_container_load_metadata_fixture.survey_questions
         )
         # Make sure that one QuestionCollection is in the list of
         # QuestionCollections.
@@ -110,18 +110,18 @@ class TestDataContainer(object):
         ],
     )
     def test_load_metadata_works_check_question_collection_type(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that loading metadata works and checks type of collection object.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
-        data_container: DataContainer = load_metadata
         question_collection: QuestionCollection = (
-            data_container.collection_for_id(TestDataContainer.collection_id)
+            data_container_load_metadata_fixture
+            .collection_for_id(TestDataContainer.collection_id)
         )
         # Make sure that object is of type QuestionCollection.
         assert isinstance(
@@ -137,19 +137,19 @@ class TestDataContainer(object):
         ],
     )
     def test_load_metadata_works_check_question_type(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that loading metadata works and checks type of question object.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
-        data_container: DataContainer = load_metadata
-        question: Question = data_container.collection_for_id(
-            TestDataContainer.collection_id
-        ).question_for_id(TestDataContainer.question_id)
+        question: Question = data_container_load_metadata_fixture\
+            .collection_for_id(
+                TestDataContainer.collection_id
+            ).question_for_id(TestDataContainer.question_id)
         # Make sure that object is of type Question.
         assert isinstance(
             question, Question
@@ -164,18 +164,18 @@ class TestDataContainer(object):
         ],
     )
     def test_load_metadata_works_check_answer_option_type(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that loading metadata works and checks type of answer object.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
-        data_container: DataContainer = load_metadata
         answer_option: AnswerOption = (
-            data_container.collection_for_id(TestDataContainer.collection_id)
+            data_container_load_metadata_fixture
+            .collection_for_id(TestDataContainer.collection_id)
             .question_for_id(TestDataContainer.question_id)
             ._answer_options[TestDataContainer.answer_option_id]
         )
@@ -193,18 +193,18 @@ class TestDataContainer(object):
         ],
     )
     def test_load_metadata_works_check_translated_answer_text(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that loading metadata works and checks translated answer text.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
-        data_container: DataContainer = load_metadata
         translated_answer: Translated = (
-            data_container.collection_for_id(TestDataContainer.collection_id)
+            data_container_load_metadata_fixture
+            .collection_for_id(TestDataContainer.collection_id)
             .question_for_id(TestDataContainer.question_id)
             ._answer_options[TestDataContainer.answer_option_id]
             .text
@@ -227,19 +227,18 @@ class TestDataContainer(object):
         ],
     )
     def test_load_multi_metadata_works_check_collection_count(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that loading multiple metadata works and check collection count.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
         expected_count_question_collection: int = 2
-        data_container: DataContainer = load_metadata
         actual_count_question_collection: int = len(
-            data_container.survey_questions
+            data_container_load_metadata_fixture.survey_questions
         )
         # Make sure that two QuestionCollections are in the list of
         # QuestionCollections.
@@ -257,19 +256,19 @@ class TestDataContainer(object):
         ],
     )
     def test_load_multi_metadata_works_check_collection_type(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that loading multiple metadata works and check collection count.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
         question_collection_id: str = "Q002"
-        data_container: DataContainer = load_metadata
         question_collection: QuestionCollection = (
-            data_container.collection_for_id(question_collection_id)
+            data_container_load_metadata_fixture
+            .collection_for_id(question_collection_id)
         )
         # Make sure that object is of type QuestionCollection.
         assert isinstance(
@@ -285,21 +284,20 @@ class TestDataContainer(object):
         ],
     )
     def test_load_multi_metadata_works_check_question_type(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that loading multi metadata works and checks type of question.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
         question_collection_id: str = "Q002"
         question_id: str = "SQ002"
-        data_container: DataContainer = load_metadata
-        question: Question = data_container.collection_for_id(
-            question_collection_id
-        ).question_for_id(question_id)
+        question: Question = data_container_load_metadata_fixture \
+            .collection_for_id(question_collection_id) \
+            .question_for_id(question_id)
         # Make sure that object is of type question.
         assert isinstance(
             question, Question
@@ -314,21 +312,21 @@ class TestDataContainer(object):
         ],
     )
     def test_load_multi_metadata_works_check_answer_option_type(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that loading multi metadata works and checks type of answer.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
         question_collection_id: str = "Q002"
         question_id: str = "SQ002"
         answer_option_id: str = "A002"
-        data_container: DataContainer = load_metadata
         answer_option: AnswerOption = (
-            data_container.collection_for_id(question_collection_id)
+            data_container_load_metadata_fixture
+            .collection_for_id(question_collection_id)
             .question_for_id(question_id)
             ._answer_options[answer_option_id]
         )
@@ -346,13 +344,13 @@ class TestDataContainer(object):
         ],
     )
     def test_load_multi_metadata_works_check_translated_answer_text(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that loading multi metadata works and checks translated answer.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
         expected_translated_answer_text: str = "No"
@@ -360,9 +358,9 @@ class TestDataContainer(object):
         question_id: str = "SQ002"
         answer_option_id: str = "A002"
         translation_language_code: str = "en"
-        data_container: DataContainer = load_metadata
         translated_answer: Translated = (
-            data_container.collection_for_id(question_collection_id)
+            data_container_load_metadata_fixture
+            .collection_for_id(question_collection_id)
             .question_for_id(question_id)
             ._answer_options[answer_option_id]
             .text
@@ -402,12 +400,11 @@ class TestDataContainer(object):
                 If metadata contains duplicated IDs.
         """
         metadata: Union[YamlList, YamlDict] = read_in_metadata_yaml_file
-        data_container: DataContainer = data_container_fixture
-        data_container._add_collection_from_yaml(metadata[0])
+        data_container_fixture._add_collection_from_yaml(metadata[0])
         # Make sure that ValueError is raised when facing duplicate
         # QuestionCollection IDs.
         with pytest.raises(ValueError):
-            data_container._add_collection_from_yaml(metadata[1])
+            data_container_fixture._add_collection_from_yaml(metadata[1])
 
     @pytest.mark.ci
     @pytest.mark.parametrize(
@@ -433,9 +430,8 @@ class TestDataContainer(object):
                 Fixture that provides metadata from YAML file.
         """
         metadata: Union[YamlList, YamlDict] = read_in_metadata_yaml_file
-        data_container: DataContainer = data_container_fixture
-        data_container.load_metadata(metadata[0])
-        data_container.load_metadata(metadata[1])
+        data_container_fixture.load_metadata(metadata[0])
+        data_container_fixture.load_metadata(metadata[1])
         # Make sure that warning is logged when facing duplicate
         # QuestionCollection IDs.
         assert (
@@ -508,7 +504,7 @@ class TestDataContainer(object):
     )
     def test_load_survey_data_works_check_given_answer_type(
         self,
-        load_metadata_and_data: DataContainer,
+        data_container_load_metadata_and_data_fixture: DataContainer,
         collection_id: str,
         expected_type: type,
     ) -> None:
@@ -516,7 +512,7 @@ class TestDataContainer(object):
         Tests that loading survey data works and check answer type.
 
         Args:
-            load_metadata_and_data (DataContainer):
+            data_container_load_metadata_and_data_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata and
                 data.
             collection_id (str):
@@ -526,9 +522,9 @@ class TestDataContainer(object):
         """
         question_id: str = "SQ001"
         answer_id: str = "1"
-        data_container: DataContainer = load_metadata_and_data
         actual_answer_type: type = type(
-            data_container.collection_for_id(collection_id)
+            data_container_load_metadata_and_data_fixture
+            .collection_for_id(collection_id)
             .question_for_id(question_id)
             ._answers[answer_id]
         )
@@ -586,7 +582,7 @@ class TestDataContainer(object):
     )
     def test_load_survey_data_works_check_given_answer_value(
         self,
-        load_metadata_and_data: DataContainer,
+        data_container_load_metadata_and_data_fixture: DataContainer,
         collection_id: str,
         expected_value: Union[bool, str, int, float],
     ) -> None:
@@ -594,7 +590,7 @@ class TestDataContainer(object):
         Tests that loading survey data works and check answer value.
 
         Args:
-            load_metadata_and_data (DataContainer):
+            data_container_load_metadata_and_data_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata and
                 data.
             collection_id (str):
@@ -604,9 +600,9 @@ class TestDataContainer(object):
         """
         question_id: str = "SQ001"
         answer_id: str = "1"
-        data_container: DataContainer = load_metadata_and_data
         actual_answer_value: Union[bool, str, int, float] = (
-            data_container.collection_for_id(collection_id)
+            data_container_load_metadata_and_data_fixture
+            .collection_for_id(collection_id)
             .question_for_id(question_id)
             ._answers[answer_id]
         )
@@ -628,19 +624,19 @@ class TestDataContainer(object):
         ],
     )
     def test_load_survey_data_with_wrong_keys_works_check_collection_count(
-        self, load_metadata_and_data: DataContainer
+        self, data_container_load_metadata_and_data_fixture: DataContainer
     ) -> None:
         """
         Tests that loading survey data works also with wrong keys.
 
         Args:
-            load_metadata_and_data (DataContainer):
+            data_container_load_metadata_and_data_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata and
                 data.
         """
         expected_question_collection_count: int = 7
-        data_container: DataContainer = load_metadata_and_data
-        collections: List[QuestionCollection] = data_container.survey_questions
+        collections: List[QuestionCollection] = \
+            data_container_load_metadata_and_data_fixture.survey_questions
         count_collections: int = len(collections)
         # Make sure that seven QuestionCollections are in the list of
         # QuestionCollections.
@@ -661,21 +657,21 @@ class TestDataContainer(object):
         ],
     )
     def test_load_survey_data_with_wrong_keys_works_check_question_count(
-        self, load_metadata_and_data: DataContainer
+        self, data_container_load_metadata_and_data_fixture: DataContainer
     ) -> None:
         """
         Tests that loading survey data works also with wrong keys.
 
         Args:
-            load_metadata_and_data (DataContainer):
+            data_container_load_metadata_and_data_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata and
                 data.
         """
         expected_question_count_from_metadata: int = 1
-        data_container: DataContainer = load_metadata_and_data
-        questions: Dict[str, Question] = data_container.collection_for_id(
-            TestDataContainer.collection_id
-        )._questions
+        questions: Dict[str, Question] = \
+            data_container_load_metadata_and_data_fixture \
+            .collection_for_id(TestDataContainer.collection_id) \
+            ._questions
         count_questions: int = len(questions)
         # Make sure that one Question is in the list of Questions.
         assert (
@@ -695,20 +691,20 @@ class TestDataContainer(object):
         ],
     )
     def test_load_survey_data_with_wrong_keys_works_check_answer_count(
-        self, load_metadata_and_data: DataContainer
+        self, data_container_load_metadata_and_data_fixture: DataContainer
     ) -> None:
         """
         Tests that loading survey data works also with wrong keys.
 
         Args:
-            load_metadata_and_data (DataContainer):
+            data_container_load_metadata_and_data_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata and
                 data.
         """
         expected_answer_count_from_data: int = 0
-        data_container: DataContainer = load_metadata_and_data
         answers: Dict[str, Optional[Union[bool, str, int, float]]] = (
-            data_container.collection_for_id(TestDataContainer.collection_id)
+            data_container_load_metadata_and_data_fixture
+            .collection_for_id(TestDataContainer.collection_id)
             .question_for_id(TestDataContainer.question_id)
             ._answers
         )
@@ -727,18 +723,18 @@ class TestDataContainer(object):
         ],
     )
     def test_collection_for_id_works_check_object_type(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that retrieving a QuestionCollection entry works.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
-        data_container: DataContainer = load_metadata
         question_collection: QuestionCollection = (
-            data_container.collection_for_id(TestDataContainer.collection_id)
+            data_container_load_metadata_fixture
+            .collection_for_id(TestDataContainer.collection_id)
         )
         # Make sure that object is of type QuestionCollection.
         assert isinstance(
@@ -754,20 +750,20 @@ class TestDataContainer(object):
         ],
     )
     def test_collection_for_id_works_check_full_id(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that retrieving a QuestionCollection entry works.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
         expected_question_collection_id: str = "Q001"
-        data_container: DataContainer = load_metadata
-        question_collection_full_id: str = data_container.collection_for_id(
-            TestDataContainer.collection_id
-        )._full_id
+        question_collection_full_id: str = \
+            data_container_load_metadata_fixture.collection_for_id(
+                TestDataContainer.collection_id
+            )._full_id
         # Make sure that QuestionCollection has correct full ID.
         assert (
             question_collection_full_id == expected_question_collection_id
@@ -782,22 +778,20 @@ class TestDataContainer(object):
         ],
     )
     def test_question_for_id_in_question_collection_works_check_object_type(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that retrieving a Question entry works.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
         target_question_full_id: str = (
             f"Q001{Identifiable.HIERARCHY_SEPARATOR}SQ001"
         )
-        data_container: DataContainer = load_metadata
-        question: Question = data_container.question_for_id(
-            target_question_full_id
-        )
+        question: Question = data_container_load_metadata_fixture \
+            .question_for_id(target_question_full_id)
         # Make sure that object is of type QuestionCollection.
         assert isinstance(
             question, Question
@@ -812,22 +806,20 @@ class TestDataContainer(object):
         ],
     )
     def test_question_for_id_in_question_collection_works_check_full_id(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that retrieving a Question entry works.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
         target_question_full_id: str = (
             f"Q001{Identifiable.HIERARCHY_SEPARATOR}SQ001"
         )
-        data_container: DataContainer = load_metadata
-        question_full_id: str = data_container.question_for_id(
-            target_question_full_id
-        )._full_id
+        question_full_id: str = data_container_load_metadata_fixture \
+            .question_for_id(target_question_full_id)._full_id
         # Make sure that Question has correct full ID.
         assert (
             question_full_id == target_question_full_id
@@ -842,19 +834,18 @@ class TestDataContainer(object):
         ],
     )
     def test_question_for_id_works_check_question_type(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that retrieving a Question entry works.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
-        data_container: DataContainer = load_metadata
-        question: Question = data_container.collection_for_id(
-            TestDataContainer.collection_id
-        ).question_for_id(TestDataContainer.question_id)
+        question: Question = data_container_load_metadata_fixture \
+            .collection_for_id(TestDataContainer.collection_id) \
+            .question_for_id(TestDataContainer.question_id)
         # Make sure that object is of type Question.
         assert isinstance(
             question, Question
@@ -869,21 +860,21 @@ class TestDataContainer(object):
         ],
     )
     def test_question_for_id_works_check_question_full_id(
-        self, load_metadata: DataContainer
+        self, data_container_load_metadata_fixture: DataContainer
     ) -> None:
         """
         Tests that retrieving a Question entry works.
 
         Args:
-            load_metadata (DataContainer):
+            data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
         expected_question_full_id: str = (
             f"Q001{Identifiable.HIERARCHY_SEPARATOR}SQ001"
         )
-        data_container: DataContainer = load_metadata
         question_full_id: str = (
-            data_container.collection_for_id(TestDataContainer.collection_id)
+            data_container_load_metadata_fixture
+            .collection_for_id(TestDataContainer.collection_id)
             .question_for_id(TestDataContainer.question_id)
             ._full_id
         )
@@ -891,3 +882,72 @@ class TestDataContainer(object):
         assert (
             question_full_id == expected_question_full_id
         ), "Wrong Question object has been retrieved."
+
+    @pytest.mark.ci
+    @pytest.mark.parametrize(
+        "metadata_yaml_file_path,test_data_csv_file_path",
+        [
+            [
+                "tests/data_container/fixtures/"
+                "metadata-seven-question-collections.yml",
+                "tests/data_container/fixtures/"
+                "test_data_for_module_data_container.csv",
+            ]
+        ],
+    )
+    def test_data_frame_for_ids_works_check_single_question(
+        self, data_container_load_metadata_and_data_fixture: DataContainer
+    ) -> None:
+        """
+        Tests that unit returns a DataFrame for a given collection ID.
+
+        Args:
+            data_container_load_metadata_and_data_fixture (DataContainer):
+                Fixture that provides a DataContainer containing metadata and
+                data.
+        """
+        expected_data_dict = {"id": ["1", "2", "3"],
+                              "Q002/SQ001": ["Option1", "Option2", "Option3"]}
+        expected_frame: DataFrame = DataStructureCreator. \
+            create_dataframe_from_dict(expected_data_dict)
+        actual_frame: DataFrame = \
+            data_container_load_metadata_and_data_fixture \
+            .data_frame_for_ids(["Q002/SQ001"])
+        # Make sure that expected and actual DataFrames are equal.
+        assert actual_frame.equals(expected_frame), \
+            "Expected and actual DataFrames are not equal."
+
+    @pytest.mark.ci
+    @pytest.mark.parametrize(
+        "metadata_yaml_file_path,test_data_csv_file_path",
+        [
+            [
+                "tests/data_container/fixtures/"
+                "metadata-seven-question-collections.yml",
+                "tests/data_container/fixtures/"
+                "test_data_for_module_data_container.csv",
+            ]
+        ],
+    )
+    def test_data_frame_for_ids_works_check_multiple_questions(
+        self, data_container_load_metadata_and_data_fixture: DataContainer
+    ) -> None:
+        """
+        Tests that unit returns a DataFrame for given collection IDs.
+
+        Args:
+            data_container_load_metadata_and_data_fixture (DataContainer):
+                Fixture that provides a DataContainer containing metadata and
+                data.
+        """
+        expected_data_dict = {"id": ["1", "2", "3"],
+                              "Q002/SQ001": ["Option1", "Option2", "Option3"],
+                              "Q003/SQ001": [123, 456, 789]}
+        expected_frame: DataFrame = DataStructureCreator. \
+            create_dataframe_from_dict(expected_data_dict)
+        actual_frame: DataFrame = \
+            data_container_load_metadata_and_data_fixture \
+            .data_frame_for_ids(["Q002/SQ001", "Q003/SQ001"])
+        # Make sure that expected and actual DataFrames are equal.
+        assert actual_frame.equals(expected_frame), \
+            "Expected and actual DataFrames are not equal."

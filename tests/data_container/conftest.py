@@ -32,6 +32,8 @@ from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict, YamlList
 from tests.helper.csv_helper.csv_reader import CsvReader
+from tests.helper.data_container_helper.data_container_loader import \
+    DataContainerLoader
 from tests.helper.yaml_helper.yaml_reader import YamlReader
 
 
@@ -88,7 +90,8 @@ def read_in_data_csv_file(test_data_csv_file_path: str) -> List[List[str]]:
 
 
 @pytest.fixture(scope="function")
-def load_metadata(metadata_yaml_file_path: str) -> DataContainer:
+def data_container_load_metadata_fixture(metadata_yaml_file_path: str) \
+        -> DataContainer:
     """
     Read in a YAML file and create a dictionary out of it.
 
@@ -100,16 +103,13 @@ def load_metadata(metadata_yaml_file_path: str) -> DataContainer:
         DataContainer:
             DataContainer containing metadata from YAML file.
     """
-    data_container: DataContainer = DataContainer(Settings())
-    metadata: Union[YamlList, YamlDict] = YamlReader.read_in_yaml_file(
-        metadata_yaml_file_path
-    )
-    data_container.load_metadata(metadata)
+    data_container: DataContainer = \
+        DataContainerLoader.prepare_data_container(metadata_yaml_file_path)
     return data_container
 
 
 @pytest.fixture(scope="function")
-def load_metadata_and_data(
+def data_container_load_metadata_and_data_fixture(
     metadata_yaml_file_path: str, test_data_csv_file_path: str
 ) -> DataContainer:
     """
@@ -126,13 +126,7 @@ def load_metadata_and_data(
             DataContainer containing metadata from YAML file and data from
             CSV file.
     """
-    data_container: DataContainer = DataContainer(Settings())
-    metadata: Union[YamlList, YamlDict] = YamlReader.read_in_yaml_file(
-        metadata_yaml_file_path
-    )
-    csv_data: List[List[str]] = CsvReader.read_in_data_file(
-        test_data_csv_file_path
-    )
-    data_container.load_metadata(metadata)
-    data_container.load_survey_data(csv_data)
+    data_container: DataContainer = \
+        DataContainerLoader.prepare_data_container(metadata_yaml_file_path,
+                                                   test_data_csv_file_path)
     return data_container
