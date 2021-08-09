@@ -31,7 +31,50 @@ Group your changes into these categories:
 
 `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
 
-## Unreleased
+## [1.1.1](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/releases/v1.1.1) - 2021-08-10
+
+[List of commits](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/compare/v1.1.0...v1.1.1)
+
+### Fixed
+- Adapt schema that validates IETF language tags in metadata file
+  ([!112](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/112)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+- Improve error handling in a couple of locations
+  ([!114](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/114)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+- Add encoding when processing files
+  ([!111](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/111)
+  by [KatDwo](https://gitlab.hzdr.de/KatDwo)).
+- Fix issue with method that concatenates data-frames
+  ([!116](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/116)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+- Move preprocessing example script into separate file
+  ([!117](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/117)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+- Adapt file README to describe how to quick-start the project and the content of the configuration file
+  ([!118](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/118)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+- Make sure that input data is rejected if it is not CSV
+  ([!115](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/115)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+- Method constructing a series from a given question ID should set the name of the index column
+  ([!103](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/103)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+- Refactor unit test cases to remove duplications and redundancies
+  ([!120](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/120)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+- Implement a helper class to create series or data-frame objects in unit test cases
+  ([!121](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/121)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+- Write unit test cases for module question that test the conversion of a question into a series
+  ([!105](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/105)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+- Write unit test cases for module question_collection that test the conversion of a question_collection into a data-frame
+  ([!119](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/119)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+- Write unit test cases for module data_container that test conversion of IDs of question_collections into a data-frame
+  ([!104](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/104)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
 
 ## [1.1.0](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/releases/v1.1.0) - 2021-07-13
 
@@ -58,9 +101,6 @@ Group your changes into these categories:
 - Change development status classifier to production/stable 
   ([!97](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/97)
   by [Normo](https://gitlab.hzdr.de/Normo)).
-- Add documentation of additional flag for preprocessing as a method argument
-  ([!99](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/99)
-  by [mdolling-gfz](https://gitlab.hzdr.de/mdolling-gfz)).
   
 ## [1.0.1](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/releases/v1.0.1) - 2021-06-21
 
