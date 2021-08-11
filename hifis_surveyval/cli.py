@@ -194,7 +194,7 @@ def analyze(survey_data: pathlib.Path) -> None:
         csv_reader = reader(data_io_stream)
         raw_data.load_survey_data(csv_data=list(csv_reader))
 
-    # preproces the data
+    # preprocess the data
     preprocessed_data: DataContainer = Preprocessor.preprocess(
         settings=settings, data=raw_data
     )
