@@ -25,6 +25,8 @@ build:package:
     - pip install poetry
     - poetry config virtualenvs.in-project true
     - poetry install
+    # Create required folders that the surveyval tool looks for on startup
+    - mkdir metadata
   script:
     - make package
   rules:

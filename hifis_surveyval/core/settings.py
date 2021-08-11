@@ -126,23 +126,52 @@ class FileSettings(BaseSettings):
     PREPROCESSING_FILENAME: Path = Path("preprocess.py")
 
     @validator("PREPROCESSING_FILENAME")
-    def validate_preprocessing_script(cls, to_validate: str) -> Path:
+    def validate_preprocessing_script(cls, to_validate: Path) -> Path:
         """
-        Assure, that preprocessing script is a Python file.
+        Ensure that preprocessing script is a Python file.
 
         Args:
-            to_validate (str):
-                Preprocessing script path as string to be validated.
+            to_validate:
+                Preprocessing script path to be validated.
         Returns:
-            Path: Path to the preprocessing script.
+            Path to the preprocessing script.
+
+        Raises:
+            ValueError:
+                If the given script did not end with ".py" and therefore
+                probably is not a python script.
         """
-        if not str(to_validate).endswith(".py"):
+        if to_validate.suffix != ".py":
             raise ValueError("Preprocessing Script must be a python script")
 
-        return Path(to_validate)
+        return to_validate
 
-    # Path to metadata
-    METADATA: Path = Path("metadata/meta.yml")
+    # Path to metadata folder
+    METADATA: Path = Path("metadata/")
+
+    @validator("METADATA")
+    def validate_metadata_folder(cls, to_validate: Path) -> Path:
+        """
+        Ensure the metadata folder is a folder and exists.
+
+        Args:
+            to_validate:
+                The path to the metadata folder, which is to be validated.
+
+        Returns:
+            The path to the metadata folder if it is valid.
+
+        Raises:
+            ValueError:
+                If either the given path was not a folder or did not exist.
+        """
+        if not to_validate.exists():
+            raise ValueError(f"Metadata folder {to_validate.absolute()} does "
+                             f"not exist")
+        if not to_validate.is_dir():
+            raise ValueError(f"Metadata folder {to_validate.absolute()} is "
+                             f"not a folder")
+        return to_validate
 
     # Path in which modules to be executed are located which defaults
     # to "scripts" folder.

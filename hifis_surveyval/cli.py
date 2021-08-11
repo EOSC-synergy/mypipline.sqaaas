@@ -175,13 +175,21 @@ def analyze(survey_data: pathlib.Path) -> None:
 
     # Load the metadata
     logging.info(f"Attempt to load metadata from {settings.METADATA}")
+    yaml_files = [file for file in settings.METADATA.iterdir()]
+    # Filter out those files that do not have a YAML file extension
+    yaml_files = list(filter(
+        lambda file: file.suffix.lower() in [".yml", ".yaml"],
+        yaml_files
+    ))
 
-    with settings.METADATA.open(mode="r",
-                                encoding="utf-8") as metadata_io_stream:
-        metadata_yaml = yaml.safe_load(metadata_io_stream)
-        raw_data.load_metadata(metadata_yaml)
+    for file in yaml_files:
+        logging.debug(f"Loading Metadata from {file}")
+        with file.open(mode="r", encoding="utf-8") as io_stream:
+            metadata_yaml = yaml.safe_load(io_stream)
+            raw_data.load_metadata(metadata_yaml)
 
     #  Load the actual survey data
+    logging.info(f"Attempt to load survey data from {survey_data}")
     with survey_data.open(mode="r", encoding="utf-8") as data_io_stream:
         csv_reader = reader(data_io_stream)
         raw_data.load_survey_data(csv_data=list(csv_reader))
