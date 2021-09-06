@@ -50,7 +50,7 @@ check_links:
         - awesome_bot
           --allow-redirect
           --allow-dupe
-          -w https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/releases/
+          -w https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/releases/
           `find . -name "*.md"`
         - awesome_bot
           --allow-redirect

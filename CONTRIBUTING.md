@@ -136,13 +136,13 @@ that were merged into the default branch via Merge Requests since the last
 release tag.
 This example illustrates how such an entry should look like:
 ```
-## [1.0.0](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/releases/v1.0.0) - 2021-06-18
+## [1.0.0](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/releases/v1.0.0) - 2021-06-18
 
-[List of commits](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/compare/v0.3.0...v1.0.0)
+[List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v0.3.0...v1.0.0)
 
 ### Changed
 - Increase version in file `pyproject.toml` to version `1.0.0`
-  ([!96](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/merge_requests/96)
+  ([!96](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/96)
   by [hueser93](https://gitlab.hzdr.de/hueser93)).
 ```
 
@@ -159,6 +159,6 @@ These release notes provide a link to the respective entry in file
 release and the release to be created next, for example:
 ```
 Release version 1.0.0. Read the changelog for further information.
-- [Changelog](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/blob/main/CHANGELOG.md#100-2021-06-18)
-- [Commits](https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/compare/v0.3.0...v1.0.0)
+- [Changelog](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/blob/main/CHANGELOG.md#100-2021-06-18)
+- [Commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v0.3.0...v1.0.0)
 ```

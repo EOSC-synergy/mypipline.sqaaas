@@ -32,17 +32,17 @@ Get the Source
 ^^^^^^^^^^^^^^
 
 The source code for the `hifis-surveyval` project lives at `Gitlab
-<https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval>`_.
+<https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval>`_.
 You can use `git clone` to get it.
 Chose one of the options.
 
 .. code-block:: bash
 
    # via ssh (recommended)
-   git clone git@gitlab.hzdr.de:hifis/surveys/hifis-surveyval.git
+   git clone git@gitlab.hzdr.de:hifis/overall/surveys/hifis-surveyval.git
 
    # via https
-   git clone https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval.git
+   git clone https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval.git
 
 Create the Virtual Environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

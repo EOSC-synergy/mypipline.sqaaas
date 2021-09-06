@@ -24,9 +24,9 @@ version = "1.1.1"
 description = "This project is used to develop analysis scripts for the HIFIS Software survey."
 license = "GPL-3.0-or-later"
 authors = ["HIFIS Software <software@hifis.net>"]
-homepage = "https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval"
-repository = "https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval"
-documentation = "https://hifis.pages.hzdr.de/surveys/hifis-surveyval"
+homepage = "https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval"
+repository = "https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval"
+documentation = "https://hifis.pages.hzdr.de/overall/surveys/hifis-surveyval"
 readme = "README.md"
 classifiers = [
     'Development Status :: 5 - Production/Stable',
@@ -43,9 +43,9 @@ packages = [
 include = ["LICENSES", "docs/build/html/**/*.*", "hifis_surveyval/files/**/*"]
 
 [tool.poetry.urls]
-"Bug Tracker" = "https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/issues"
-"Changelog" = "https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/blob/main/CHANGELOG.md"
-"CI" = "https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval/-/pipelines"
+"Bug Tracker" = "https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/issues"
+"Changelog" = "https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/blob/main/CHANGELOG.md"
+"CI" = "https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/pipelines"
 
 [tool.poetry.scripts]
 hifis-surveyval = "hifis_surveyval.cli:cli"

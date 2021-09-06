@@ -70,7 +70,7 @@ If you want to actively contribute changes to the project, you are required to
 also install the development packages alongside the framework.
 
 ```shell
-git clone https://gitlab.hzdr.de/hifis/surveys/hifis-surveyval.git
+git clone https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval.git
 cd hifis-surveyval
 poetry install
 ```
