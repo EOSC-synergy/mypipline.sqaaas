@@ -192,6 +192,10 @@ class FileSettings(BaseSettings):
     # column
     ID_COLUMN_NAME: str = "id"
 
+    # The ID that the framework injects for questions that are named as a
+    # question collection by LimeSurvey
+    ANONYMOUS_QUESTION_ID: str = "_"
+
     class Config:
         """
         Subclass for specification.

@@ -145,10 +145,11 @@ class DataContainer(object):
         body: List[List[str]] = csv_data[1:]
 
         question_cache: Dict[int, Question] = {}
-        # The question cache associates column indices with questions
+        # The question cache associates column indices with questions.
         # It is here to avoid having to constantly look up the questions all
         # over again. This expects that in each row the indices for the
-        # questions are identical.
+        # questions are identical, which, given the input is CSV data,
+        # should be the case.
 
         # Step 0: Check if all questions are present in the header
         for question_collection in self._survey_questions.values():
@@ -167,13 +168,29 @@ class DataContainer(object):
                 continue
 
             potential_question_id = header[index]
+
+            # Limesurvey has that thing where questions may be at the top
+            # level (i.e. not within a collection) but still named as if
+            # they were a collection. This is not possible in the
+            # metadata. This corner case is handled here by appending the
+            # anonymous question identifier to the potential_question_id.
+            # The underscore character has been chosen on purpose and as an
+            # indicator for this special case because there won't be any
+            # clashes with the question IDs allowed by Limesurvey and hence
+            # there won't be any naming confusion introduced here.
+            if Identifiable.HIERARCHY_SEPARATOR not in potential_question_id:
+                potential_question_id += Identifiable.HIERARCHY_SEPARATOR
+                potential_question_id += Settings.ANONYMOUS_QUESTION_ID
+
+            # Handle the regular case
             try:
                 question = self.question_for_id(potential_question_id)
                 question_cache[index] = question
             except (KeyError, IndexError):
-                logging.error(f"While parsing answers for "
-                              f"{potential_question_id}: Question unknown, "
-                              f"check the metadata")
+                logging.error(
+                    f"While parsing answers for {potential_question_id}: "
+                    f"Question unknown, check the metadata"
+                )
                 continue
 
         assert id_column_index not in question_cache
