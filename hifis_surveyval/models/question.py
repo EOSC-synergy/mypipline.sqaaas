@@ -188,7 +188,8 @@ class Question(YamlConstructable, Identifiable):
                 Invalid IDs are ignored.
         """
         for participant_id in participant_ids:
-            del self._answers[participant_id]
+            if participant_id in self._answers:
+                del self._answers[participant_id]
 
     @property
     def answers(self) -> Dict[str, Optional[object]]:  # NOTE (0) below
