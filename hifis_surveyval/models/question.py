@@ -25,6 +25,7 @@ These can be constructed from YAML through the YamlConstructable abstract
 class.
 """
 # alias name to avoid clash with schema.Optional
+import logging
 from typing import Dict, List, Optional, Set
 
 import schema
@@ -35,9 +36,7 @@ from hifis_surveyval.models.answer_option import AnswerOption
 from hifis_surveyval.models.answer_types import VALID_ANSWER_TYPES
 from hifis_surveyval.models.mixins.identifiable import Identifiable
 from hifis_surveyval.models.mixins.yaml_constructable import (
-    YamlConstructable,
-    YamlDict,
-)
+    YamlConstructable, YamlDict)
 from hifis_surveyval.models.translated import Translated
 
 
@@ -172,6 +171,19 @@ class Question(YamlConstructable, Identifiable):
             value = self._answer_type(option.label)
             # FIXME change: answer option values become a separate field,
             #  no longer derived from labels
+        elif self._answer_type == bool:
+            # When casting to boolean values, Python casts any non-empty string
+            # to True and only empty strings to False. Consequently, values
+            # are transformed according to a set of valid true and false
+            # values to allow for different truth values.
+            if value in self._settings.TRUE_VALUES:
+                value = True
+            elif value in self._settings.FALSE_VALUES:
+                value = False
+            else:
+                logging.error(f"Boolean data is an invalid truth value "
+                              f"in question {self.full_id}: {value}.")
+                value = None
         else:
             # try to cast the answer value to the expected type
             value = self._answer_type(value)
