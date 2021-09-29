@@ -196,6 +196,10 @@ class FileSettings(BaseSettings):
     # question collection by LimeSurvey
     ANONYMOUS_QUESTION_ID: str = "_"
 
+    # Separator used in header of CSV data to separate QuestionCollection ID
+    # and Question ID.
+    DATA_ID_SEPARATOR: str = "_"
+
     class Config:
         """
         Subclass for specification.

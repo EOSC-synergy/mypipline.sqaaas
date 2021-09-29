@@ -206,6 +206,8 @@ hifis-surveyval init
 This file contains the following information:
 
 ```
+ANONYMOUS_QUESTION_ID: _
+DATA_ID_SEPARATOR: _
 ID_COLUMN_NAME: id
 METADATA: metadata/meta.yml
 OUTPUT_FOLDER: output
@@ -215,6 +217,13 @@ SCRIPT_FOLDER: scripts
 SCRIPT_NAMES: []
 ```
 
+- `ANONYMOUS_QUESTION_ID` defines a placeholder for Questions IDs. The CSV data
+  might not explicitly mention a full ID of a Question but solely the
+  QuestionCollection ID. In this case the HIFIS Surveyval Framework adds a
+  character to the QuestionCollection ID to mark this situation.
+- There are different ways to separate the QuestionCollection ID from the
+  Question ID in the full ID mentioned in the header of the CSV data.
+  `DATA_ID_SEPARATOR` indicates which character is used to separate these IDs.
 - With `ID_COLUMN_NAME` you may want to specify the name of the _id_ column in
   the CSV data file.
 - Each analysis needs metadata about the questions asked in the survey and

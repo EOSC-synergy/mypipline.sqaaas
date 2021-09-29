@@ -169,6 +169,15 @@ class DataContainer(object):
 
             potential_question_id = header[index]
 
+            # Replace separator DATA_ID_SEPARATOR by separator
+            # HIERARCHY_SEPARATOR before working with full Question IDs
+            # in order to use an unambiguous and unique character to separate
+            # QuestionCollection ID and Question ID.
+            if self._settings.DATA_ID_SEPARATOR in potential_question_id:
+                potential_question_id = potential_question_id.replace(
+                    self._settings.DATA_ID_SEPARATOR,
+                    Identifiable.HIERARCHY_SEPARATOR)
+
             # Limesurvey has that thing where questions may be at the top
             # level (i.e. not within a collection) but still named as if
             # they were a collection. This is not possible in the
@@ -180,7 +189,7 @@ class DataContainer(object):
             # there won't be any naming confusion introduced here.
             if Identifiable.HIERARCHY_SEPARATOR not in potential_question_id:
                 potential_question_id += Identifiable.HIERARCHY_SEPARATOR
-                potential_question_id += Settings.ANONYMOUS_QUESTION_ID
+                potential_question_id += self._settings.ANONYMOUS_QUESTION_ID
 
             # Handle the regular case
             try:
