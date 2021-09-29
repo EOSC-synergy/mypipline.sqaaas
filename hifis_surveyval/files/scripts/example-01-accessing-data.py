@@ -104,7 +104,7 @@ def run(hifis_surveyval: HIFISSurveyval, data: DataContainer):
     # HIERARCHY_SEPARATOR which is the character "/" by default, e.g.
     # "Q001/SQ001".
     ###
-    question_choose_center = data.question_for_id("Q001/SQ001")
+    question_choose_center = data.question_for_id("Q001/_")
     print("5) ===== Get a Question =====")
     hifis_surveyval.printer.pretty_print(question_choose_center)
 
@@ -136,7 +136,7 @@ def run(hifis_surveyval: HIFISSurveyval, data: DataContainer):
     # specific Question objects. Because of the unambiguity the ID can be
     # shorter leaving out the ID part of the QuestionCollection.
     ###
-    question_choose_center = collection_topic_center.question_for_id("SQ001")
+    question_choose_center = collection_topic_center.question_for_id("_")
     print("9) ===== Get a Question from a QuestionCollection =====")
     hifis_surveyval.printer.pretty_print(question_choose_center)
 
