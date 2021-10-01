@@ -113,3 +113,6 @@ output/
 
 # Backups from Meld
 *.orig
+
+# Unix swap files
+*.swp
