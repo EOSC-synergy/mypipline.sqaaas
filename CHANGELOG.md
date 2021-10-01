@@ -31,6 +31,41 @@ Group your changes into these categories:
 
 `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
 
+## [1.2.0-preview](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/releases/v1.2.0-preview) - 2021-10-01
+
+[List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.1.1...v1.2.0-preview)
+
+### Fixed
+- Various minor quality fixes: adapt file .gitignore and fix typos
+  ([!125](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/125)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+- Project and repository URL changed and need to be adapted in the documentation
+  ([!126](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/126)
+  by [hueser93](https://gitlab.hzdr.de/hueser93))
+- Automate rewriting of the CSV data file header if Question Collection full IDs are missing the Question ID part
+  ([!124](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/124)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+- Fixing that invalid answers are removed multiple times which results in key errors
+  ([!129](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/129)
+  by [hueser93](https://gitlab.hzdr.de/hueser93))
+- Fixing that answer values are all transformed to True if casted to bool when read in from data
+  ([!127](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/127)
+  by [hueser93](https://gitlab.hzdr.de/hueser93))
+- Fixing example analysis script about accessing data and use ANONYMOUS_QUESTION_ID where necessary
+  ([!135](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/135)
+  by [hueser93](https://gitlab.hzdr.de/hueser93))
+- Replace _ (underscore) with / (slash) as HIERARCHY_SEPARATOR given in data header when reading in data
+  ([!134](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/134)
+  by [hueser93](https://gitlab.hzdr.de/hueser93))
+
+### Added
+- Develop example analysis script with step-by-step explanations to access metadata and data
+  ([!128](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/128)
+  by [hueser93](https://gitlab.hzdr.de/hueser93))
+- Split metadata YAML file up into one file per question collection
+  ([!122](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/122)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+
 ## [1.1.1](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/releases/v1.1.1) - 2021-08-10
 
 [List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.1.0...v1.1.1)
