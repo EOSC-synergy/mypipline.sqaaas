@@ -81,7 +81,7 @@ def run(hifis_surveyval: HIFISSurveyval, data: DataContainer):
     # 693-1 two-letter language codes and a two-letter region specifier
     # concatenated by a dash. These translations are given in the metadata.
     ###
-    collection_text = collection_topic_center._text.get_translation("en-GB")
+    collection_text = collection_topic_center.text("en-GB")
     print("3) ===== Translated text of a QuestionCollection =====")
     hifis_surveyval.printer.pretty_print(collection_text)
 
@@ -90,7 +90,7 @@ def run(hifis_surveyval: HIFISSurveyval, data: DataContainer):
     # in cases where the full translation of the title is too long and not
     # concise enough.
     ###
-    collection_label = collection_topic_center._label
+    collection_label = collection_topic_center.label
     print("4) ===== Label of a QuestionCollection =====")
     hifis_surveyval.printer.pretty_print(collection_label)
 
@@ -119,7 +119,7 @@ def run(hifis_surveyval: HIFISSurveyval, data: DataContainer):
     # A text of a Question can also be translated into different supported
     # languages specified by the ISO 693-1 two-letter language codes.
     ###
-    question_text = question_choose_center._text.get_translation("en-GB")
+    question_text = question_choose_center.text("en-GB")
     print("7) ===== Translated text of a Question =====")
     hifis_surveyval.printer.pretty_print(question_text)
 
@@ -127,7 +127,7 @@ def run(hifis_surveyval: HIFISSurveyval, data: DataContainer):
     # A text of a Question can also be represented by its label in cases where
     # the full translation of the title is too long and not concise enough.
     ###
-    question_label = question_choose_center._label
+    question_label = question_choose_center.label
     print("8) ===== Label of a Question =====")
     hifis_surveyval.printer.pretty_print(question_label)
 
@@ -164,7 +164,7 @@ def run(hifis_surveyval: HIFISSurveyval, data: DataContainer):
     # A text of an AnswerOption can also be translated into different supported
     # languages specified by the ISO 693-1 two-letter language codes.
     ###
-    answer_option_text = answer_option._text.get_translation("en-GB")
+    answer_option_text = answer_option.text("en-GB")
     print("12) ===== Translated text of an AnswerOption =====")
     hifis_surveyval.printer.pretty_print(answer_option_text)
 
@@ -173,7 +173,7 @@ def run(hifis_surveyval: HIFISSurveyval, data: DataContainer):
     # in cases where the full translation of the title is too long and not
     # concise enough.
     ###
-    answer_option_label = answer_option._label
+    answer_option_label = answer_option.label
     print("13) ===== Label of an AnswerOption =====")
     hifis_surveyval.printer.pretty_print(answer_option_label)
 
