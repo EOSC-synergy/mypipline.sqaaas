@@ -26,6 +26,7 @@
 
 import pytest
 
+from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.models.answer_option import AnswerOption
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict
 
@@ -45,7 +46,9 @@ class TestAnswerOption(object):
 
     @pytest.mark.ci
     def test_from_yaml_dictionary_works_check_type(
-        self, metadata_fixture: YamlDict
+        self,
+        metadata_fixture: YamlDict,
+        settings_fixture: Settings
     ) -> None:
         """
         Tests that retrieving an AnswerOption object given metadata works.
@@ -53,10 +56,13 @@ class TestAnswerOption(object):
         Args:
             metadata_fixture (YamlDict):
                 Test fixture providing an AnswerOption object.
+            settings_fixture:
+                Test fixture providing default settings.
         """
-        metadata_yaml: YamlDict = metadata_fixture
         answer_option: AnswerOption = AnswerOption.from_yaml_dictionary(
-            metadata_yaml[0], parent_id=TestAnswerOption.question_id
+            yaml=metadata_fixture[0],
+            parent_id=TestAnswerOption.question_id,
+            settings=settings_fixture
         )
         # Make sure that object retrieved from metadata YAML file given is of
         # type AnswerOption.
@@ -66,7 +72,9 @@ class TestAnswerOption(object):
 
     @pytest.mark.ci
     def test_from_yaml_dictionary_works_check_id(
-        self, metadata_fixture: YamlDict
+        self,
+        metadata_fixture: YamlDict,
+        settings_fixture: Settings
     ) -> None:
         """
         Tests that retrieving an AnswerOption object given metadata works.
@@ -74,11 +82,14 @@ class TestAnswerOption(object):
         Args:
             metadata_fixture (YamlDict):
                 Test fixture providing an AnswerOption object.
+            settings_fixture:
+                Test fixture providing default settings.
         """
         expected_answer_option_id: str = TestAnswerOption.answer_option_id
-        metadata_yaml: YamlDict = metadata_fixture
         answer_option: AnswerOption = AnswerOption.from_yaml_dictionary(
-            metadata_yaml[0], parent_id=TestAnswerOption.question_id
+            yaml=metadata_fixture[0],
+            parent_id=TestAnswerOption.question_id,
+            settings=settings_fixture
         )
         actual_answer_option_id: str = answer_option.short_id
         # Make sure that AnswerOption object retrieved from metadata YAML file
@@ -89,7 +100,9 @@ class TestAnswerOption(object):
 
     @pytest.mark.ci
     def test_from_yaml_dictionary_works_check_text(
-        self, metadata_fixture: YamlDict
+            self,
+            metadata_fixture: YamlDict,
+            settings_fixture: Settings
     ) -> None:
         """
         Tests that retrieving an AnswerOption object given metadata works.
@@ -97,14 +110,17 @@ class TestAnswerOption(object):
         Args:
             metadata_fixture (YamlDict):
                 Test fixture providing an AnswerOption object.
+            settings_fixture:
+                Test fixture providing default settings.
         """
         expected_translated_answer_option_text: str = "No"
-        metadata_yaml: YamlDict = metadata_fixture
         answer_option: AnswerOption = AnswerOption.from_yaml_dictionary(
-            metadata_yaml[0], parent_id=TestAnswerOption.question_id
+            yaml=metadata_fixture[0],
+            parent_id=TestAnswerOption.question_id,
+            settings=settings_fixture
         )
         actual_translated_answer_option_text: str = (
-            answer_option.text.get_translation(TestAnswerOption.language_code)
+            answer_option.text(TestAnswerOption.language_code)
         )
         # Make sure that AnswerOption object retrieved from metadata YAML file
         # has correct translated AnswerOption text.

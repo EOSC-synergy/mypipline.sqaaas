@@ -35,7 +35,6 @@ import pandas
 from pandas import DataFrame
 
 from hifis_surveyval.core.settings import Settings
-from hifis_surveyval.models.mixins.identifiable import Identifiable
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict, YamlList
 from hifis_surveyval.models.question import Question
 from hifis_surveyval.models.question_collection import QuestionCollection
@@ -145,23 +144,18 @@ class DataContainer(object):
         body: List[List[str]] = csv_data[1:]
 
         question_cache: Dict[int, Question] = {}
-        # The question cache associates column indices with questions.
-        # It is here to avoid having to constantly look up the questions all
-        # over again. This expects that in each row the indices for the
-        # questions are identical, which, given the input is CSV data,
-        # should be the case.
+        """
+            The question cache associates column indices with questions.
+            It is here to avoid having to constantly look up the questions all
+            over again. This expects that in each row the indices for the
+            questions are identical, which, given the input is CSV data,
+            should be the case.
+        """
 
-        # Step 0: Check if all questions are present in the header
-        for question_collection in self._survey_questions.values():
-            for question in question_collection.questions:
-                if question.full_id not in header:
-                    logging.warning(f"Question {question.full_id} was in "
-                                    f"metadata but not in the CSV file")
-
-        # Step 1: Find the column for the participant IDs
+        # Step 0: Find the column for the participant IDs
         id_column_index = header.index(self._settings.ID_COLUMN_NAME)
 
-        # Step 2: Find the Question for each of the headings
+        # Step 1: Find the Question for each of the headings
         for index in range(0, len(header)):
             if index == id_column_index:
                 # no need to check this, it will not be a question
@@ -176,7 +170,11 @@ class DataContainer(object):
             if self._settings.DATA_ID_SEPARATOR in potential_question_id:
                 potential_question_id = potential_question_id.replace(
                     self._settings.DATA_ID_SEPARATOR,
-                    Identifiable.HIERARCHY_SEPARATOR)
+                    self._settings.HIERARCHY_SEPARATOR
+                )
+                header[index] = potential_question_id
+                # Update the cached header, for later cross referencing.
+                # (This does not touch the actual CSV file header in any way)
 
             # Limesurvey has that thing where questions may be at the top
             # level (i.e. not within a collection) but still named as if
@@ -187,9 +185,10 @@ class DataContainer(object):
             # indicator for this special case because there won't be any
             # clashes with the question IDs allowed by Limesurvey and hence
             # there won't be any naming confusion introduced here.
-            if Identifiable.HIERARCHY_SEPARATOR not in potential_question_id:
-                potential_question_id += Identifiable.HIERARCHY_SEPARATOR
+            if self._settings.HIERARCHY_SEPARATOR not in potential_question_id:
+                potential_question_id += self._settings.HIERARCHY_SEPARATOR
                 potential_question_id += self._settings.ANONYMOUS_QUESTION_ID
+                header[index] = potential_question_id
 
             # Handle the regular case
             try:
@@ -203,6 +202,13 @@ class DataContainer(object):
                 continue
 
         assert id_column_index not in question_cache
+
+        # Step 2: Check if all questions are present in the header
+        for question_collection in self._survey_questions.values():
+            for question in question_collection.questions:
+                if question.full_id not in header:
+                    logging.warning(f"Question {question.full_id} was in "
+                                    f"metadata but not in the CSV file")
 
         # Step 3: Iterate through each row and insert the values for answer
         for row in body:
@@ -245,7 +251,7 @@ class DataContainer(object):
                 If either the collection or the question for the given ID
                 could not be found.
         """
-        parts: List[str] = full_id.split(Identifiable.HIERARCHY_SEPARATOR)
+        parts: List[str] = full_id.split(self._settings.HIERARCHY_SEPARATOR)
         collection_id = parts[0]
         question_id = parts[1]
         collection = self.collection_for_id(collection_id)

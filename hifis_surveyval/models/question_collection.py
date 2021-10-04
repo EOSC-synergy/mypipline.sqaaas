@@ -31,7 +31,8 @@ from typing import Union
 from pandas import DataFrame, Series, concat
 from schema import Optional, Schema
 
-from hifis_surveyval.models.mixins.identifiable import Identifiable
+from hifis_surveyval.core.settings import Settings
+from hifis_surveyval.models.mixins.mixins import HasLabel, HasText, HasID
 from hifis_surveyval.models.mixins.yaml_constructable import (
     YamlConstructable,
     YamlDict,
@@ -40,7 +41,7 @@ from hifis_surveyval.models.question import Question
 from hifis_surveyval.models.translated import Translated
 
 
-class QuestionCollection(YamlConstructable, Identifiable):
+class QuestionCollection(YamlConstructable, HasID, HasLabel, HasText):
     """
     QuestionCollections group a set of questions into a common context.
 
@@ -49,15 +50,13 @@ class QuestionCollection(YamlConstructable, Identifiable):
     """
 
     token_ID = "id"
-    token_LABEL = "label"
-    token_TEXT = "text"
     token_QUESTIONS = "questions"
 
     schema = Schema(
         {
             token_ID: str,
-            token_LABEL: str,
-            token_TEXT: dict,
+            HasLabel.YAML_TOKEN: str,
+            HasText.YAML_TOKEN: dict,
             Optional(token_QUESTIONS, default=[]): list,
             Optional(str): object,  # catchall
         }
@@ -69,6 +68,7 @@ class QuestionCollection(YamlConstructable, Identifiable):
         text: Translated,
         label: str,
         questions: List[Question],
+        settings: Settings,
     ) -> None:
         """
         Initialize an empty question collection.
@@ -79,6 +79,8 @@ class QuestionCollection(YamlConstructable, Identifiable):
         Args:
             collection_id:
                 The unique ID that is to be assigned to the collection.
+                Since QuestionCollections have no parent the collection ID
+                serves as the full ID as well as the short ID.
             text:
                 A Translated object representing the text that describes the
                 question collection.
@@ -88,10 +90,15 @@ class QuestionCollection(YamlConstructable, Identifiable):
             questions:
                 A list of questions that are contained within the question
                 collection.
+            settings:
+                The settings used by the framework
         """
-        super().__init__(collection_id)  # Question Collections have no parents
-        self._text: Translated = text
-        self._label: str = label
+        super().__init__(
+            object_id=collection_id,
+            label=label,
+            translations=text,
+            settings=settings,
+        )
         self._questions: Dict[str, Question] = {
             question.short_id: question for question in questions
         }
@@ -196,12 +203,13 @@ class QuestionCollection(YamlConstructable, Identifiable):
         ]
 
         text = Translated.from_yaml_dictionary(
-            yaml[QuestionCollection.token_TEXT]
+            yaml[HasText.YAML_TOKEN]
         )
 
         return QuestionCollection(
             collection_id=collection_id,
             text=text,
-            label=yaml[QuestionCollection.token_LABEL],
+            label=yaml[HasLabel.YAML_TOKEN],
             questions=questions,
+            settings=settings
         )

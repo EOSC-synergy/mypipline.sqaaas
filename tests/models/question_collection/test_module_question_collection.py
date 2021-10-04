@@ -33,7 +33,6 @@ from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict
 from hifis_surveyval.models.question import Question
 from hifis_surveyval.models.question_collection import QuestionCollection
-from hifis_surveyval.models.translated import Translated
 from tests.helper.data_structure_helper.data_structure_creator import \
     DataStructureCreator
 
@@ -86,15 +85,12 @@ class TestQuestionCollection(object):
             QuestionCollection.from_yaml_dictionary(metadata_yaml[0],
                                                     settings=Settings())
         )
-        answer_option_text: Translated = (
+        actual_translated_answer_option_text: str = (
             question_collection.question_for_id(
                 TestQuestionCollection.question_id
             )
             ._answer_options[TestQuestionCollection.answer_option_id]
-            .text
-        )
-        actual_translated_answer_option_text: str = (
-            answer_option_text.get_translation(
+            .text(
                 TestQuestionCollection.language_code
             )
         )

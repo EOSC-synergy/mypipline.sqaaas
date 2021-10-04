@@ -26,6 +26,7 @@
 
 import pytest
 
+from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict
 from tests.helper.yaml_helper.yaml_reader import YamlReader
 
@@ -44,3 +45,15 @@ def metadata_fixture() -> YamlDict:
         "metadata-single-answer-option.yml"
     )
     return YamlReader.read_in_yaml_file(yaml_file_path)
+
+
+@pytest.fixture(scope="function")
+def settings_fixture() -> Settings:
+    """
+    Get a new Settings object.
+
+    Returns:
+        Settings:
+            New Settings object containing settings of an analysis run.
+    """
+    return Settings()

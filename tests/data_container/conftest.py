@@ -130,3 +130,15 @@ def data_container_load_metadata_and_data_fixture(
         DataContainerLoader.prepare_data_container(metadata_yaml_file_path,
                                                    test_data_csv_file_path)
     return data_container
+
+
+@pytest.fixture(scope="function")
+def settings_fixture() -> Settings:
+    """
+    Get a new Settings object.
+
+    Returns:
+        Settings:
+            New Settings object containing settings of an analysis run.
+    """
+    return Settings()

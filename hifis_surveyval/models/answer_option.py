@@ -22,7 +22,8 @@
 
 from schema import Schema
 
-from hifis_surveyval.models.mixins.identifiable import Identifiable
+from hifis_surveyval.core.settings import Settings
+from hifis_surveyval.models.mixins.mixins import HasLabel, HasText, HasID
 from hifis_surveyval.models.mixins.yaml_constructable import (
     YamlConstructable,
     YamlDict,
@@ -30,17 +31,22 @@ from hifis_surveyval.models.mixins.yaml_constructable import (
 from hifis_surveyval.models.translated import Translated
 
 
-class AnswerOption(YamlConstructable, Identifiable):
+class AnswerOption(YamlConstructable, HasID, HasLabel, HasText):
     """The AnswerOption models allowed answers for a specific Question."""
 
     token_ID = "id"
-    token_LABEL = "label"
-    token_TEXT = "text"
 
-    schema = Schema({token_ID: str, token_LABEL: str, token_TEXT: dict})
+    schema = Schema(
+        {token_ID: str, HasLabel.YAML_TOKEN: str, HasText.YAML_TOKEN: dict}
+    )
 
     def __init__(
-        self, parent_id: str, option_id: str, text: Translated, label: str
+            self,
+            parent_id: str,
+            option_id: str,
+            text: Translated,
+            label: str,
+            settings: Settings
     ) -> None:
         """
         Create an answer option from the metadata.
@@ -55,10 +61,16 @@ class AnswerOption(YamlConstructable, Identifiable):
                 answer option across various languages.
             label:
                 A short string used to represent the answer option in plotting.
+            settings:
+                An object reflecting the application settings.
         """
-        super().__init__(option_id, parent_id)
-        self._text = text
-        self._label = label
+        super().__init__(
+            object_id=option_id,
+            parent_id=parent_id,
+            label=label,
+            translations=text,
+            settings=settings
+        )
 
     def __str__(self) -> str:
         """
@@ -68,27 +80,6 @@ class AnswerOption(YamlConstructable, Identifiable):
                 String representation of the answer.
         """
         return f"{self.full_id}: {self._label}"
-
-    @property
-    def text(self) -> Translated:
-        """
-        Obtain the full text that was associated with this answer.
-
-        Returns:
-            An object containing all the translations for text associated with
-            this answer option.
-        """
-        return self._text
-
-    @property
-    def label(self) -> str:
-        """
-        Get the label of this answer option.
-
-        Returns:
-            A label serving as a short description of this option.
-        """
-        return self._label
 
     @staticmethod
     def _from_yaml_dictionary(yaml: YamlDict, **kwargs) -> "AnswerOption":
@@ -105,12 +96,14 @@ class AnswerOption(YamlConstructable, Identifiable):
             A new AnswerOption containing the provided data
         """
         parent_id = kwargs["parent_id"]
+        settings: Settings = kwargs["settings"]
 
         return AnswerOption(
             parent_id=parent_id,
             option_id=yaml[AnswerOption.token_ID],
-            label=yaml[AnswerOption.token_LABEL],
+            label=yaml[HasLabel.YAML_TOKEN],
             text=Translated.from_yaml_dictionary(
-                yaml[AnswerOption.token_TEXT]
+                yaml[HasText.YAML_TOKEN]
             ),
+            settings=settings
         )

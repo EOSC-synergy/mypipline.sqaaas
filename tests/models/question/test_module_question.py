@@ -31,7 +31,6 @@ from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict
 from hifis_surveyval.models.question_collection import Question
-from hifis_surveyval.models.translated import Translated
 from tests.helper.data_structure_helper.data_structure_creator import \
     DataStructureCreator
 from tests.helper.yaml_helper.yaml_reader import YamlReader
@@ -102,14 +101,12 @@ class TestQuestion(object):
             parent_id=TestQuestion.collection_id,
             settings=Settings()
         )
-        answer_option_text: Translated = question._answer_options[
-            TestQuestion.answer_option_id
-        ].text
-        actual_translated_answer_option_text: str = (
-            answer_option_text.get_translation(TestQuestion.language_code)
-        )
         # Make sure that a Question object retrieved from metadata YAML
         # contains correct translated answer option text.
+        actual_translated_answer_option_text: str = question._answer_options[
+            TestQuestion.answer_option_id
+        ].text(TestQuestion.language_code)
+
         assert (
             actual_translated_answer_option_text
             == expected_translated_answer_option_text
@@ -139,31 +136,6 @@ class TestQuestion(object):
             actual_translated_answer_option_text
             == expected_translated_answer_option_text
         ), "Given answer of participant is not correct."
-
-    @pytest.mark.ci
-    def test_add_answer_but_no_mandatory_answer_given(
-        self, question_fixture: Question
-    ) -> None:
-        """
-        Tests that adding empty answer for a mandatory question fails.
-
-        Args:
-            question_fixture (Question):
-                Fixture that sets up a question object to be used in the test
-                case.
-
-        Raises:
-            ValueError:
-                If answer given to a mandatory question is empty.
-        """
-        target_answer_value: str = ""
-        question: Question = question_fixture
-        # Make sure that a ValueError exception is raised if given answer to a
-        # mandatory question is empty.
-        with pytest.raises(ValueError):
-            question.add_answer(
-                TestQuestion.participant_id, target_answer_value
-            )
 
     @pytest.mark.ci
     def test_add_empty_answer_works(

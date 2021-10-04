@@ -29,13 +29,12 @@ from typing import Dict, List, Optional, Union
 import pytest
 from pandas import DataFrame
 
+from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.data_container import DataContainer
 from hifis_surveyval.models.answer_option import AnswerOption
-from hifis_surveyval.models.mixins.identifiable import Identifiable
 from hifis_surveyval.models.mixins.yaml_constructable import YamlDict, YamlList
 from hifis_surveyval.models.question import Question
 from hifis_surveyval.models.question_collection import QuestionCollection
-from hifis_surveyval.models.translated import Translated
 from tests.helper.data_structure_helper.data_structure_creator import \
     DataStructureCreator
 
@@ -202,15 +201,12 @@ class TestDataContainer(object):
             data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
         """
-        translated_answer: Translated = (
+        actual_translated_answer_text: str = (
             data_container_load_metadata_fixture
             .collection_for_id(TestDataContainer.collection_id)
             .question_for_id(TestDataContainer.question_id)
             ._answer_options[TestDataContainer.answer_option_id]
-            .text
-        )
-        actual_translated_answer_text: str = translated_answer.get_translation(
-            TestDataContainer.answer_option_language_code
+            .text(TestDataContainer.answer_option_language_code)
         )
         # Make sure that translated answer option is correct.
         assert (
@@ -358,15 +354,12 @@ class TestDataContainer(object):
         question_id: str = "SQ002"
         answer_option_id: str = "A002"
         translation_language_code: str = "en"
-        translated_answer: Translated = (
+        actual_translated_answer_text: str = (
             data_container_load_metadata_fixture
             .collection_for_id(question_collection_id)
             .question_for_id(question_id)
             ._answer_options[answer_option_id]
-            .text
-        )
-        actual_translated_answer_text: str = translated_answer.get_translation(
-            translation_language_code
+            .text(translation_language_code)
         )
         # Make sure that translated answer option is correct.
         assert (
@@ -778,7 +771,9 @@ class TestDataContainer(object):
         ],
     )
     def test_question_for_id_in_question_collection_works_check_object_type(
-        self, data_container_load_metadata_fixture: DataContainer
+        self,
+        data_container_load_metadata_fixture: DataContainer,
+        settings_fixture: Settings
     ) -> None:
         """
         Tests that retrieving a Question entry works.
@@ -786,9 +781,11 @@ class TestDataContainer(object):
         Args:
             data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
+            settings_fixture:
+                Test fixture providing default settings.
         """
         target_question_full_id: str = (
-            f"Q001{Identifiable.HIERARCHY_SEPARATOR}SQ001"
+            f"Q001{settings_fixture.HIERARCHY_SEPARATOR}SQ001"
         )
         question: Question = data_container_load_metadata_fixture \
             .question_for_id(target_question_full_id)
@@ -806,7 +803,9 @@ class TestDataContainer(object):
         ],
     )
     def test_question_for_id_in_question_collection_works_check_full_id(
-        self, data_container_load_metadata_fixture: DataContainer
+        self,
+        data_container_load_metadata_fixture: DataContainer,
+        settings_fixture: Settings
     ) -> None:
         """
         Tests that retrieving a Question entry works.
@@ -814,9 +813,11 @@ class TestDataContainer(object):
         Args:
             data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
+            settings_fixture:
+                Test fixture providing default settings.
         """
         target_question_full_id: str = (
-            f"Q001{Identifiable.HIERARCHY_SEPARATOR}SQ001"
+            f"Q001{settings_fixture.HIERARCHY_SEPARATOR}SQ001"
         )
         question_full_id: str = data_container_load_metadata_fixture \
             .question_for_id(target_question_full_id)._full_id
@@ -860,7 +861,9 @@ class TestDataContainer(object):
         ],
     )
     def test_question_for_id_works_check_question_full_id(
-        self, data_container_load_metadata_fixture: DataContainer
+        self,
+        data_container_load_metadata_fixture: DataContainer,
+        settings_fixture: Settings
     ) -> None:
         """
         Tests that retrieving a Question entry works.
@@ -868,9 +871,11 @@ class TestDataContainer(object):
         Args:
             data_container_load_metadata_fixture (DataContainer):
                 Fixture that provides a DataContainer containing metadata.
+            settings_fixture:
+                Test fixture providing default settings.
         """
         expected_question_full_id: str = (
-            f"Q001{Identifiable.HIERARCHY_SEPARATOR}SQ001"
+            f"Q001{settings_fixture.HIERARCHY_SEPARATOR}SQ001"
         )
         question_full_id: str = (
             data_container_load_metadata_fixture
