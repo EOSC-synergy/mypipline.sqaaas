@@ -205,11 +205,12 @@ hifis-surveyval init
 
 This file contains the following information:
 
-```
+```YAML
 ANONYMOUS_QUESTION_ID: _
 DATA_ID_SEPARATOR: _
+HIERARCHY_SEPARATOR: /
 ID_COLUMN_NAME: id
-METADATA: metadata/meta.yml
+METADATA: metadata
 OUTPUT_FOLDER: output
 OUTPUT_FORMAT: SCREEN
 PREPROCESSING_FILENAME: preprocess.py
@@ -217,36 +218,73 @@ SCRIPT_FOLDER: scripts
 SCRIPT_NAMES: []
 ```
 
-- `ANONYMOUS_QUESTION_ID` defines a placeholder for Questions IDs. The CSV data
-  might not explicitly mention a full ID of a Question but solely the
-  QuestionCollection ID. In this case the HIFIS Surveyval Framework adds a
-  character to the QuestionCollection ID to mark this situation.
-- There are different ways to separate the QuestionCollection ID from the
-  Question ID in the full ID mentioned in the header of the CSV data.
-  `DATA_ID_SEPARATOR` indicates which character is used to separate these IDs.
-- With `ID_COLUMN_NAME` you may want to specify the name of the _id_ column in
-  the CSV data file.
-- Each analysis needs metadata about the questions asked in the survey and
-  answers that participants may give.
-  Setting `METADATA` specifies the location of the Metadata file which is by
-  default located in a folder called _metadata_ and named _meta.yml_.
-- You may specify the output folder by setting `OUTPUT_FOLDER` which is named
-  _output_ by default.
-- You may prefer a specific output format like _PDF_, _PNG_, _SVG_ or
-  _SCREEN_ which you may select via `OUTPUT_FORMAT`.
-  The default value is _SCREEN_.
-  Note: Be aware that other output formats like text or markdown files may be
-  created, which depends largely upon the implementation of the analysis
-  scripts.
-- You might want to tell the program where to find the preprocessing file
-  _preprocess.py_ that preprocesses and filters your survey data according to 
-  specific rules.
-  You can do so by setting `PREPROCESSING_FILENAME`.
-- You may specify the folder which contains the analysis scripts with setting
-  `SCRIPT_FOLDER`, which is the _scripts_ folder by default.
-- With `SCRIPT_NAMES` you may select a subset of the analysis scripts available
-  as a list that ought to be executed.
-  This list is empty by default, which means, all scripts are executed.
+> ##### Concepts that You Need to Know
+>
+>- **QuestionCollection**: This concept refers to a set of `Questions` that 
+>  cover the same topic.
+>- **Question**: This concept refers to an atomic `Question` that can not be on
+>  its own and needs to be wrapped up into a `QuestionCollection`.
+> 
+> *Note:* Other terms that may describe similar concepts are `question`
+> (which equals to `QuestionCollection`) and `sub-question` (which equals to
+> `Question`).
+
+> ##### Configuration File Entries Explained
+>
+> - `ANONYMOUS_QUESTION_ID` defines a placeholder for Question IDs. The CSV data
+>  might not explicitly mention a full ID of a Question but solely the
+>  QuestionCollection ID. In this case the HIFIS Surveyval Framework adds a
+>  character, by default *_* (underscore), to the QuestionCollection ID to mark
+>  this situation.
+> - The CSV data file is structured into header and body rows. The header row
+>  consists of a comma-separated list of column names. Some column names contain
+>  a separator character that concatenates the QuestionCollection ID with the
+>  Question ID, the `DATA_ID_SEPARATOR`. This variable indicates which character 
+>  is used to separate these IDs. If not specified otherwise, it defaults to
+>  *_* (underscore).
+>- This `DATA_ID_SEPARATOR` character is internally replaced by a different
+>  character, the so called `HIERARCHY_SEPARATOR`, which defaults to a */*
+>  (slash).
+>- With `ID_COLUMN_NAME` you may want to specify the name of the _id_ column in
+>  the CSV data file.
+>- Each analysis needs metadata about the questions asked in the survey and
+>  answers that participants may give. Setting `METADATA` specifies the location
+>  of the metadata files which are by default located in a folder called
+>  _metadata_. Be aware that it is recommended to have one YAML file per
+>  QuestionCollection. Each YAML file then covers the metadata of a single
+>  QuestionCollection and is named according to the ID of this
+>  QuestionCollection.
+>- You may specify the output folder by setting `OUTPUT_FOLDER` which is named
+>  _output_ by default.
+>- You may prefer a specific output format like _PDF_, _PNG_, _SVG_ or
+>  _SCREEN_ which you may select via `OUTPUT_FORMAT`.
+>  The default value is _SCREEN_.
+>  Note: Be aware that other output formats like text or markdown files may be
+>  created, which depends largely upon the implementation of the analysis
+>  scripts.
+>- You might want to tell the program where to find the preprocessing file
+>  _preprocess.py_ that preprocesses and filters your survey data according to 
+>  specific rules.
+>  You can do so by setting `PREPROCESSING_FILENAME`.
+>- You may specify the folder which contains the analysis scripts with setting
+>  `SCRIPT_FOLDER`, which is the _scripts_ folder by default.
+>- With `SCRIPT_NAMES` you may select a subset of the analysis scripts available
+>  as a list that ought to be executed.
+>  This list is empty by default, which means, all scripts are executed.
+
+---
+
+> **Hint for LimeSurvey Users**
+>
+> There is an option `Expression Manager code` in LimeSurvey when exporting the
+> data into a CSV file that uses the separator character `_` (underscore) to
+> concatenate QuestionCollection ID and Question ID in the CSV data header. 
+> Otherwise the default `[]` is used which is not compatible with the HIFIS
+> Surveyval Framework.
+
+---
+
+##### Additional Files Generated
 
 Additional to the configuration file there are two more files created:
 
@@ -298,20 +336,37 @@ of the analysis scripts in an arbitrary order.
 
 ```shell script
 $ tree hifis_surveyval/
-hifis_surveyval/
-├── answer.py
+hifis_surveyval
 ├── cli.py
 ├── core
-│   ├── environment.py
-│   ├── __init__.py
-│   └── settings.py
-├── data.py
-├── dispatch.py
-├── globals.py
-├── __init__.py
-├── plot.py
-├── question.py
-└── util.py
+│   ├── dispatch.py
+│   ├── preprocess.py
+│   ├── settings.py
+│   └── util.py
+├── data_container.py
+├── files
+│   ├── example_preprocess.py
+│   ├── example_script.py
+│   ├── preprocess.py
+│   └── scripts
+│       └── example-01-accessing-data.py
+├── hifis_surveyval.py
+├── models
+│   ├── answer_option.py
+│   ├── answer_types.py
+│   ├── mixins
+│   │   ├── mixins.py
+│   │   ├── uses_settings.py
+│   │   └── yaml_constructable.py
+│   ├── question_collection.py
+│   ├── question.py
+│   └── translated.py
+├── plotting
+│   ├── matplotlib_plotter.py
+│   ├── plotter.py
+│   └── supported_output_format.py
+└── printing
+    └── printer.py
 ```
 
 ## Resources
