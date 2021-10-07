@@ -32,7 +32,7 @@ import math
 from inspect import FrameInfo, getmodulename, stack
 from pathlib import Path
 from textwrap import wrap
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from matplotlib import colors, pyplot, rcParams
 from pandas import DataFrame
@@ -112,6 +112,20 @@ class MatplotlibPlotter(Plotter):
         figure_height: float = float(height) / (top - bottom)
         figure.set_size_inches(figure_width, figure_height)
 
+    @classmethod
+    def _customize_figure_size(cls, figure_size: Tuple[float]) -> None:
+        """
+        Set custom figure size if figure size is given.
+
+        Args:
+            figure_size: Tuple[float]:
+                Tuple with two entries representing custom width and height
+                of the figure. Figure size is not set if figure size is not
+                given.
+        """
+        if figure_size and len(figure_size) == 2:
+            MatplotlibPlotter._set_figure_size(figure_size[0], figure_size[1])
+
     def plot_bar_chart(
         self,
         data_frame: DataFrame,
@@ -176,6 +190,10 @@ class MatplotlibPlotter(Plotter):
                     Allows to specify the maximum and minimum values of the
                     y axis (Default: None) See Also:
                     matplotlib.axes.Axes.set_ylim
+                figure_size (Tuple[float]):
+                    This tuple indicates the aspect ratio in terms of the
+                    figure width and height of an image to plot. (Default:
+                    The figure is auto-sized if the figure size is not given.)
         """
         rcParams.update({"figure.autolayout": True})
 
@@ -240,7 +258,13 @@ class MatplotlibPlotter(Plotter):
                 round_value_labels_to_decimals,
             )
 
-        self._set_figure_size(len(data_frame.index) * 0.25, 5)
+        # Set custom figure size or auto-size the figure if figure size is not
+        # given.
+        default_width = len(data_frame.index) * 0.25
+        default_height = 5
+        MatplotlibPlotter._customize_figure_size(
+            kwargs.get("figure_size", (default_width, default_height)))
+
         self._output_pyplot_image(plot_file_name)
 
     @classmethod
@@ -460,6 +484,10 @@ class MatplotlibPlotter(Plotter):
                     readability. Value is given in degrees. (Default: 0)
                 y_axis_label (str):
                     The label for the y-axis. Default: "")
+                figure_size (Tuple[float]):
+                    This tuple indicates the aspect ratio in terms of the
+                    figure width and height of an image to plot. (Default:
+                    The figure is auto-sized if the figure size is not given.)
         """
         rcParams.update({"figure.autolayout": True})
         x_rotation: int = kwargs.get("x_label_rotation", 0)
@@ -523,8 +551,13 @@ class MatplotlibPlotter(Plotter):
             rotation_mode="anchor",
         )
 
-        # Adapt the figure to its content
-        self._set_figure_size(column_count * frame_count * 0.25, 5)
+        # Set custom figure size or auto-size the figure if figure size is not
+        # given.
+        default_width = column_count * frame_count * 0.25
+        default_height = 5
+        MatplotlibPlotter._customize_figure_size(
+            kwargs.get("figure_size", (default_width, default_height)))
+
         self._output_pyplot_image(plot_file_name)
 
     def plot_matrix_chart(
@@ -559,6 +592,10 @@ class MatplotlibPlotter(Plotter):
                     readability. Value is given in degrees. (Default: 0)
                 y_axis_label (str):
                     The label for the y-axis. Default: "")
+                figure_size (Tuple[float]):
+                    This tuple indicates the aspect ratio in terms of the
+                    figure width and height of an image to plot. (Default:
+                    The figure is auto-sized if the figure size is not given.)
         """
         rcParams.update({"figure.autolayout": True})
         color_map_name = "Blues_r" if invert_colors else "Blues"
@@ -608,5 +645,12 @@ class MatplotlibPlotter(Plotter):
                     va="center",
                     color="white" if switch_color else "black",
                 )
+
+        # Set custom figure size or auto-size the figure if figure size is not
+        # given.
+        default_width = column_count * 0.35
+        default_height = row_count * 0.5
+        MatplotlibPlotter._customize_figure_size(
+            kwargs.get("figure_size", (default_width, default_height)))
 
         self._output_pyplot_image(plot_file_name)
