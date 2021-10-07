@@ -158,6 +158,11 @@ def filter_and_group_series(
             The values of base_data are put into the column where the base_data
             index matches the group_by index.
     """
+    if group_by.isna().values.any():
+        raise ValueError("The group-by series contains NaN values. Please "
+                         "drop NaN values from the group-by series before "
+                         "passing it as an argument.")
+
     result_frame: DataFrame = DataFrame(
         index=base_data.index, columns=group_by.unique()
     )
