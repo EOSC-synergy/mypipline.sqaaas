@@ -31,6 +31,37 @@ Group your changes into these categories:
 
 `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
 
+## [1.2.0](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/releases/v1.2.0) - 2021-10-07
+
+[List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.2.0-preview...v1.2.0)
+
+### Fixed
+- Reorder steps to now manipulate IDs from CSV data header in the correct order
+  ([!139](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/139)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+
+### Changed
+- Use accessors for properties like text and label in example script 1 - accessing data
+  ([!140](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/140)
+  by [hueser93](https://gitlab.hzdr.de/hueser93))
+- Add Unix swap files to file .gitignore
+  ([!136](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/136)
+  by [tfoerst1](https://gitlab.hzdr.de/tfoerst1)).
+- Adapt file README.md to cover new configuration variables in configuration file
+  ([!141](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/141)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+
+### Added
+- Raise exception if _group-by_-argument passed to grouping function contains NaN values
+  ([!143](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/143)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+- Make aspect ratio of plots customizable and add auto-sizing to plotting methods
+  ([!142](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/142)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+- Add mixins to offer accessors for model properties and make HIERARCHY_SEPARATOR configurable
+  ([!131](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/131)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+
 ## [1.2.0-preview](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/releases/v1.2.0-preview) - 2021-10-01
 
 [List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.1.1...v1.2.0-preview)
