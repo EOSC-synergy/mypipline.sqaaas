@@ -93,7 +93,7 @@ class QuestionCollection(YamlConstructable, HasID, HasLabel, HasText):
             settings:
                 The settings used by the framework
         """
-        super().__init__(
+        super(QuestionCollection, self).__init__(
             object_id=collection_id,
             label=label,
             translations=text,

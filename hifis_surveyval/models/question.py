@@ -26,7 +26,7 @@ class.
 """
 # alias name to avoid clash with schema.Optional
 import logging
-from typing import Dict, List, Optional, Set
+from typing import Dict, Optional, Set
 
 import schema
 from pandas import Series
@@ -48,6 +48,11 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
     this to be successful the YAML data has to adhere to Question.schema which
     describes the required fields and their data types.
     Answers then have to be added separately via add_answer().
+
+    A Question may have answer_options which are an optional set of
+    predefined answers. If there are none given, the question can have any
+    answer, otherwise the answer must be the short ID of one of the given
+    answer options.
     """
 
     token_ID = "id"
@@ -77,7 +82,6 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
         label: str,
         answer_type: type,
         mandatory: bool,
-        answer_options: List[AnswerOption],
         settings: Settings,
     ):
         """
@@ -105,14 +109,10 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
                 Whether there is an answer to this question expected from each
                 participant in oder to consider the participant's answer data
                 complete.
-            answer_options:
-                An optional list of predefined answers. If there are none
-                given, the question can have any answer, otherwise the answer
-                must be the short ID of the selected answer option.
             settings:
                 An object reflecting the application settings.
         """
-        super().__init__(
+        super(Question, self).__init__(
             object_id=question_id,
             parent_id=parent_id,
             label=label,
@@ -125,13 +125,32 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
         # Answer options are stored with their short ID as keys for easy
         # lookup when associating answers, since answers contain these as
         # values when selected.
-        self._answer_options: Dict[str, AnswerOption] = {
-            option.short_id: option for option in answer_options
-        }
+        self._answer_options: Dict[str, AnswerOption] = dict()
 
         # The actual answers are not part of the metadata but have to be read
         # from other sources in a separate step
         self._answers: Dict[str, Optional[answer_type]] = {}
+
+    def _add_answer_option(self, new_answer_option: AnswerOption) -> None:
+        """
+        Add a new answer option to this Question.
+
+        Args:
+            new_answer_option:
+                An object representing the answer option.
+        Raises:
+            KeyError:
+                If an answer Option with the same short ID was already in
+                the dictionary of known answer options, which may indicate a
+                duplicate.
+        """
+        if new_answer_option.short_id in self._answer_options:
+            raise KeyError(
+                f"Attempt to add duplicate of answer option "
+                f"{new_answer_option.full_id}"
+            )
+
+        self._answer_options[new_answer_option.short_id] = new_answer_option
 
     def add_answer(self, participant_id: str, value: str):
         """
@@ -270,22 +289,22 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
 
         answer_type: type = VALID_ANSWER_TYPES[yaml[Question.token_DATA_TYPE]]
 
-        answer_options = [
-            AnswerOption.from_yaml_dictionary(
-                yaml=answer_yaml,
-                parent_id=question_id,
-                settings=settings
-            )
-            for answer_yaml in yaml[Question.token_ANSWER_OPTIONS]
-        ]
-
-        return Question(
+        new_question: Question = Question(
             question_id=question_id,
             parent_id=parent_id,
             label=yaml[HasLabel.YAML_TOKEN],
             text=Translated(yaml[HasText.YAML_TOKEN]),
             answer_type=answer_type,
-            answer_options=answer_options,
             mandatory=yaml[Question.token_MANDATORY],
             settings=settings
         )
+
+        for answer_yaml in yaml[Question.token_ANSWER_OPTIONS]:
+            new_answer_option = AnswerOption.from_yaml_dictionary(
+                yaml=answer_yaml,
+                parent_id=new_question.full_id,
+                settings=settings
+            )
+            new_question._add_answer_option(new_answer_option)
+
+        return new_question

@@ -64,7 +64,7 @@ class AnswerOption(YamlConstructable, HasID, HasLabel, HasText):
             settings:
                 An object reflecting the application settings.
         """
-        super().__init__(
+        super(AnswerOption, self).__init__(
             object_id=option_id,
             parent_id=parent_id,
             label=label,
