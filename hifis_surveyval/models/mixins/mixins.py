@@ -31,6 +31,46 @@ from hifis_surveyval.models.mixins.uses_settings import UsesSettings
 from hifis_surveyval.models.translated import Translated
 
 
+class HasMandatory(ABC):
+    """
+    This mixin provides functionality for optional mandatory indicators.
+
+    Model elements may require something to be present (e.g. an answer)
+    directly or indirectly as a child of this object.
+    """
+
+    YAML_TOKEN = "mandatory"
+    """The token used in metadata YAML files to indicate mandatory-ness."""
+
+    def __init__(self, is_mandatory: bool, *args, **kwargs):
+        """
+        Initialize an object with mandatory-ness indicator.
+
+        Args:
+            is_mandatory:
+                Whether this object has mandatory elements or not.
+            *args:
+                Will be forwarded to other mixins in the initialization order.
+            **kwargs:
+                Will be forwarded to other mixins in the initialization order.
+        """
+        super(HasMandatory, self).__init__(*args, **kwargs)
+        self._is_mandatory = is_mandatory
+
+    @property
+    def is_mandatory(self) -> bool:
+        """
+        Check whether this question is marked as mandatory.
+
+        Mandatory questions are expected to be answered by participants.
+
+        Returns:
+            True, if the question was marked as mandatory in the metadata,
+            False otherwise
+        """
+        return self._is_mandatory
+
+
 class HasLabel(ABC):
     """
     This mixin provides a label property.
@@ -143,6 +183,8 @@ class HasID(UsesSettings):
     If no hierarchical parent_id is given, the short ID and the full ID are the
     same.
     """
+
+    # TODO Move the repective YAML token in here
 
     known_ids: Set[str] = set()
 

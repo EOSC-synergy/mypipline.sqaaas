@@ -34,13 +34,21 @@ from pandas import Series
 from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.models.answer_option import AnswerOption
 from hifis_surveyval.models.answer_types import VALID_ANSWER_TYPES
-from hifis_surveyval.models.mixins.mixins import HasLabel, HasText, HasID
+from hifis_surveyval.models.mixins.mixins import (HasLabel, HasText, HasID,
+                                                  HasMandatory,
+                                                  )
 from hifis_surveyval.models.mixins.yaml_constructable import (
     YamlConstructable, YamlDict)
 from hifis_surveyval.models.translated import Translated
 
 
-class Question(YamlConstructable, HasID, HasLabel, HasText):
+class Question(
+    YamlConstructable,
+    HasID,
+    HasLabel,
+    HasText,
+    HasMandatory
+):
     """
     Questions model concrete questions that could be answered in the survey.
 
@@ -58,7 +66,6 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
     token_ID = "id"
     token_ANSWER_OPTIONS = "answers"
     token_DATA_TYPE = "datatype"
-    token_MANDATORY = "mandatory"
 
     schema = schema.Schema(
         {
@@ -66,7 +73,7 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
             HasLabel.YAML_TOKEN: str,
             HasText.YAML_TOKEN: dict,
             token_DATA_TYPE: lambda t: t in VALID_ANSWER_TYPES,
-            token_MANDATORY: bool,
+            HasMandatory.YAML_TOKEN: bool,
             schema.Optional(token_ANSWER_OPTIONS, default=[]): list,
             schema.Optional(str): object,  # Catchall for unsupported yaml data
         }
@@ -117,10 +124,10 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
             parent_id=parent_id,
             label=label,
             translations=text,
+            is_mandatory=mandatory,
             settings=settings
         )
         self._answer_type = answer_type
-        self._is_mandatory = mandatory
 
         # Answer options are stored with their short ID as keys for easy
         # lookup when associating answers, since answers contain these as
@@ -174,11 +181,6 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
                 If answer options were present, but none of the answer options
                 had an ID that matched the given value
         """
-        # TODO this check should be performed when marking invalid answers,
-        #  but must not prevent answers from being included in the first place
-        # Mandatory questions must have an answer
-        # if self._is_mandatory and not value:
-        #     raise ValueError("No answer was given, but it was mandatory")
 
         if not value:
             # Convert empty strings to None to properly indicate that no
@@ -224,19 +226,6 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
         for participant_id in participant_ids:
             if participant_id in self._answers:
                 del self._answers[participant_id]
-
-    @property
-    def is_mandatory(self) -> bool:
-        """
-        Check whether this question is marked as mandatory.
-
-        Mandatory questions are expected to be answered by participants.
-
-        Returns:
-            True, if the question was marked as mandatory in the metadata,
-            False otherwise
-        """
-        return self._is_mandatory
 
     @property
     def answers(self) -> Dict[str, Optional[object]]:  # NOTE (0) below
@@ -308,7 +297,7 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
             label=yaml[HasLabel.YAML_TOKEN],
             text=Translated(yaml[HasText.YAML_TOKEN]),
             answer_type=answer_type,
-            mandatory=yaml[Question.token_MANDATORY],
+            mandatory=yaml[HasMandatory.YAML_TOKEN],
             settings=settings
         )
 

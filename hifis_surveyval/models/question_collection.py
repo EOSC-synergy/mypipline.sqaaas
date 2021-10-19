@@ -32,7 +32,9 @@ from pandas import DataFrame, Series, concat
 from schema import Optional, Schema
 
 from hifis_surveyval.core.settings import Settings
-from hifis_surveyval.models.mixins.mixins import HasLabel, HasText, HasID
+from hifis_surveyval.models.mixins.mixins import (HasLabel, HasText, HasID,
+                                                  HasMandatory,
+                                                  )
 from hifis_surveyval.models.mixins.yaml_constructable import (
     YamlConstructable,
     YamlDict,
@@ -41,7 +43,13 @@ from hifis_surveyval.models.question import Question
 from hifis_surveyval.models.translated import Translated
 
 
-class QuestionCollection(YamlConstructable, HasID, HasLabel, HasText):
+class QuestionCollection(
+    YamlConstructable,
+    HasID,
+    HasLabel,
+    HasText,
+    HasMandatory
+):
     """
     QuestionCollections group a set of questions into a common context.
 
@@ -58,6 +66,7 @@ class QuestionCollection(YamlConstructable, HasID, HasLabel, HasText):
             HasLabel.YAML_TOKEN: str,
             HasText.YAML_TOKEN: dict,
             Optional(token_QUESTIONS, default=[]): list,
+            Optional(HasMandatory.YAML_TOKEN, default=False): bool,
             Optional(str): object,  # catchall
         }
     )
@@ -68,6 +77,7 @@ class QuestionCollection(YamlConstructable, HasID, HasLabel, HasText):
         text: Translated,
         label: str,
         questions: List[Question],
+        mandatory:bool,
         settings: Settings,
     ) -> None:
         """
@@ -90,6 +100,10 @@ class QuestionCollection(YamlConstructable, HasID, HasLabel, HasText):
             questions:
                 A list of questions that are contained within the question
                 collection.
+            mandatory:
+                Whether there is an answer to at least one of the contained
+                questions expected from each participant in oder to consider
+                the participant's answer data complete.
             settings:
                 The settings used by the framework
         """
@@ -97,6 +111,7 @@ class QuestionCollection(YamlConstructable, HasID, HasLabel, HasText):
             object_id=collection_id,
             label=label,
             translations=text,
+            is_mandatory=mandatory,
             settings=settings,
         )
         self._questions: Dict[str, Question] = {
@@ -211,5 +226,6 @@ class QuestionCollection(YamlConstructable, HasID, HasLabel, HasText):
             text=text,
             label=yaml[HasLabel.YAML_TOKEN],
             questions=questions,
+            mandatory=yaml[HasMandatory.YAML_TOKEN],
             settings=settings
         )
