@@ -120,7 +120,7 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
             settings=settings
         )
         self._answer_type = answer_type
-        self._mandatory = mandatory
+        self._is_mandatory = mandatory
 
         # Answer options are stored with their short ID as keys for easy
         # lookup when associating answers, since answers contain these as
@@ -177,7 +177,7 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
         # TODO this check should be performed when marking invalid answers,
         #  but must not prevent answers from being included in the first place
         # Mandatory questions must have an answer
-        # if self._mandatory and not value:
+        # if self._is_mandatory and not value:
         #     raise ValueError("No answer was given, but it was mandatory")
 
         if not value:
@@ -224,6 +224,19 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
         for participant_id in participant_ids:
             if participant_id in self._answers:
                 del self._answers[participant_id]
+
+    @property
+    def is_mandatory(self) -> bool:
+        """
+        Check whether this question is marked as mandatory.
+
+        Mandatory questions are expected to be answered by participants.
+
+        Returns:
+            True, if the question was marked as mandatory in the metadata,
+            False otherwise
+        """
+        return self._is_mandatory
 
     @property
     def answers(self) -> Dict[str, Optional[object]]:  # NOTE (0) below
