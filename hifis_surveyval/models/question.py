@@ -181,7 +181,6 @@ class Question(
                 If answer options were present, but none of the answer options
                 had an ID that matched the given value
         """
-
         if not value:
             # Convert empty strings to None to properly indicate that no
             # data was provided

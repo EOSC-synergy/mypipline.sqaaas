@@ -77,7 +77,7 @@ class QuestionCollection(
         text: Translated,
         label: str,
         questions: List[Question],
-        mandatory:bool,
+        mandatory: bool,
         settings: Settings,
     ) -> None:
         """
