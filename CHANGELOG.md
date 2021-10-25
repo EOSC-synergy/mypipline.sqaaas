@@ -31,6 +31,25 @@ Group your changes into these categories:
 
 `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
 
+## [1.3.0](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/releases/v1.3.0) - 2021-10-26
+
+[List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.2.0...v1.3.0)
+
+### Fixed
+- Fix full IDs of AnswerOptions to be a concatenation of QuestionCollection ID, Question ID and AnswerOption ID
+  ([!146](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/146)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+
+### Changed
+- Use Python's type hinting in example script 01 about accessing data and metadata
+  ([!144](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/144)
+  by [hueser93](https://gitlab.hzdr.de/hueser93))
+
+### Added
+- Allow AnswerOptions to also have value representations aside from labels
+  ([!147](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/147)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+
 ## [1.2.0](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/releases/v1.2.0) - 2021-10-07
 
 [List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.2.0-preview...v1.2.0)
