@@ -19,10 +19,13 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """This module contains a class to represent survey answers."""
+import logging
+from typing import Optional as typing_Optional, Generic
 
-from schema import Schema
+from schema import Schema, Optional
 
 from hifis_surveyval.core.settings import Settings
+from hifis_surveyval.models.answer_types import AnswerType
 from hifis_surveyval.models.mixins.mixins import HasLabel, HasText, HasID
 from hifis_surveyval.models.mixins.yaml_constructable import (
     YamlConstructable,
@@ -31,13 +34,25 @@ from hifis_surveyval.models.mixins.yaml_constructable import (
 from hifis_surveyval.models.translated import Translated
 
 
-class AnswerOption(YamlConstructable, HasID, HasLabel, HasText):
+class AnswerOption(
+    Generic[AnswerType],
+    YamlConstructable,
+    HasID,
+    HasLabel,
+    HasText
+):
     """The AnswerOption models allowed answers for a specific Question."""
 
     token_ID = "id"
+    token_VALUE = "value"
 
     schema = Schema(
-        {token_ID: str, HasLabel.YAML_TOKEN: str, HasText.YAML_TOKEN: dict}
+        {
+            token_ID: str,
+            HasLabel.YAML_TOKEN: str,
+            HasText.YAML_TOKEN: dict,
+            Optional(token_VALUE, default=None): object
+        }
     )
 
     def __init__(
@@ -46,7 +61,8 @@ class AnswerOption(YamlConstructable, HasID, HasLabel, HasText):
             option_id: str,
             text: Translated,
             label: str,
-            settings: Settings
+            settings: Settings,
+            value: typing_Optional[AnswerType],
     ) -> None:
         """
         Create an answer option from the metadata.
@@ -63,6 +79,10 @@ class AnswerOption(YamlConstructable, HasID, HasLabel, HasText):
                 A short string used to represent the answer option in plotting.
             settings:
                 An object reflecting the application settings.
+            value:
+                (Optional) A value to represent the AnswerOption, e.g. for
+                sorting, calculations or to represent an underlying value if
+                the label can not easily be cast to the intended AnswerType.
         """
         super(AnswerOption, self).__init__(
             object_id=option_id,
@@ -71,6 +91,7 @@ class AnswerOption(YamlConstructable, HasID, HasLabel, HasText):
             translations=text,
             settings=settings
         )
+        self._value: typing_Optional[AnswerType] = value
 
     def __str__(self) -> str:
         """
@@ -81,6 +102,16 @@ class AnswerOption(YamlConstructable, HasID, HasLabel, HasText):
         """
         return f"{self.full_id}: {self._label}"
 
+    @property
+    def value(self) -> typing_Optional[AnswerType]:
+        """
+        Access the underlying value type, if present.
+
+        Returns:
+            The underlying value if it is defined, None otherwise.
+        """
+        return self._value
+
     @staticmethod
     def _from_yaml_dictionary(yaml: YamlDict, **kwargs) -> "AnswerOption":
         """
@@ -90,20 +121,45 @@ class AnswerOption(YamlConstructable, HasID, HasLabel, HasText):
             yaml:
                 A YAML dictionary describing the AnswerOption
             **kwargs:
-                Must contain the ID of the Question-instance to which the newly
-                generated AnswerOption belongs as the parameter "parent_id".
+                parent_id:
+                    The ID of the Question-instance to which the newly
+                    generated AnswerOption belongs.
+                settings:
+                    The used settings instance
+                answer_type:
+                    The data type of which the answer value should be.
         Returns:
             A new AnswerOption containing the provided data
         """
         parent_id = kwargs["parent_id"]
         settings: Settings = kwargs["settings"]
+        answer_type: type = kwargs["answer_type"]
+        option_id = yaml[AnswerOption.token_ID]
 
-        return AnswerOption(
+        label = yaml[HasLabel.YAML_TOKEN]
+        yaml_value = yaml[AnswerOption.token_VALUE]
+
+        value = None
+        if yaml_value is not None:
+            value = yaml_value
+        else:
+            # If no explicit value was given, try to infer it from the label
+            try:
+                value = answer_type(label)
+            except ValueError:
+                logging.error(
+                    f"Could not infer answer option value from label for "
+                    f"{parent_id}/{option_id}: \"{label}\" (wanted to cast to"
+                    f" {answer_type.__name__})"
+                )
+
+        return AnswerOption[answer_type](
             parent_id=parent_id,
-            option_id=yaml[AnswerOption.token_ID],
-            label=yaml[HasLabel.YAML_TOKEN],
+            option_id=option_id,
+            label=label,
             text=Translated.from_yaml_dictionary(
                 yaml[HasText.YAML_TOKEN]
             ),
-            settings=settings
+            settings=settings,
+            value=value
         )

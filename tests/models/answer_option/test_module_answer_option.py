@@ -62,7 +62,8 @@ class TestAnswerOption(object):
         answer_option: AnswerOption = AnswerOption.from_yaml_dictionary(
             yaml=metadata_fixture[0],
             parent_id=TestAnswerOption.question_id,
-            settings=settings_fixture
+            settings=settings_fixture,
+            answer_type=str
         )
         # Make sure that object retrieved from metadata YAML file given is of
         # type AnswerOption.
@@ -89,7 +90,8 @@ class TestAnswerOption(object):
         answer_option: AnswerOption = AnswerOption.from_yaml_dictionary(
             yaml=metadata_fixture[0],
             parent_id=TestAnswerOption.question_id,
-            settings=settings_fixture
+            settings=settings_fixture,
+            answer_type=str
         )
         actual_answer_option_id: str = answer_option.short_id
         # Make sure that AnswerOption object retrieved from metadata YAML file
@@ -117,7 +119,8 @@ class TestAnswerOption(object):
         answer_option: AnswerOption = AnswerOption.from_yaml_dictionary(
             yaml=metadata_fixture[0],
             parent_id=TestAnswerOption.question_id,
-            settings=settings_fixture
+            settings=settings_fixture,
+            answer_type=str
         )
         actual_translated_answer_option_text: str = (
             answer_option.text(TestAnswerOption.language_code)

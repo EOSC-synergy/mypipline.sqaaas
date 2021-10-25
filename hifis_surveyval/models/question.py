@@ -26,21 +26,27 @@ class.
 """
 # alias name to avoid clash with schema.Optional
 import logging
-from typing import Dict, Optional, Set
+from typing import Dict, Optional, Set, Generic, get_args
 
 import schema
 from pandas import Series
 
 from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.models.answer_option import AnswerOption
-from hifis_surveyval.models.answer_types import VALID_ANSWER_TYPES
+from hifis_surveyval.models.answer_types import VALID_ANSWER_TYPES, AnswerType
 from hifis_surveyval.models.mixins.mixins import HasLabel, HasText, HasID
 from hifis_surveyval.models.mixins.yaml_constructable import (
     YamlConstructable, YamlDict)
 from hifis_surveyval.models.translated import Translated
 
 
-class Question(YamlConstructable, HasID, HasLabel, HasText):
+class Question(
+    Generic[AnswerType],
+    YamlConstructable,
+    HasID,
+    HasLabel,
+    HasText
+):
     """
     Questions model concrete questions that could be answered in the survey.
 
@@ -80,7 +86,6 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
         question_id: str,
         text: Translated,
         label: str,
-        answer_type: type,
         mandatory: bool,
         settings: Settings,
     ):
@@ -88,6 +93,9 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
         Initialize a question object with metadata.
 
         The answers have to be added separately via add_answer().
+        The data type of the answers is given by the generic AnswerType.
+        It must be one of the supported data types. See also:
+        hifis_surveyval.models.answer_types.VALID_ANSWER_TYPES
 
         Args:
             parent_id:
@@ -101,10 +109,6 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
             label:
                 A short label that can be used in plotting to represent the
                 question collection.
-            answer_type:
-                The data type of the answers. Must be one of the supported
-                data types. See also
-                hifis_surveyval.models.answer_types.VALID_ANSWER_TYPES
             mandatory:
                 Whether there is an answer to this question expected from each
                 participant in oder to consider the participant's answer data
@@ -119,17 +123,35 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
             translations=text,
             settings=settings
         )
-        self._answer_type = answer_type
         self._mandatory = mandatory
 
         # Answer options are stored with their short ID as keys for easy
         # lookup when associating answers, since answers contain these as
         # values when selected.
-        self._answer_options: Dict[str, AnswerOption] = dict()
+        self._answer_options: Dict[str, AnswerOption[AnswerType]] = dict()
 
         # The actual answers are not part of the metadata but have to be read
         # from other sources in a separate step
-        self._answers: Dict[str, Optional[answer_type]] = {}
+        self._answers: Dict[str, Optional[AnswerType]] = {}
+
+    @property
+    def _answer_type(self) -> type:
+        """
+        Get the underlying answer type of the question.
+
+        Returns:
+            The underlying type that answers to this question are supposed
+            to have
+        """
+        return get_args(self.__orig_class__)[0]
+        # NOTE: This involves some trickery from the typing library. The
+        # initial idea comes from
+        # https://stackoverflow.com/questions/48572831/how-to-access-the
+        # -type-arguments-of-typing-generic
+        # and https://www.py4u.net/discuss/144134
+        # The approach does not work during __init__ though since then the
+        # instantiation has not yes completed, so caching the type is
+        # probably not an option.
 
     def _add_answer_option(self, new_answer_option: AnswerOption) -> None:
         """
@@ -152,7 +174,7 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
 
         self._answer_options[new_answer_option.short_id] = new_answer_option
 
-    def add_answer(self, participant_id: str, value: str):
+    def add_answer(self, participant_id: str, value_text: str) -> None:
         """
         Store a given answer to this question.
 
@@ -161,56 +183,49 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
         Args:
             participant_id:
                 The ID of the participant who gave the answer
-            value:
+            value_text:
                 The text-version of the answer as stored in the CSV.
                 If the question is mandatory, the value must not be empty.
                 If answer options are defined the value must match the short id
                 of the selected answer option.
         Raises:
-            ValueError:
-                if the question was marked as mandatory but the given value was
-                 an empty string
             KeyError:
                 If answer options were present, but none of the answer options
                 had an ID that matched the given value
         """
-        # TODO this check should be performed when marking invalid answers,
-        #  but must not prevent answers from being included in the first place
-        # Mandatory questions must have an answer
-        # if self._mandatory and not value:
-        #     raise ValueError("No answer was given, but it was mandatory")
-
-        if not value:
+        if not value_text:
             # Convert empty strings to None to properly indicate that no
             # data was provided
-            value = None
-        elif self._answer_options:
+            self._answers[participant_id] = None
+            return
+
+        if self._answer_options:
             # If answer options are defined, the answer value is expected to
-            # be the short id of the corresponding answer option
-            # The label of the option then will be casted to the desired
-            # data type
-            option = self._answer_options[value]
-            value = self._answer_type(option.label)
-            # FIXME change: answer option values become a separate field,
-            #  no longer derived from labels
-        elif self._answer_type == bool:
+            # be the short id of the corresponding answer option to be
+            # looked up. The actual value is taken from there.
+            option = self._answer_options[value_text]
+            self._answers[participant_id] = option.value
+            return
+
+        if self._answer_type == bool:
             # When casting to boolean values, Python casts any non-empty string
             # to True and only empty strings to False. Consequently, values
             # are transformed according to a set of valid true and false
             # values to allow for different truth values.
-            if value in self._settings.TRUE_VALUES:
-                value = True
-            elif value in self._settings.FALSE_VALUES:
-                value = False
+            if value_text in self._settings.TRUE_VALUES:
+                bool_value = True
+            elif value_text in self._settings.FALSE_VALUES:
+                bool_value = False
             else:
                 logging.error(f"Boolean data is an invalid truth value "
-                              f"in question {self.full_id}: {value}.")
-                value = None
-        else:
-            # try to cast the answer value to the expected type
-            value = self._answer_type(value)
+                              f"in question {self.full_id}: {value_text}.")
+                bool_value = None
+            self._answers[participant_id] = bool_value
+            return
 
-        self._answers[participant_id] = value
+        # try to cast the answer value to the expected type
+        self._answers[participant_id] = self._answer_type(value_text)
+        # FIXME catch if conversion fails
 
     def remove_answers(self, participant_ids: Set[str]) -> None:
         """
@@ -226,7 +241,7 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
                 del self._answers[participant_id]
 
     @property
-    def answers(self) -> Dict[str, Optional[object]]:  # NOTE (0) below
+    def answers(self) -> Dict[str, Optional[AnswerType]]:
         """
         Obtain the given answers as read from the survey data.
 
@@ -242,10 +257,6 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
             this question.
         """
         return self._answers
-
-    # (0) Sadly I found no better way to narrow down the type since I could
-    # not refer to self._answer_type when specifying the return type.
-    # Suggestions for improvement are welcome.
 
     def as_series(self) -> Series:
         """
@@ -289,12 +300,11 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
 
         answer_type: type = VALID_ANSWER_TYPES[yaml[Question.token_DATA_TYPE]]
 
-        new_question: Question = Question(
+        new_question: Question = Question[answer_type](
             question_id=question_id,
             parent_id=parent_id,
             label=yaml[HasLabel.YAML_TOKEN],
             text=Translated(yaml[HasText.YAML_TOKEN]),
-            answer_type=answer_type,
             mandatory=yaml[Question.token_MANDATORY],
             settings=settings
         )
@@ -303,7 +313,8 @@ class Question(YamlConstructable, HasID, HasLabel, HasText):
             new_answer_option = AnswerOption.from_yaml_dictionary(
                 yaml=answer_yaml,
                 parent_id=new_question.full_id,
-                settings=settings
+                settings=settings,
+                answer_type=answer_type
             )
             new_question._add_answer_option(new_answer_option)
 

@@ -217,9 +217,15 @@ class DataContainer(object):
             for (question_index, question) in question_cache.items():
                 answer: str = row[question_index]
                 try:
-                    question.add_answer(participant_id, answer)
+                    question.add_answer(
+                        participant_id=participant_id,
+                        value_text=answer
+                    )
                 except (KeyError, ValueError) as error:
-                    warning(f"When loading CSV data: {error}")
+                    warning(
+                        f"When loading CSV data for {question.full_id}:"
+                        f" {error}"
+                    )
 
     def collection_for_id(self, full_id: str) -> QuestionCollection:
         """
