@@ -38,7 +38,7 @@ Setting up the Environment
 Because the scripts use `hifis-surveyval` as dependency, it is wise to set
 up a dedicated environment for your analysis. We show an example workflow
 using `Poetry <https://python-poetry.org/>`_ to achieve that, but other
-solutions like `Pipenv <https://pipenv.pypa.io/en/latest/>`_ also work.
+solutions like `Pipenv` also work.
 
 First, we need to install poetry on our system.
 
