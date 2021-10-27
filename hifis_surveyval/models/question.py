@@ -35,7 +35,7 @@ from hifis_surveyval.core.settings import Settings
 from hifis_surveyval.models.answer_option import AnswerOption
 from hifis_surveyval.models.answer_types import VALID_ANSWER_TYPES
 from hifis_surveyval.models.mixins.mixins import (
-    HasLabel, HasText, HasID,HasMandatory,
+    HasLabel, HasText, HasID, HasMandatory,
 )
 from hifis_surveyval.models.mixins.yaml_constructable import (
     YamlConstructable, YamlDict
