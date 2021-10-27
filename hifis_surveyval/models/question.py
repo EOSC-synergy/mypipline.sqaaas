@@ -114,7 +114,7 @@ class Question(
                 hifis_surveyval.models.answer_types.VALID_ANSWER_TYPES
             mandatory:
                 Whether there is an answer to this question expected from each
-                participant in oder to consider the participant's answer data
+                participant in order to consider the participant's answer data
                 complete.
             settings:
                 An object reflecting the application settings.
