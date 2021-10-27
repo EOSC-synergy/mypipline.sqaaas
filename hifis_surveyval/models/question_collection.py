@@ -101,7 +101,7 @@ class QuestionCollection(
                 collection.
             mandatory:
                 Whether there is an answer to at least one of the contained
-                questions expected from each participant in oder to consider
+                questions expected from each participant in order to consider
                 the participant's answer data complete.
             settings:
                 The settings used by the framework
