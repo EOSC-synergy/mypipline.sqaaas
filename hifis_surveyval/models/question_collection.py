@@ -32,12 +32,11 @@ from pandas import DataFrame, Series, concat
 from schema import Optional, Schema
 
 from hifis_surveyval.core.settings import Settings
-from hifis_surveyval.models.mixins.mixins import (HasLabel, HasText, HasID,
-                                                  HasMandatory,
-                                                  )
+from hifis_surveyval.models.mixins.mixins import (
+    HasLabel, HasText, HasID, HasMandatory,
+)
 from hifis_surveyval.models.mixins.yaml_constructable import (
-    YamlConstructable,
-    YamlDict,
+    YamlConstructable, YamlDict,
 )
 from hifis_surveyval.models.question import Question
 from hifis_surveyval.models.translated import Translated
