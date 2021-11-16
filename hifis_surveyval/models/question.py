@@ -75,7 +75,7 @@ class Question(
             HasLabel.YAML_TOKEN: str,
             HasText.YAML_TOKEN: dict,
             token_DATA_TYPE: lambda t: t in VALID_ANSWER_TYPES,
-            HasMandatory.YAML_TOKEN: bool,
+            schema.Optional(HasMandatory.YAML_TOKEN, default=False): bool,
             schema.Optional(token_ANSWER_OPTIONS, default=[]): list,
             schema.Optional(str): object,  # Catchall for unsupported yaml data
         }
