@@ -28,9 +28,8 @@ This module provides a framework for plotters.
 from abc import ABC
 from pathlib import Path
 
-from hifis_surveyval.plotting.supported_output_format import (
-    SupportedOutputFormat,
-)
+from hifis_surveyval.plotting.supported_output_format import \
+    SupportedOutputFormat
 
 
 class Plotter(ABC):

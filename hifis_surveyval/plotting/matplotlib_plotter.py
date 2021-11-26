@@ -29,6 +29,7 @@ The actual plotting is done by utilizing a separate plotting library called
 """
 import logging
 import math
+import os
 from inspect import FrameInfo, getmodulename, stack
 from pathlib import Path
 from textwrap import wrap
@@ -38,9 +39,8 @@ from matplotlib import colors, pyplot, rcParams
 from pandas import DataFrame
 
 from hifis_surveyval.plotting.plotter import Plotter
-from hifis_surveyval.plotting.supported_output_format import (
-    SupportedOutputFormat,
-)
+from hifis_surveyval.plotting.supported_output_format import \
+    SupportedOutputFormat
 
 
 class MatplotlibPlotter(Plotter):
@@ -126,6 +126,40 @@ class MatplotlibPlotter(Plotter):
         if figure_size and len(figure_size) == 2:
             MatplotlibPlotter._set_figure_size(figure_size[0], figure_size[1])
 
+    @classmethod
+    def _set_custom_plot_style(cls, plot_style_name: str) -> None:
+        """
+        Set Matplotlib custom plot style.
+
+        Args:
+            plot_style_name: str:
+                This indicates which plot style to use.
+        """
+        plot_styles_path: Path = Path('hifis_surveyval/plotting/plot_styles')
+        custom_plot_styles_path: Path = Path('custom_plot_styles')
+        file_ending: str = '.mplstyle'
+
+        if len(plot_style_name) > 0:
+            custom_style_file_path: Path = \
+                custom_plot_styles_path / Path(plot_style_name + file_ending)
+            style_file_path: Path = \
+                plot_styles_path / Path(plot_style_name + file_ending)
+            if os.path.exists(custom_style_file_path.absolute()):
+                logging.info(f"Pre-defined plot style used: "
+                             f"{plot_style_name}.")
+                pyplot.style.use(custom_style_file_path.absolute())
+            elif os.path.exists(style_file_path.absolute()):
+                logging.info(f"Custom plot style used: {plot_style_name}.")
+                pyplot.style.use(style_file_path.absolute())
+            else:
+                logging.warning(f"Specified plot style file does not exist: "
+                                f"{plot_style_name}")
+        else:
+            default_plot_style_name = "default"
+            logging.info(f"No custom plot style has been chosen, "
+                         f"using plot style: {default_plot_style_name}")
+            pyplot.style.use(default_plot_style_name)
+
     def plot_bar_chart(
         self,
         data_frame: DataFrame,
@@ -173,6 +207,8 @@ class MatplotlibPlotter(Plotter):
                     bars being grouped side-by-side.
                 plot_title (str):
                     The title text for the plot. (Default: "")
+                plot_title_fontsize (float):
+                    The font-size of the plot title. (Default: 10)
                 x_axis_label (str):
                     The label for the x-axis. Default: "")
                 x_label_rotation (int):
@@ -194,7 +230,12 @@ class MatplotlibPlotter(Plotter):
                     This tuple indicates the aspect ratio in terms of the
                     figure width and height of an image to plot. (Default:
                     The figure is auto-sized if the figure size is not given.)
+                plot_style_name (str):
+                    This indicates which plot style to use.
         """
+        MatplotlibPlotter._set_custom_plot_style(
+            kwargs.get("plot_style_name", ""))
+
         rcParams.update({"figure.autolayout": True})
 
         # Color map Generation:
@@ -229,7 +270,8 @@ class MatplotlibPlotter(Plotter):
 
         axes = pyplot.gca()
 
-        axes.set_title(kwargs.get("plot_title", ""))
+        axes.set_title(kwargs.get("plot_title", ""),
+                       fontsize=kwargs.get("plot_title_fontsize", 10))
         axes.set_xlabel(kwargs.get("x_axis_label", ""))
         axes.set_ylabel(kwargs.get("y_axis_label", ""))
         axes.set_xticklabels(
@@ -488,7 +530,12 @@ class MatplotlibPlotter(Plotter):
                     This tuple indicates the aspect ratio in terms of the
                     figure width and height of an image to plot. (Default:
                     The figure is auto-sized if the figure size is not given.)
+                plot_style_name (str):
+                    This indicates which plot style to use.
         """
+        MatplotlibPlotter._set_custom_plot_style(
+            kwargs.get("plot_style_name", ""))
+
         rcParams.update({"figure.autolayout": True})
         x_rotation: int = kwargs.get("x_label_rotation", 0)
 
@@ -596,7 +643,12 @@ class MatplotlibPlotter(Plotter):
                     This tuple indicates the aspect ratio in terms of the
                     figure width and height of an image to plot. (Default:
                     The figure is auto-sized if the figure size is not given.)
+                plot_style_name (str):
+                    This indicates which plot style to use.
         """
+        MatplotlibPlotter._set_custom_plot_style(
+            kwargs.get("plot_style_name", ""))
+
         rcParams.update({"figure.autolayout": True})
         color_map_name = "Blues_r" if invert_colors else "Blues"
         color_map = pyplot.get_cmap(color_map_name)

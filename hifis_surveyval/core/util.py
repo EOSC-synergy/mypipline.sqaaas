@@ -19,7 +19,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """This module provides helper functions."""
-
+import os
 import shutil
 from pathlib import Path
 from typing import Any, List, Optional
@@ -217,3 +217,16 @@ def create_preprocessing_script(settings: Settings) -> None:
         f"{Path(__file__).parent.parent.absolute()}/files/preprocess.py",
         settings.PREPROCESSING_FILENAME.resolve(),
     )
+
+
+def create_custom_plot_style_template() -> None:
+    """Create Matplotlib custom plot style file template."""
+    template_name: str = 'style_template.mplstyle'
+    template_path: Path = Path(f"hifis_surveyval/files/{template_name}")
+    custom_plot_styles_path: Path = Path('custom_plot_styles')
+    target_path: Path = custom_plot_styles_path / Path(template_name)
+
+    if not os.path.exists(custom_plot_styles_path.absolute()):
+        os.makedirs(custom_plot_styles_path.absolute())
+    if not os.path.exists(target_path.absolute()):
+        shutil.copy(template_path.absolute(), target_path.absolute())

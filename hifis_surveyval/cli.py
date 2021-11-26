@@ -103,6 +103,7 @@ def version() -> None:
     "-c",
     is_flag=True,
     show_default=True,
+    default=False,
     help="Create a default config as file. "
     "Overwrites any existing configuration file.",
 )
@@ -111,6 +112,7 @@ def version() -> None:
     "-s",
     is_flag=True,
     show_default=True,
+    default=False,
     help="Create an example script in the given script folder. "
     "Overwrites any existing example script file.",
 )
@@ -119,26 +121,63 @@ def version() -> None:
     "-p",
     is_flag=True,
     show_default=True,
+    default=False,
     help="Create an empty preprocessing script in the given location. "
     "Overwrites any existing preprocessing script.",
 )
-def init(config: bool, script: bool, preprocess: bool) -> None:
+@click.option(
+    "--template",
+    "-t",
+    "style_template",
+    is_flag=True,
+    show_default=True,
+    default=False,
+    help="Create a pre-filled Matplotlib custom plot style template, "
+         "if not already existing.",
+)
+@click.option(
+    "--all",
+    "-a",
+    "all_files",
+    is_flag=True,
+    show_default=True,
+    default=True,
+    help="Create all files during initialization that is necessary for an "
+         "analysis run.",
+)
+def init(config: bool, script: bool, preprocess: bool, style_template: bool,
+         all_files: bool) \
+        -> None:
     """
-    Create a configuration file and an example script in the default locations.
+    Create all files with a basic configuration needed for an analysis run.
 
-    It will overwrite any existing configuration and example file.
+    Create a configuration file, a preprocessing script, an example script and
+    a custom plot style template file in the default locations.
+    It will overwrite any existing configuration, preprocessing and example
+    script file despite the custom plot style template file.
 
     Args:
-        config (bool): Indicates whether to create a configuration file.
-        script (bool): Indicates whether to create an example analysis
-                       script.
-        preprocess (bool): Indicates whether to create an example preprocess
-                           script.
+        config (bool):
+            Indicates whether to create a configuration file. (Default: False)
+        script (bool):
+            Indicates whether to create an example analysis script.
+            (Default: False)
+        preprocess (bool):
+            Indicates whether to create an example preprocess script.
+            (Default: False)
+        style_template (bool):
+            Indicates whether to create a pre-filled Matplotlib custom plot
+            style file. (Default: False)
+        all_files (bool):
+            Indicates whether to create all files during initialization that
+            are necessary for an analysis run. (Default: True)
     """
-    if not config and not script and not preprocess:
+    if all_files and not config and not script and not preprocess \
+            and not style_template:
         config = True
         script = True
         preprocess = True
+        style_template = True
 
     if config:
         settings.create_default_config_file()
@@ -146,6 +185,8 @@ def init(config: bool, script: bool, preprocess: bool) -> None:
         util.create_example_script(settings)
     if preprocess:
         util.create_preprocessing_script(settings)
+    if style_template:
+        util.create_custom_plot_style_template()
 
 
 @click.argument(

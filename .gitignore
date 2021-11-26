@@ -116,3 +116,6 @@ output/
 
 # Unix swap files
 *.swp
+
+# Matplotlib custom plot style files
+custom_plot_styles/

@@ -286,10 +286,12 @@ SCRIPT_NAMES: []
 
 ##### Additional Files Generated
 
-Additional to the configuration file there are two more files created:
+Additional to the configuration file, three more files are created:
 
 1. File _preprocess.py_ is created in the root folder of the project.
 2. File _example_script.py_ is created in the _scripts_ folder of the project.
+3. File _style_template.mplstyle_ is created in the _custom_plot_styles_
+folder of the project.
 
 #### Command _analyze_
 
@@ -348,8 +350,9 @@ hifis_surveyval
 │   ├── example_preprocess.py
 │   ├── example_script.py
 │   ├── preprocess.py
-│   └── scripts
-│       └── example-01-accessing-data.py
+│   ├── scripts
+│   │   └── example-01-accessing-data.py
+│   └── style_template.mplstyle
 ├── hifis_surveyval.py
 ├── models
 │   ├── answer_option.py
@@ -363,11 +366,27 @@ hifis_surveyval
 │   └── translated.py
 ├── plotting
 │   ├── matplotlib_plotter.py
+│   ├── plot_styles
+│   │   └── report_style.mplstyle
 │   ├── plotter.py
 │   └── supported_output_format.py
 └── printing
     └── printer.py
 ```
+
+### Matplotlib Custom Plot Styles
+
+Files with file ending `.mplstyle` contain styling information for _Matplotlib_
+plots.
+An example Matplotlib plot style template called `style_template.mplstyle` is
+created with the `init`-command of the _HIFIS-Surveyval_ framework.
+These files can be put in a folder called `custom_plot_styles`.
+Custom plot style files that are generally used within the framework need to be
+put into folder `hifis_surveyval/plotting/plot_styles/`.
+Plots created with _Matplotlib_ accept a `kwargs`-argument `plot_style_name`
+which chooses which plot style to use for the plot.
+Styles in folder `custom_plot_styles` have precedence over styles in folder
+`hifis_surveyval/plotting/plot_styles/` if they have the same name.
 
 ## Resources
 
