@@ -31,6 +31,23 @@ Group your changes into these categories:
 
 `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
 
+## [1.4.0](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/releases/v1.4.0) - 2021-12-03
+
+[List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.3.0...v1.4.0)
+
+### Added
+
+- Add implementation to specify parameters of a color map and fill pattern map
+  and use color-blind friendly colors by default
+  ([!152](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/152)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+- Add functionality to define custom plot styles for Matplotlib plots
+  ([!151](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/151)
+  by [hueser93](https://gitlab.hzdr.de/hueser93)).
+- Allow mandatory flag in QuestionCollections for multiple-choice QuestionCollections
+  ([!148](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/148)
+  by [erxleb87](https://gitlab.hzdr.de/erxleb87)).
+
 ## [1.3.0](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/releases/v1.3.0) - 2021-10-26
 
 [List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.2.0...v1.3.0)
