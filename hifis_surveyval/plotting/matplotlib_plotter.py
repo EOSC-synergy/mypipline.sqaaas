@@ -33,11 +33,13 @@ import os
 from inspect import FrameInfo, getmodulename, stack
 from pathlib import Path
 from textwrap import wrap
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from matplotlib import colors, pyplot, rcParams
 from pandas import DataFrame
 
+from hifis_surveyval.plotting.matplotlib_color_map_parameters import \
+    ColorMapParameters, DefaultColors, FillPattern, DefaultFillPattern
 from hifis_surveyval.plotting.plotter import Plotter
 from hifis_surveyval.plotting.supported_output_format import \
     SupportedOutputFormat
@@ -232,41 +234,74 @@ class MatplotlibPlotter(Plotter):
                     The figure is auto-sized if the figure size is not given.)
                 plot_style_name (str):
                     This indicates which plot style to use.
+                bar_color_map_parameters (ColorMapParameters):
+                    Object to initialize the parameters to create the color map
+                    for bars.
+                label_color_map_parameters (ColorMapParameters):
+                    Object to initialize the parameters to create the color map
+                    for value labels of bars.
         """
         MatplotlibPlotter._set_custom_plot_style(
             kwargs.get("plot_style_name", ""))
 
         rcParams.update({"figure.autolayout": True})
 
-        # Color map Generation:
-        # 1. Pick a suitable predefined colormap. Chose one with light colors
-        # so the value labels can stand out by darkening them.
-        base_color_map = pyplot.get_cmap("Pastel1")
-        color_count = len(base_color_map.colors)
-        if len(data_frame.columns) > color_count:
-            raise NotImplementedError(
-                f"Attempt to plot a bar chart "
-                f"with more then {color_count} columns per row."
-                f"Color palette has not enough colors for all of them."
-                f"(is bar chart a fitting diagram type here?)"
-                f"(Would transposing the data frame help?)"
+        bar_color_map_parameters: ColorMapParameters = \
+            kwargs.get("bar_color_map_parameters", None)
+        # Define default color scheme if not explicitly given
+        if bar_color_map_parameters is None:
+            bar_color_map_parameters = ColorMapParameters(
+                number_colors_required=len(data_frame.columns),
+                brightness_factor=1.0,
+                use_color=True,
+                use_pattern=False,
+                custom_color_map=DefaultColors.HELMHOLTZ_BLUE,
+                pattern_map=DefaultFillPattern.SLASH_FILL_PATTERN
             )
-        # 2. Reduce the colormap to have only as much colors as there are
-        # columns so each columns color index matches the column index
-        # (If the colormap were larger one would have to do linear
-        # interpolation to obtain the proper color.)
-        color_map = colors.ListedColormap(
-            [
-                base_color_map.colors[index]
-                for index in range(len(data_frame.columns))
-            ]
-        )
-        # This new colormap is handed to the graph and used in the value labels
+
+        if show_value_labels:
+            label_color_map_parameters: ColorMapParameters = \
+                kwargs.get("label_color_map_parameters", None)
+            # Define default color scheme if not explicitly given
+            if label_color_map_parameters is None:
+                label_color_map_parameters = ColorMapParameters(
+                    number_colors_required=len(data_frame.columns),
+                    brightness_factor=0.5,
+                    use_color=True,
+                    use_pattern=False,
+                    custom_color_map=DefaultColors.HELMHOLTZ_BLUE,
+                    pattern_map=DefaultFillPattern.SLASH_FILL_PATTERN
+                )
 
         plot_stacked: bool = kwargs.get("stacked", False)
         x_rotation: int = kwargs.get("x_label_rotation", 0)
 
-        data_frame.plot(kind="bar", stacked=plot_stacked, cmap=color_map)
+        pattern_map: Dict[FillPattern, str] = \
+            bar_color_map_parameters.pattern_map
+
+        # Plotting bar with specified bar colors and black bar edge color
+        bar_plot = data_frame.plot(
+            kind="bar",
+            stacked=plot_stacked,
+            colormap=bar_color_map_parameters.color_map,
+            fill=True,
+            edgecolor="#000000")
+
+        # set hatch if hatches are given
+        if bar_color_map_parameters.use_pattern and pattern_map is not None:
+            repeated_pattern_index = \
+                [
+                    index
+                    for index in range(len(data_frame.columns))
+                    for i in range(int(
+                        len(bar_plot.axes.patches) / len(data_frame.columns)
+                    ))
+                ]
+            for index, bar in zip(repeated_pattern_index,
+                                  bar_plot.axes.patches):
+                # Only use hatch if no hex color value is given in pattern map
+                if '#' not in pattern_map[index]:
+                    bar.set_hatch(pattern_map[index])
 
         axes = pyplot.gca()
 
@@ -293,16 +328,20 @@ class MatplotlibPlotter(Plotter):
             axes.get_legend().remove()
 
         if show_value_labels:
+            # Plot value labels inside a bounding box at the lower end of bars
             self._add_bar_chart_value_labels(
-                data_frame,
-                color_map,
-                plot_stacked,
-                round_value_labels_to_decimals,
+                data_frame=data_frame,
+                color_map=bar_color_map_parameters.color_map,
+                label_color_map=label_color_map_parameters.color_map,
+                plot_stacked=plot_stacked,
+                round_value_labels_to_decimals=round_value_labels_to_decimals,
+                show_label_box=True
             )
 
         # Set custom figure size or auto-size the figure if figure size is not
         # given.
-        default_width = len(data_frame.index) * 0.25
+        default_width = \
+            len(data_frame.index) * 1.25 + len(data_frame.columns) * 1.25
         default_height = 5
         MatplotlibPlotter._customize_figure_size(
             kwargs.get("figure_size", (default_width, default_height)))
@@ -314,8 +353,10 @@ class MatplotlibPlotter(Plotter):
         cls,
         data_frame: DataFrame,
         color_map: colors.Colormap,
+        label_color_map: colors.Colormap,
         plot_stacked: bool,
         round_value_labels_to_decimals: int = 0,
+        show_label_box: bool = False
     ) -> None:
         """
         Add value labels to a bar chart.
@@ -327,10 +368,14 @@ class MatplotlibPlotter(Plotter):
                 The data frame providing the data for the chart.
             color_map (Colormap):
                 The color map used by the bar chart.
+            label_color_map (Colormap):
+                The color map used by the bar chart for value labels.
             plot_stacked (bool):
                 Whether the chart is a stacked bar chart or not.
             round_value_labels_to_decimals (int):
                 Round label values to the number of decimals. (Default: 0)
+            show_label_box (bool):
+                Show bounding boxes around value labels of bars.
         """
         default_font_size = rcParams["font.size"]
         axes = pyplot.gca()
@@ -338,6 +383,11 @@ class MatplotlibPlotter(Plotter):
         # Loop over the data and annotate the actual values
         column_count: int = len(data_frame.columns)
         row_count: int = len(data_frame.index)
+
+        bbox_dict = None
+        if show_label_box:
+            bbox_dict = dict(boxstyle="Round4,pad=0.2",
+                             fc="white", ec="gray", lw=1)
 
         if plot_stacked:
             sums = data_frame.sum(axis=1)
@@ -366,8 +416,7 @@ class MatplotlibPlotter(Plotter):
                         continue
 
                     color = color_map.colors[column]
-                    # Darken the color by setting each component to 50%
-                    color_dark = [0.5 * component for component in color]
+                    label_color = label_color_map.colors[column]
 
                     bar_center_y = row_sum + value / 2
 
@@ -399,10 +448,12 @@ class MatplotlibPlotter(Plotter):
                         text_x = row + text_x_offset
 
                         # Plot the indicator line
+                        # (at the lowest zorder, not to interfere with hatches)
                         pyplot.plot(
                             [text_x + line_x_overhang, row],
                             [bar_center_y, bar_center_y],
                             color=color,
+                            zorder=0
                         )
 
                     # Round values to the number of decimals given in parameter
@@ -421,8 +472,9 @@ class MatplotlibPlotter(Plotter):
                         value_rounded,
                         ha="center",
                         va="center",
-                        color=color_dark,
+                        color=label_color,
                         size=default_font_size if value < 100 else "smaller",
+                        bbox=bbox_dict
                     )
                     # for next row iteration:
                     row_sum += value
@@ -456,10 +508,7 @@ class MatplotlibPlotter(Plotter):
             bar_offset = bar_width / 2
             for row in range(row_count):
                 for column in range(column_count):
-                    color = color_map.colors[column]
-
-                    # Darken the color by setting each component to 50%
-                    color = [0.5 * component for component in color]
+                    label_color = label_color_map.colors[column]
 
                     # Within each bar area the bar for each column starts at:
                     column_offset = bar_width * column
@@ -489,8 +538,9 @@ class MatplotlibPlotter(Plotter):
                         value_rounded,
                         ha="center",
                         va="center",
-                        color=color,
+                        color=label_color,
                         size=default_font_size if value < 100 else "smaller",
+                        bbox=bbox_dict
                     )
 
     def plot_box_chart(
@@ -532,6 +582,8 @@ class MatplotlibPlotter(Plotter):
                     The figure is auto-sized if the figure size is not given.)
                 plot_style_name (str):
                     This indicates which plot style to use.
+                box_face_color (str):
+                    Name of face color of boxes. (Default: "wheat")
         """
         MatplotlibPlotter._set_custom_plot_style(
             kwargs.get("plot_style_name", ""))
@@ -588,7 +640,7 @@ class MatplotlibPlotter(Plotter):
 
                 # Fill the box background so the boxes overlay the grid lines
                 for patch in plot["boxes"]:
-                    patch.set_facecolor("wheat")
+                    patch.set_facecolor(kwargs.get("box_face_color", "wheat"))
                 data_frame_counter += 1
 
         axes.set_xticklabels(
@@ -645,16 +697,29 @@ class MatplotlibPlotter(Plotter):
                     The figure is auto-sized if the figure size is not given.)
                 plot_style_name (str):
                     This indicates which plot style to use.
+                color_map_name (str):
+                    Name determines the color map selected to fill cells.
+                add_value_label_box (bool):
+                    Flag specifies whether to add value label boxes.
         """
         MatplotlibPlotter._set_custom_plot_style(
             kwargs.get("plot_style_name", ""))
 
         rcParams.update({"figure.autolayout": True})
-        color_map_name = "Blues_r" if invert_colors else "Blues"
+
+        color_map_name = kwargs.get("color_map_name", "Blues")
+        if invert_colors:
+            color_map_name = color_map_name + "_r"
         color_map = pyplot.get_cmap(color_map_name)
 
         column_count: int = len(data_frame.columns)
         row_count: int = len(data_frame.index)
+
+        add_value_label_box: bool = kwargs.get("add_value_label_box", True)
+        bbox_dict = None
+        if add_value_label_box:
+            bbox_dict = dict(boxstyle="Round4,pad=0.2",
+                             fc="white", ec="gray", lw=1)
 
         x_tick_labels = [
             "\n".join(wrap(label, 20)) for label in data_frame.columns.values
@@ -690,12 +755,11 @@ class MatplotlibPlotter(Plotter):
                     else (value > threshold)
                 )
                 axes.text(
-                    j,
-                    i,
-                    value,
-                    ha="center",
-                    va="center",
-                    color="white" if switch_color else "black",
+                    j, i, value,
+                    ha="center", va="center",
+                    color="white"
+                    if switch_color and not add_value_label_box else "black",
+                    bbox=bbox_dict
                 )
 
         # Set custom figure size or auto-size the figure if figure size is not
