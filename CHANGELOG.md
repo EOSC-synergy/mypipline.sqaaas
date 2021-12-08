@@ -31,6 +31,16 @@ Group your changes into these categories:
 
 `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
 
+## Unreleased
+
+[List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.4.0...main)
+
+### Fixed
+
+- Fix custom plot style template generation on init
+  ([!156](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/156)
+  by [frust45](https://gitlab.hzdr.de/frust45)).
+
 ## [1.4.0](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/releases/v1.4.0) - 2021-12-03
 
 [List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.3.0...v1.4.0)
