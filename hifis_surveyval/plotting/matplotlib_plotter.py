@@ -63,7 +63,7 @@ class MatplotlibPlotter(Plotter):
                 generation of a file name from the date of the run and the
                 module producing the image.
         """
-        if self.OUTPUT_FORMAT == SupportedOutputFormat.SCREEN:
+        if self.settings.OUTPUT_FORMAT == SupportedOutputFormat.SCREEN:
             pyplot.show()
             pyplot.close()
             return
@@ -83,10 +83,10 @@ class MatplotlibPlotter(Plotter):
 
             output_file_stem: str = f"{calling_module_name}"
 
-        file_ending: str = self.OUTPUT_FORMAT.name.lower()
+        file_ending: str = self.settings.OUTPUT_FORMAT.name.lower()
         file_name: str = f"{output_file_stem}.{file_ending}"
 
-        output_path: Path = self.ANALYSIS_OUTPUT_PATH / file_name
+        output_path: Path = self.settings.ANALYSIS_OUTPUT_PATH / file_name
 
         if output_path.exists():
             logging.warning(f"Overriding existing output file {output_path}")
@@ -128,8 +128,7 @@ class MatplotlibPlotter(Plotter):
         if figure_size and len(figure_size) == 2:
             MatplotlibPlotter._set_figure_size(figure_size[0], figure_size[1])
 
-    @classmethod
-    def _set_custom_plot_style(cls, plot_style_name: str) -> None:
+    def _set_custom_plot_style(self, plot_style_name: str) -> None:
         """
         Set Matplotlib custom plot style.
 
@@ -140,6 +139,11 @@ class MatplotlibPlotter(Plotter):
         plot_styles_path: Path = Path('hifis_surveyval/plotting/plot_styles')
         custom_plot_styles_path: Path = Path('custom_plot_styles')
         file_ending: str = '.mplstyle'
+
+        # Use the setting provided from the config file if not specified
+        # via kwargs for the custom plot style
+        if not plot_style_name:
+            plot_style_name = self.settings.CUSTOM_PLOT_STYLE
 
         if len(plot_style_name) > 0:
             custom_style_file_path: Path = \
@@ -241,8 +245,7 @@ class MatplotlibPlotter(Plotter):
                     Object to initialize the parameters to create the color map
                     for value labels of bars.
         """
-        MatplotlibPlotter._set_custom_plot_style(
-            kwargs.get("plot_style_name", ""))
+        self._set_custom_plot_style(kwargs.get("plot_style_name", ""))
 
         rcParams.update({"figure.autolayout": True})
 
@@ -585,8 +588,7 @@ class MatplotlibPlotter(Plotter):
                 box_face_color (str):
                     Name of face color of boxes. (Default: "wheat")
         """
-        MatplotlibPlotter._set_custom_plot_style(
-            kwargs.get("plot_style_name", ""))
+        self._set_custom_plot_style(kwargs.get("plot_style_name", ""))
 
         rcParams.update({"figure.autolayout": True})
         x_rotation: int = kwargs.get("x_label_rotation", 0)
@@ -702,8 +704,7 @@ class MatplotlibPlotter(Plotter):
                 add_value_label_box (bool):
                     Flag specifies whether to add value label boxes.
         """
-        MatplotlibPlotter._set_custom_plot_style(
-            kwargs.get("plot_style_name", ""))
+        self._set_custom_plot_style(kwargs.get("plot_style_name", ""))
 
         rcParams.update({"figure.autolayout": True})
 

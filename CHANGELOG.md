@@ -35,6 +35,12 @@ Group your changes into these categories:
 
 [List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.4.0...main)
 
+### Added
+
+- Allow to configure the default plot style via configuration
+  ([!157](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/157)
+  by [frust45](https://gitlab.hzdr.de/frust45)).
+
 ### Fixed
 
 - Fix custom plot style template generation on init

@@ -52,8 +52,7 @@ class HIFISSurveyval:
 
         # register plotter
         self.plotter: MatplotlibPlotter = MatplotlibPlotter(
-            output_format=self.settings.OUTPUT_FORMAT,
-            output_path=self.settings.ANALYSIS_OUTPUT_PATH,
+            settings=self.settings,
         )
 
         # register printer

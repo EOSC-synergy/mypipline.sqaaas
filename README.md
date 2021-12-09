@@ -216,6 +216,7 @@ OUTPUT_FORMAT: SCREEN
 PREPROCESSING_FILENAME: preprocess.py
 SCRIPT_FOLDER: scripts
 SCRIPT_NAMES: []
+CUSTOM_PLOT_STYLE: "report_style"  # Optional
 ```
 
 > ##### Concepts that You Need to Know

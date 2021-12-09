@@ -26,24 +26,24 @@ This module provides a framework for plotters.
 """
 
 from abc import ABC
-from pathlib import Path
 
-from hifis_surveyval.plotting.supported_output_format import \
-    SupportedOutputFormat
+from hifis_surveyval.core.settings import Settings
 
 
 class Plotter(ABC):
     """Base class to derive plotters from."""
 
     def __init__(
-        self, output_format: SupportedOutputFormat, output_path: Path
+        self,
+        settings: Settings,
     ) -> None:
         """
         Initialize a plotter.
 
         Args:
-            output_format (SupportedOutputFormat): Supported output format.
-            output_path (Path): Path to the output folder.
+            settings: (Settings):
+                A Settings container to store the setup configuration
+                in. It will be populated with the related settings during the
+                initialization of the HIFISSurveyval object.
         """
-        self.OUTPUT_FORMAT: SupportedOutputFormat = output_format
-        self.ANALYSIS_OUTPUT_PATH: Path = output_path
+        self.settings = settings

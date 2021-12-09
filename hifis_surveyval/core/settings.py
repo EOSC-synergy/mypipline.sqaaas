@@ -30,7 +30,7 @@ It provides:
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List, Optional, Set
 
 import yaml
 from pydantic import BaseSettings, validator
@@ -203,6 +203,11 @@ class FileSettings(BaseSettings):
     # Separator used in header of CSV data to separate QuestionCollection ID
     # and Question ID.
     DATA_ID_SEPARATOR: str = "_"
+
+    # Specify a custom plot style globally for all scripts.
+    # A plot style which is explicitly specified in scripts
+    # take precedence over this option.
+    CUSTOM_PLOT_STYLE: Optional[str] = ""  # Default value None gives an error
 
     class Config:
         """
