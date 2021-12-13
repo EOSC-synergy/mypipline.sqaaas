@@ -31,9 +31,9 @@ Group your changes into these categories:
 
 `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
 
-## Unreleased
+## [1.5.1](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/releases/v1.5.1) - 2021-12-13
 
-[List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.5.0...main)
+[List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.5.0...v1.5.1)
 
 ### Fixed
 
