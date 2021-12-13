@@ -222,7 +222,7 @@ def create_preprocessing_script(settings: Settings) -> None:
 def create_custom_plot_style_template() -> None:
     """Create Matplotlib custom plot style file template."""
     template_name: str = 'style_template.mplstyle'
-    template_path: Path = Path(__file__) / ".." / "files" / template_name
+    template_path: Path = Path(__file__).parents[1] / "files" / template_name
     custom_plot_styles_path: Path = Path('custom_plot_styles')
     target_path: Path = custom_plot_styles_path / Path(template_name)
 

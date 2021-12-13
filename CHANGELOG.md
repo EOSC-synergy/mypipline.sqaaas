@@ -31,6 +31,16 @@ Group your changes into these categories:
 
 `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
 
+## Unreleased
+
+[List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.5.0...main)
+
+### Fixed
+
+- Fix style folder not properly being specified relatively
+  ([!159](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/merge_requests/159)
+  by [frust45](https://gitlab.hzdr.de/frust45)).
+
 ## [1.5.0](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/releases/v1.5.0) - 2021-12-09
 
 [List of commits](https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval/-/compare/v1.4.0...v1.5.0)
