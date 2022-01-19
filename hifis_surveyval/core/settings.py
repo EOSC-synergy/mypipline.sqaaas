@@ -260,11 +260,11 @@ class Settings(SystemSettings, FileSettings):
         # Clamp verbose_count to accepted values
         # Note that it shall not be possible to unset the verbosity.
         option_index: int = (
-            0
-            if verbose_count < 0
-            else max_index
-            if verbose_count > max_index
-            else verbose_count
+            0 if verbose_count < 0
+            else (
+                max_index if verbose_count > max_index
+                else verbose_count
+            )
         )
 
         new_level: int = verbosity_options[option_index]
