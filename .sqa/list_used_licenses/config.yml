@@ -37,6 +37,18 @@ manual dependency config:
     - import name: 'pkg_resources'
       pkg name: 'pkg_resources'
       ignore: True
+    - import name: 'pyparsing'
+      pkg name: 'pyparsing'
+      licenses:
+        - 'MIT'
+    - import name: 'tomli'
+      pkg name: 'tomli'
+      licenses:
+        - 'MIT'
+    - import name: 'typing-extensions'
+      pkg name: 'typing-extensions'
+      licenses:
+        - 'PSF-2.0'
     - import name: 'python-dotenv'
       pkg name: 'python-dotenv'
       licenses:
