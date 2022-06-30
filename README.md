@@ -20,9 +20,71 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 
-# HIFIS-Surveyval
+# HIFIS Surveyval Framework
 
-This project is used to develop analysis scripts for the HIFIS Software survey.
+## What Is the Framework Intended For?
+
+The _HIFIS Surveyval Framework_ is a tool to analyse data from _LimeSurvey_
+data exports.
+It is meant to fill the gap between _LimeSurvey_ and _Python_ data analysis and
+visualisation libraries such as _Numpy_, _Pandas_ and _Matplotlib_.
+It is not meant to replace them.
+We aim at making life easier for people who are about to conduct _LimeSurvey_
+surveys and who want to analyse the resulting survey data by providing a tested
+and working set of features, so that you need not reinvent the wheel for your
+data analysis.
+We recommend getting familiar with the framework before the survey is planned
+and conducted to make sure that your use case can be covered by the framework.
+
+## What Do You Need to Provide Yourself? 
+
+### Metadata of Your Survey
+
+The metadata that is describing your survey such as the list of questions and
+answer options including their translations that are _not_ included in the
+_LimeSurvey_ data export file are given in a metadata _YAML_ file that you
+need to provide by yourself.
+Please have a look into the example metadata _YAML_ file given in this project
+to get an idea how this file is structured and which information need to be put
+there.
+
+### Pre-processing Steps on Raw Data
+
+Before the analysis is started, the raw data is pre-processed by a
+pre-processing script that you need to write by yourself as well
+if data cleaning and other pre-processing steps need to be done for your
+survey data beforehand.
+In order to get an impression how the pre-processing script can look like
+please see the example pre-processing scripts provided in this project to get
+you started.
+
+### Analysis Scripts for Your Survey Data Analysis
+
+Under the hood the architecture of the framework is executing a series of
+independent data analysis scripts written by yourself in an analysis run.
+As a result, output will be generated in form of
+
+* terminal output on the CLI,
+* plots in different formats and 
+* text files.
+
+There are also example analysis scripts available in this project that you can
+take a look at to understand how these analysis scripts make use of the
+framework.
+
+## Your Use Cases Are Not Covered?
+
+As the name of the framework suggests it has been developed to aid in the
+analysis of HIFIS surveys conducted for the Helmholtz Federated IT Services
+(HIFIS) platform.
+Please be aware that as we try to develop a generic framework that can be
+used in many use cases, it might still be the case that the implemented
+features arose from our use cases and are not applicable in your case.
+If this is the case, please get in touch with us, so we can make things happen
+for you.
+You are also most welcome to contribute to the project with issues, bug fixes,
+feature implementations, documentations and testing.
+Thank you very much in advance for your valuable contributions!
 
 ## Table of Content
 

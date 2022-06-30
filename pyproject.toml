@@ -21,7 +21,7 @@
 [tool.poetry]
 name = "hifis-surveyval"
 version = "1.5.1"
-description = "This project is used to develop analysis scripts for the HIFIS Software survey."
+description = "The HIFIS Surveyval Framework is a tool to analyse survey data from LimeSurvey data exports."
 license = "GPL-3.0-or-later"
 authors = ["HIFIS Software <software@hifis.net>"]
 homepage = "https://gitlab.hzdr.de/hifis/overall/surveys/hifis-surveyval"
