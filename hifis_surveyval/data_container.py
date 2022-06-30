@@ -60,31 +60,64 @@ class DataContainer(object):
                 An object representing the current application settings.
         """
         self._survey_questions: Dict[str, QuestionCollection] = {}
+        self._participant_ids: Set[str] = set()
+        """ All participant IDs encountered while loading survey data. """
+
         self._invalid_answer_sets: Set[str] = set()
         # Track participant IDs with invalid answer sets.
         self._settings = settings
 
-    @property
-    def survey_questions(self) -> List[QuestionCollection]:
+    def _frame_for_id(self, piece_id) -> DataFrame:
         """
-        Obtain all survey questions stored in the data container.
+        Obtain a data frame representation for a Question (Collection) ID.
 
+        This is a helper method used to transform either questions or
+        question collections into data frames based on their ID. It a
+        shortcut to be used in data_frame_for_ids() and not meant to be
+        called by the user. Use the appropriate functions of questions and
+        collections instead.
+        Args:
+            piece_id:
+                The full ID of either a question or question collection.
         Returns:
-            A list of QuestionCollections that contain all the survey
-            questions.
+            A data frame matching the answers given per participant for the
+            question or question collection identified by the provided ID.
+        Raises:
+            ValueError:
+                When no Question or QuestionCollection with the given ID
+                exists.
         """
-        return list(self._survey_questions.values())
+        try:
+            return self.collection_for_id(piece_id).as_data_frame()
+        except KeyError:
+            pass
 
-    @property
-    def invalid_answer_sets(self) -> Set[str]:
-        """
-        Get all participants who gave invalid answers.
+        try:
+            return DataFrame(self.question_for_id(piece_id).as_series())
+        except KeyError:
+            pass
 
-        Returns:
-            A set with the IDs of participants who had their answers marked
-            as invalid.
+        raise ValueError(
+            f"{piece_id} is not a valid " f"question / collection ID"
+        )
+
+    def _add_collection_from_yaml(self, new_collection_yaml: YamlDict) -> None:
         """
-        return self._invalid_answer_sets
+        Create a new question collection from YAML and add it to survey data.
+
+        Args:
+            new_collection_yaml:
+                A YAML mapping containing the data for one question collection.
+        """
+        new_collection = QuestionCollection.from_yaml_dictionary(
+            new_collection_yaml, settings=self._settings
+        )
+        if new_collection.full_id in self._survey_questions:
+            raise ValueError(
+                "Attempt to add QuestionCollection " "with duplicate ID"
+            )
+        self._survey_questions[new_collection.full_id] = new_collection
+        debug(f"{new_collection.full_id} added successfully")
 
     def load_metadata(self, yaml: Union[YamlList, YamlDict]) -> None:
         """
@@ -113,24 +146,6 @@ class DataContainer(object):
                 self._add_collection_from_yaml(new_collection_data)
             except Exception as thrown_exception:
                 warning(f"Error while parsing metadata: {thrown_exception}")
-
-    def _add_collection_from_yaml(self, new_collection_yaml: YamlDict) -> None:
-        """
-        Create a new question collection from YAML and add it to survey data.
-
-        Args:
-            new_collection_yaml:
-                A YAML mapping containing the data for one question collection.
-        """
-        new_collection = QuestionCollection.from_yaml_dictionary(
-            new_collection_yaml, settings=self._settings
-        )
-        if new_collection.full_id in self._survey_questions:
-            raise ValueError(
-                "Attempt to add QuestionCollection " "with duplicate ID"
-            )
-        self._survey_questions[new_collection.full_id] = new_collection
-        debug(f"{new_collection.full_id} added successfully")
 
     def load_survey_data(self, csv_data: List[List[str]]) -> None:
         """
@@ -213,6 +228,7 @@ class DataContainer(object):
         # Step 3: Iterate through each row and insert the values for answer
         for row in body:
             participant_id = row[id_column_index]
+            self._participant_ids.add(participant_id)
 
             for (question_index, question) in question_cache.items():
                 answer: str = row[question_index]
@@ -263,49 +279,6 @@ class DataContainer(object):
         collection = self.collection_for_id(collection_id)
         return collection.question_for_id(question_id)
 
-    def remove_invalid_answer_sets(self) -> None:
-        """
-        Remove answer sets that were marked as invalid.
-
-        The answers are removed on a per-participant basis.
-        """
-        for collection in self._survey_questions.values():
-            collection.remove_answers(self._invalid_answer_sets)
-
-    def mark_answers_invalid(self, participant_ids: Set[str]) -> None:
-        """
-        Mark the answers given by participants as invalid.
-
-        Args:
-            participant_ids:
-                The IDs of participants who gave invalid answers.
-        """
-        self._invalid_answer_sets.update(participant_ids)
-
-    def mark_answers_valid(self, participant_ids: Set[str]) -> None:
-        """
-        Mark the answers given by participants as valid.
-
-        NOTE: This does not restore previously removed invalid answers.
-        Invalid IDs are silently ignored.
-
-        Args:
-            participant_ids:
-                The IDs of participants for whom answers are to be marked as
-                valid.
-        """
-        self._invalid_answer_sets.difference_update(participant_ids)
-
-    @property
-    def question_collection_ids(self) -> List[str]:
-        """
-        Get the IDs of all question collections.
-
-        Returns:
-            A list of question collection IDs as strings.
-        """
-        return list(self._survey_questions.keys())
-
     def data_frame_for_ids(self, requested_ids: List[str]) -> DataFrame:
         """
         Compose a Data Frame form a list of question (collection) IDs.
@@ -333,36 +306,83 @@ class DataContainer(object):
 
         return pandas.concat(frame_pieces, axis=1)
 
-    def _frame_for_id(self, piece_id) -> DataFrame:
+    def mark_answers_valid(self, participant_ids: Set[str]) -> None:
         """
-        Obtain a data frame representation for a Question (Collection) ID.
+        Mark the answers given by participants as valid.
 
-        This is a helper method used to transform either questions or
-        question collections into data frames based on their ID. It a
-        shortcut to be used in data_frame_for_ids() and not meant to be
-        called by the user. Use the appropriate functions of questions and
-        collections instead.
+        NOTE: This does not restore previously removed invalid answers.
+        Invalid IDs are silently ignored.
+
         Args:
-            piece_id:
-                The full ID of either a question or question collection.
-        Returns:
-            A data frame matching the answers given per participant for the
-            question or question collection identified by the provided ID.
-        Raises:
-            ValueError:
-                When no Question or QuestionCollection with the given ID
-                exists.
+            participant_ids:
+                The IDs of participants for whom answers are to be marked as
+                valid.
         """
-        try:
-            return self.collection_for_id(piece_id).as_data_frame()
-        except KeyError:
-            pass
+        self._invalid_answer_sets.difference_update(participant_ids)
 
-        try:
-            return DataFrame(self.question_for_id(piece_id).as_series())
-        except KeyError:
-            pass
+    def mark_answers_invalid(self, participant_ids: Set[str]) -> None:
+        """
+        Mark the answers given by participants as invalid.
 
-        raise ValueError(
-            f"{piece_id} is not a valid " f"question / collection ID"
-        )
+        Args:
+            participant_ids:
+                The IDs of participants who gave invalid answers.
+        """
+        self._invalid_answer_sets.update(participant_ids)
+
+    def remove_invalid_answer_sets(self) -> None:
+        """
+        Remove answer sets that were marked as invalid.
+
+        The answers are removed on a per-participant basis.
+        """
+        for collection in self._survey_questions.values():
+            collection.remove_answers(self._invalid_answer_sets)
+
+    @property
+    def participant_ids(self) -> List[str]:
+        """
+        Get a list of all participant IDs in the survey data.
+
+        Note:
+            This list includes all participant IDs encountered while loading
+            the survey data. It is not affected by removing invalid answer
+            sets in any way. For those refer to the 'invalid_answer_sets'
+            property.
+
+        Returns:
+            A list of all participant IDs as strings.
+        """
+        return list(self._participant_ids)
+
+    @property
+    def question_collection_ids(self) -> List[str]:
+        """
+        Get the IDs of all question collections.
+
+        Returns:
+            A list of question collection IDs as strings.
+        """
+        return list(self._survey_questions.keys())
+
+    @property
+    def survey_questions(self) -> List[QuestionCollection]:
+        """
+        Obtain all survey questions stored in the data container.
+
+        Returns:
+            A list of QuestionCollections that contain all the survey
+            questions.
+        """
+        return list(self._survey_questions.values())
+
+    @property
+    def invalid_answer_sets(self) -> Set[str]:
+        """
+        Get all participants who gave invalid answers.
+
+        Returns:
+            A set with the IDs of participants who had their answers marked
+            as invalid.
+        """
+        return self._invalid_answer_sets
