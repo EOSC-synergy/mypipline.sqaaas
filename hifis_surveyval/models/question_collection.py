@@ -24,7 +24,7 @@ This module contains classes to represent groups of survey questions.
 These can be constructed from YAML through the YamlConstructable abstract
 class.
 """
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Iterable
 from typing import Optional as typing_Optional
 from typing import Union
 
@@ -184,9 +184,53 @@ class QuestionCollection(
             question_series.append(question.as_series())
         return concat(question_series, axis=1)  # Note (0)
 
-    # Note (0) The series are joined row-wise, so each participant in the
-    # row labels (aka indexes) is associated with each answer according to
-    # the question (Question ID in the column labels).
+        # Note (0) The series are joined row-wise, so each participant in the
+        # row labels (aka indexes) is associated with each answer according to
+        # the question (Question ID in the column labels).
+
+    def is_mandatory_fulfilled(
+            self, check_for: Union[str, Iterable[str]]
+    ) -> Dict[str, bool]:
+        """
+        Check if the given participants have answered all questions.
+
+        This is not affected by whether the QuestionCollection is marked as
+        mandatory or not. This function checks if the participants DID
+        answer all questions in this collection, but not if they SHOULD.
+        For the latter see the `is_mandatory' - property.
+
+        Args:
+            check_for:
+                Either any iterable type, providing participant IDs as
+                strings or a single string providing one participant ID.
+                These are the IDs for which the fulfillment of the mandatory
+                condition is checked.
+
+        Returns:
+            A dictionary mapping each input participant ID to a boolean value
+            indicating whether they fulfil the mandatory condition (i.e.
+            the value for the respective participant ID will be 'True') or not.
+        """
+        if isinstance(check_for, str):
+            check_for = [check_for]
+            # Dump the string into an iterable for the one-size-fits-all
+            # solution below.
+
+        accumulated = {participant: True for participant in check_for}
+        for question in self._questions.values():
+
+            # The returns from the mandatory-ness checks from each
+            # question get _and_-ed together for each participant. If even one
+            # question provides the result of a participant as `False`, it will
+            # stay `False` and dominate all other results for this participant.
+
+            from_question = question.is_mandatory_fulfilled(check_for)
+            for participant in check_for:
+                accumulated[participant] = (
+                    accumulated[participant] and from_question[participant]
+                )
+
+        return accumulated
 
     @staticmethod
     def _from_yaml_dictionary(

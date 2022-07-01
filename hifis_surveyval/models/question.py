@@ -26,7 +26,7 @@ class.
 """
 # alias name to avoid clash with schema.Optional
 import logging
-from typing import Dict, Optional, Set, Generic, get_args
+from typing import Dict, Optional, Set, Generic, get_args, Union, Iterable
 
 import schema
 from pandas import Series
@@ -181,7 +181,7 @@ class Question(
         """
         Store a given answer to this question.
 
-        The answer value will be casted to the expected answer type.
+        The answer value will be cast to the expected answer type.
 
         Args:
             participant_id:
@@ -242,6 +242,41 @@ class Question(
         for participant_id in participant_ids:
             if participant_id in self._answers:
                 del self._answers[participant_id]
+
+    def is_mandatory_fulfilled(
+            self, check_for: Union[str, Iterable[str]]
+    ) -> Dict[str, bool]:
+        """
+        Check if the given participants provided an answer.
+
+        This is not affected by whether the Question is marked as mandatory
+        or not. This function checks if the participants DID provide an
+        answer that was not None but not if they SHOULD. For the latter see
+        the `is_mandatory' - property.
+
+        Args:
+            check_for:
+                Either any iterable type, providing participant IDs as
+                strings or a single string providing one participant ID.
+                These are the IDs for which the fulfillment of the mandatory
+                condition is checked.
+
+        Returns:
+            A dictionary mapping each input participant ID to a boolean value
+            indicating whether they fulfil the mandatory condition (i.e.
+            the value for the respective participant ID will be 'True') or not.
+        """
+        if isinstance(check_for, str):
+            check_for = [check_for]
+            # Dump the string into an iterable for the one-size-fits-all
+            # solution below.
+
+        results = dict()
+        for participant_id in check_for:
+            results[participant_id] = (
+                self._answers.get(participant_id, None) is not None
+            )
+        return results
 
     @property
     def answers(self) -> Dict[str, Optional[AnswerType]]:

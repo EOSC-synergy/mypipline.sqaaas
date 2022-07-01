@@ -129,3 +129,4 @@ title = "gitleaks config"
 [allowlist]
 	description = "Allowlisted files"
 	files = ['''.*gitleaks_config.toml$''', '''(.*?)(jpg|gif|doc|pdf|bin)$''', '''(go.mod|go.sum)$''', '''.*QUALITY.md$''']
+	commits = ["317b4fe63dab0d63d9754978aeb43166214a61b0"]

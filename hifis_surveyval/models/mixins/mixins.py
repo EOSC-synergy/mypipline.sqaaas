@@ -24,8 +24,8 @@ This module provides mixins for model classes with certain properties.
 They are designed to co-operate with other mixins and forwards unused
 initialization arguments down to other mixins in the inheritance order.
 """
-from abc import ABC
-from typing import Set, Optional
+from abc import ABC, abstractmethod
+from typing import Set, Optional, Iterable, Union, Dict
 
 from hifis_surveyval.models.mixins.uses_settings import UsesSettings
 from hifis_surveyval.models.translated import Translated
@@ -56,6 +56,32 @@ class HasMandatory(ABC):
         """
         super(HasMandatory, self).__init__(*args, **kwargs)
         self._is_mandatory = is_mandatory
+
+    @abstractmethod
+    def is_mandatory_fulfilled(
+            self, check_for: Union[str, Iterable[str]]
+    ) -> Dict[str, bool]:
+        """
+        Check if the mandatory condition is fulfilled for given participants.
+
+        This is not affected by whether the Question or QuestionCollection
+        is marked as mandatory or not. This function checks if the
+        participants DO fulfil the mandatory condition, but not if they SHOULD.
+        For the latter see the `is_mandatory' - property.
+
+        Args:
+            check_for:
+                Either any iterable type, providing participant IDs as
+                strings or a single string providing one participant ID.
+                These are the IDs for which the fulfillment of the mandatory
+                condition is checked.
+
+        Returns:
+            A dictionary mapping each input participant ID to a boolean value
+            indicating whether they fulfil the mandatory condition (i.e.
+            the value for the respective participant ID will be 'True') or not.
+        """
+        pass
 
     @property
     def is_mandatory(self) -> bool:
