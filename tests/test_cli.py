@@ -88,16 +88,34 @@ def test_verbose_output():
         "Verbose logging should be indicated in output."
 
 
-def test_init_config(settings):
+@pytest.mark.parametrize("cli_option", ["-c", "--config"])
+def test_init_config(settings, cli_option):
     """
-    Arrange/Act: Run the `init -c` subcommand.
+    Test the proper creation of the config file with the `init` sub-command.
 
-    Assert: The default config file is created.
+    The options -c and --config will be tested and should both work in the
+    same manner.
+
+    Precondition:
+        The config file does not exist
+    Arrange/Act:
+        Run the `init -c` subcommand.
+    Assert:
+        The default config file has been created.
     """
+    expected_config: Path = Path(settings.CONFIG_FILENAME)
+
+    assert not expected_config.exists(), (
+        f"Config file {expected_config.resolve()} existed before test,"
+        f"making the result unusable. Forgot to clean up?"
+    )
+
     runner: CliRunner = CliRunner()
-    runner.invoke(cli.cli, ["init", "-c"])
-    assert (Path(settings.CONFIG_FILENAME).exists()), \
-        "The default config file should be created at default path."
+    runner.invoke(cli.cli, ["init", cli_option])
+    assert expected_config.exists(), (
+        f"The default config file should be created at "
+        f"{expected_config.resolve()}"
+    )
 
 
 def test_init_example_script(settings):
@@ -108,7 +126,7 @@ def test_init_example_script(settings):
     Assert: The example script file is created.
     """
     runner: CliRunner = CliRunner()
-    runner.invoke(cli.cli, ["init", "-s"])
+    runner.invoke(cli.cli, ["init", "-e"])
     assert (Path(settings.SCRIPT_FOLDER).is_dir()), \
         "The default script folder should be created at default path."
     assert (Path(f"{settings.SCRIPT_FOLDER}/example_script.py").exists()), \

@@ -108,8 +108,8 @@ def version() -> None:
     "Overwrites any existing configuration file.",
 )
 @click.option(
-    "--script",
-    "-s",
+    "--example",
+    "-e",
     is_flag=True,
     show_default=True,
     default=False,
@@ -128,64 +128,50 @@ def version() -> None:
 @click.option(
     "--template",
     "-t",
-    "style_template",
     is_flag=True,
     show_default=True,
     default=False,
     help="Create a pre-filled Matplotlib custom plot style template, "
          "if not already existing.",
 )
-@click.option(
-    "--all",
-    "-a",
-    "all_files",
-    is_flag=True,
-    show_default=True,
-    default=True,
-    help="Create all files during initialization that is necessary for an "
-         "analysis run.",
-)
-def init(config: bool, script: bool, preprocess: bool, style_template: bool,
-         all_files: bool) \
-        -> None:
-    """
+def init(
+        config: bool,
+        example: bool,
+        preprocess: bool,
+        template: bool
+) -> None:
+    r"""
     Create all files with a basic configuration needed for an analysis run.
 
     Create a configuration file, a preprocessing script, an example script and
     a custom plot style template file in the default locations.
     It will overwrite any existing configuration, preprocessing and example
     script file despite the custom plot style template file.
+    If none of the explicit options are given, the command create all files.
+    \f
 
     Args:
         config (bool):
             Indicates whether to create a configuration file. (Default: False)
-        script (bool):
+        example (bool):
             Indicates whether to create an example analysis script.
             (Default: False)
         preprocess (bool):
-            Indicates whether to create an example preprocess script.
+            Indicates whether to create an example preprocessing script.
             (Default: False)
-        style_template (bool):
+        template (bool):
             Indicates whether to create a pre-filled Matplotlib custom plot
             style file. (Default: False)
-        all_files (bool):
-            Indicates whether to create all files during initialization that
-            are necessary for an analysis run. (Default: True)
     """
-    if all_files and not config and not script and not preprocess \
-            and not style_template:
-        config = True
-        script = True
-        preprocess = True
-        style_template = True
+    all_files = not (config or example or preprocess or template)
 
-    if config:
+    if config or all_files:
         settings.create_default_config_file()
-    if script:
+    if example or all_files:
         util.create_example_script(settings)
-    if preprocess:
+    if preprocess or all_files:
         util.create_preprocessing_script(settings)
-    if style_template:
+    if template or all_files:
         util.create_custom_plot_style_template()
 
 
